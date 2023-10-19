@@ -1,0 +1,35 @@
+import React from 'react';
+import { ConfigProvider } from 'antd';
+import type { Metadata } from 'next';
+// import { Oxygen } from 'next/font/google';
+import { CustomFooter, CustomHeader } from './components';
+import { appTheme } from '../theme/app-theme';
+import '@/styles/main.css';
+
+// const inter = Oxygen({
+//   subsets: ['latin'],
+//   weight: '300',
+// });
+
+export const metadata: Metadata = {
+  title: 'ATSI - Auxytech Technology Solutions',
+  description: 'ATSI web app developed by Angelo Mien',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <ConfigProvider theme={appTheme}>
+          <CustomHeader />
+          {children}
+          <CustomFooter />
+        </ConfigProvider>
+      </body>
+    </html>
+  );
+}
