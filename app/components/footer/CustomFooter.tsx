@@ -53,11 +53,11 @@ export default function CustomFooter() {
     },
   ];
   return (
-    <div className="bg-[#ECECEC] relative p-24">
+    <div className="bg-[#ECECEC] relative p-8 md:p-24">
       <div className="absolute p-1 bg-[#FFDD55] top-0 right-0 left-0 w-full"></div>
-      <div className="w-full flex items-start">
+      <div className="w-full flex flex-col md:flex-row gap-4 items-start">
         {/* Navigate */}
-        <div className="flex-shrink w-1/4 flex-col flex space-y-5">
+        <div className="flex-shrink w-full md:w-1/4 flex-col flex space-y-5">
           <CustomLabel
             children="Navigate"
             variant="text"
@@ -133,6 +133,7 @@ export default function CustomFooter() {
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );

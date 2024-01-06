@@ -68,31 +68,33 @@ export default function Home() {
   return (
     <>
       {/* Landing Page */}
-      <div className="container h-fit-to-screen-without-header p-52 flex flex-row items-center">
+      <div className="container h-fit-to-screen-without-header md:p-52 max-w-full flex flex-row items-center">
         <div className="flex-grow">
-          <div className="w-3/4">
+          <div className="sm:w-full flex flex-col sm:gap-4 md:gap-10 pb-8 pl-4 md:pl-0 md:w-3/4">
+            <div>
             <CustomLabel
               children="AuxyTech Technology Solutions Inc."
               variant="title"
               titleLevel={1}
               addedClass="title"
             />
+            </div>
 
-            <div className="my-20">
+            <div>
               <CustomLabel
                 children="We provide trusted security solutions: CCTV, PABX, Access Control, FDAS, PA System, Data Cabinets, Fiber Optics, AV Cables, and more, ensuring your safety and security."
                 variant="text"
-                addedClass="text-2xl mt-10"
+                addedClass="sm:text-base md:text-2xl"
               />
             </div>
 
-            <div className="flex flex-row gap-5">
+            <div className="my-8 md:my-0 flex flex-row gap-5">
               <CustomButton
-                addedClass="bg-[#00A3FF] p-7 rounded-xl flex items-center justify-center text-xl"
+                addedClass="bg-[#00A3FF] p-4 md:p-7 rounded-md md:rounded-xl flex items-center justify-center md:text-xl"
                 children="View Products"
               />
               <CustomButton
-                addedClass="bg-white text-[#00A3FF] border border-[#00A3FF] p-7 rounded-xl flex items-center justify-center text-xl"
+                addedClass="bg-white text-[#00A3FF] border border-[#00A3FF] p-4 md:p-7 rounded-md md:rounded-xl flex items-center justify-center md:text-xl"
                 children="Browse More"
               />
             </div>
@@ -107,15 +109,15 @@ export default function Home() {
           />
         </div> */}
 
-        <div className="absolute bottom-5 left-1/2 animate-bounce">
+        <div className="absolute -bottom-2 md:bottom-5 left-1/2 animate-bounce">
           <FaChevronDown size={30} />
         </div>
       </div>
 
       {/* Products Section */}
-      <div id="products" className="px-40 py-14">
+      <div id="products" className="w-full flex flex-col gap-8 p-8 md:px-40 md:py-14">
         {/* Sales Products */}
-        <div className="grid grid-cols-1">
+        <div className="w-full h-auto flex flex-col gap-10">
           <div className="flex flex-row items-start justify-between">
             <CustomLabel
               children="Sales Products"
@@ -130,9 +132,9 @@ export default function Home() {
             />
           </div>
 
-          <div className="mt-10 grid grid-flow-col-dense grid-cols-5 space-x-10">
+          <div className="flex flex-wrap gap-5">
             {products.map((product, idx) => (
-              <CustomCard key={idx} addedClass="relative overflow-hidden">
+              <CustomCard key={idx} addedClass="relative flex-grow sm:basis-2/5 md:basis-auto overflow-hidden">
                 <div className="bg-red-700 absolute -left-[75px] -top-[7px] -rotate-45 p-3 w-[200px] z-50 text-center">
                   <div className="break-normal text-center flex flex-col items-center justify-center">
                     <BsFire color="white" size={20} />
@@ -180,7 +182,7 @@ export default function Home() {
         </div>
 
         {/* New Products */}
-        <div className="grid grid-cols-1 mt-16 ">
+        <div className="flex flex-col gap-10">
           <div className="flex flex-row items-start justify-between">
             <CustomLabel
               children="Latest Products"
@@ -195,9 +197,9 @@ export default function Home() {
             />
           </div>
 
-          <div className="mt-10 grid grid-flow-col-dense grid-cols-5 space-x-10">
+          <div className="flex flex-wrap gap-5">
             {products.map((product, idx) => (
-              <CustomCard key={idx} addedClass="relative overflow-hidden">
+              <CustomCard key={idx} addedClass="relative flex-grow sm:basis-2/5 md:basis-auto overflow-hidden">
                 <div className="bg-green-700 absolute  -left-[70px] -top-[10px] -rotate-45 p-3 w-[200px] z-50 text-center">
                   <div className="break-normal text-center flex flex-col items-center justify-center">
                     <WiStars color="white" size={30} />

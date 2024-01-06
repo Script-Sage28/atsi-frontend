@@ -14,7 +14,7 @@
 
 @layer base {
   h1 {
-    @apply text-[85px] m-0 !important;
+    @apply sm:text-[50px] md:text-[65px] m-0 !important;
   }
 
   h2 {
@@ -43,10 +43,11 @@
     @apply bg-transparent;
   }
   .container {
-    @apply bg-[url(/assets/landing_bg.png)] bg-cover bg-no-repeat bg-center max-w-full;
+    @apply bg-[url(/assets/landing_bg.png)] bg-cover bg-no-repeat bg-center;
   }
 
   .title {
     @apply text-[var(--text-color)] !important;
+    
   }
 }

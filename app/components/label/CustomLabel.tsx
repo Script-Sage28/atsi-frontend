@@ -19,6 +19,7 @@ export default function CustomLabel({
   textType,
   addedClass,
 }: labelProps) {
+
   return variant === 'text' ? (
     <Text className={addedClass} type={textType}>
       {children}
