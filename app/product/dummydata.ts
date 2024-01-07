@@ -2,15 +2,16 @@ const dummyProducts = [
     {
       id: 1,
       name: 'Product A',
+      category: 'CCTV',
       rating: 4.5,
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis id consectetur purus ut faucibus. Pellentesque habitant morbi tristique senectus et netus et malesuada. Mi in nulla posuere sollicitudin aliquam ultrices sagittis. Lectus magna fringilla urna porttitor rhoncus. Malesuada fames ac turpis egestas integer. Senectus et netus et malesuada fames ac turpis. Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit sed. Nunc eget lorem dolor sed viverra ipsum. Duis tristique sollicitudin nibh sit amet commodo. Sollicitudin aliquam ultrices sagittis orci. Curabitur gravida arcu ac tortor dignissim convallis. Luctus accumsan tortor posuere ac ut consequat semper viverra nam. Pretium quam vulputate dignissim suspendisse in est.',
       comments: [
-        { user: 'User1', comment: 'Great product!' },
-        { user: 'User2', comment: 'Highly recommended.' },
+        { user: 'User1', comment: 'Great product!',rate:4.6,date:'10/18/2023' },
+        { user: 'User2', comment: 'Highly recommended.',rate:4.6,date:'10/18/2023' },
       ],
       images: [
-        'https://images.pexels.com/photos/96612/pexels-photo-96612.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-        'https://images.pexels.com/photos/430208/pexels-photo-430208.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+        '/assets/product_6.jpg',
+        '/assets/product_1.png',
       ],
       price: 49.99,
       discount: 10, // Percentage discount
@@ -21,14 +22,15 @@ const dummyProducts = [
     {
       id: 2,
       name: 'Product B',
+      category: 'CCTV',
       rating: 3.8,
-      description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis id consectetur purus ut faucibus. Pellentesque habitant morbi tristique senectus et netus et malesuada. Mi in nulla posuere sollicitudin aliquam ultrices sagittis. Lectus magna fringilla urna porttitor rhoncus. Malesuada fames ac turpis egestas integer. Senectus et netus et malesuada fames ac turpis. Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit sed. Nunc eget lorem dolor sed viverra ipsum. Duis tristique sollicitudin nibh sit amet commodo. Sollicitudin aliquam ultrices sagittis orci. Curabitur gravida arcu ac tortor dignissim convallis. Luctus accumsan tortor posuere ac ut consequat semper viverra nam. Pretium quam vulputate dignissim suspendisse in est.',
       comments: [
-        { user: 'User3', comment: 'Decent product.' },
-        { user: 'User4', comment: 'Could be better.' },
+        { user: 'User1', comment: 'Great product!',rate:4.6,date:'10/18/2023' },
+        { user: 'User2', comment: 'Highly recommended.',rate:4.6,date:'10/18/2023' },
       ],
       images: [
-        '/assets/product_3.png',
+        '/assets/product_5.jpg',
         '/assets/product_4.png',
       ],
       price: 79.99,
@@ -40,14 +42,15 @@ const dummyProducts = [
     {
       id: 3,
       name: 'Product C',
+      category: 'CCTV',
       rating: 4.2,
-      description: 'Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis id consectetur purus ut faucibus. Pellentesque habitant morbi tristique senectus et netus et malesuada. Mi in nulla posuere sollicitudin aliquam ultrices sagittis. Lectus magna fringilla urna porttitor rhoncus. Malesuada fames ac turpis egestas integer. Senectus et netus et malesuada fames ac turpis. Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit sed. Nunc eget lorem dolor sed viverra ipsum. Duis tristique sollicitudin nibh sit amet commodo. Sollicitudin aliquam ultrices sagittis orci. Curabitur gravida arcu ac tortor dignissim convallis. Luctus accumsan tortor posuere ac ut consequat semper viverra nam. Pretium quam vulputate dignissim suspendisse in est.',
       comments: [
-        { user: 'User5', comment: 'Impressive quality.' },
-        { user: 'User6', comment: 'Good value for money.' },
+        { user: 'User1', comment: 'Great product!',rate:4.6,date:'10/18/2023' },
+        { user: 'User2', comment: 'Highly recommended.',rate:4.6,date:'10/18/2023' },
       ],
       images: [
-        '/assets/product_4.png',
+        '/assets/product_7.jpg',
         '/assets/product_1.png',
       ],
       price: 29.99,
@@ -59,15 +62,16 @@ const dummyProducts = [
     {
       id: 4,
       name: 'Product D',
+      category: 'Highlights',
       rating: 3.8,
-      description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis id consectetur purus ut faucibus. Pellentesque habitant morbi tristique senectus et netus et malesuada. Mi in nulla posuere sollicitudin aliquam ultrices sagittis. Lectus magna fringilla urna porttitor rhoncus. Malesuada fames ac turpis egestas integer. Senectus et netus et malesuada fames ac turpis. Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit sed. Nunc eget lorem dolor sed viverra ipsum. Duis tristique sollicitudin nibh sit amet commodo. Sollicitudin aliquam ultrices sagittis orci. Curabitur gravida arcu ac tortor dignissim convallis. Luctus accumsan tortor posuere ac ut consequat semper viverra nam. Pretium quam vulputate dignissim suspendisse in est.',
       comments: [
-        { user: 'User3', comment: 'Decent product.' },
-        { user: 'User4', comment: 'Could be better.' },
+        { user: 'User1', comment: 'Great product!',rate:4.6,date:'10/18/2023' },
+        { user: 'User2', comment: 'Highly recommended.',rate:4.6,date:'10/18/2023' },
       ],
       images: [
-        'https://media.istockphoto.com/id/530121569/photo/camera-security.jpg?s=1024x1024&w=is&k=20&c=P5hXI1qMnkiTVGWFEL3vdP1FgFVZKb7WhZHplxyv3Ik=',
-        'https://media.istockphoto.com/id/1448266086/photo/modern-public-cctv-camera-recording-cameras-for-monitoring-all-day-and-night-concept-of.jpg?s=1024x1024&w=is&k=20&c=fMpH7H8-s7JNH6taCz8RZEp-cVXX6To7n93vSPOBn-4=',
+        '/assets/product_8.jpg',
+        '/assets/product_1.png',
       ],
       price: 79.99,
       discount: 15, // Percentage discount
@@ -78,15 +82,16 @@ const dummyProducts = [
     {
       id: 5,
       name: 'Product E',
+      category: 'Highlights',
       rating: 3.8,
-      description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis id consectetur purus ut faucibus. Pellentesque habitant morbi tristique senectus et netus et malesuada. Mi in nulla posuere sollicitudin aliquam ultrices sagittis. Lectus magna fringilla urna porttitor rhoncus. Malesuada fames ac turpis egestas integer. Senectus et netus et malesuada fames ac turpis. Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit sed. Nunc eget lorem dolor sed viverra ipsum. Duis tristique sollicitudin nibh sit amet commodo. Sollicitudin aliquam ultrices sagittis orci. Curabitur gravida arcu ac tortor dignissim convallis. Luctus accumsan tortor posuere ac ut consequat semper viverra nam. Pretium quam vulputate dignissim suspendisse in est.',
       comments: [
-        { user: 'User3', comment: 'Decent product.' },
-        { user: 'User4', comment: 'Could be better.' },
+        { user: 'User1', comment: 'Great product!',rate:4.6,date:'10/18/2023' },
+        { user: 'User2', comment: 'Highly recommended.',rate:4.6,date:'10/18/2023' },
       ],
       images: [
-        'https://media.istockphoto.com/id/1133894680/photo/security-cctv-camera-in-the-office-building.jpg?s=1024x1024&w=is&k=20&c=xvQ644pji-ZSilcJXVOGZQDU3FOjHzAd3ydn4WPCABU=',
-        'https://media.istockphoto.com/id/511061106/photo/security-cctv-camera.jpg?s=1024x1024&w=is&k=20&c=SqDOugcE2gV5CMnnVvdlBBatPEDT3LZJSymd7MjhXX4=',
+        '/assets/product_4.png',
+        '/assets/product_1.png',
       ],
       price: 79.99,
       discount: 15, // Percentage discount
@@ -97,15 +102,16 @@ const dummyProducts = [
     {
       id: 6,
       name: 'Product F',
+      category: 'CCTV',
       rating: 3.8,
-      description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis id consectetur purus ut faucibus. Pellentesque habitant morbi tristique senectus et netus et malesuada. Mi in nulla posuere sollicitudin aliquam ultrices sagittis. Lectus magna fringilla urna porttitor rhoncus. Malesuada fames ac turpis egestas integer. Senectus et netus et malesuada fames ac turpis. Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit sed. Nunc eget lorem dolor sed viverra ipsum. Duis tristique sollicitudin nibh sit amet commodo. Sollicitudin aliquam ultrices sagittis orci. Curabitur gravida arcu ac tortor dignissim convallis. Luctus accumsan tortor posuere ac ut consequat semper viverra nam. Pretium quam vulputate dignissim suspendisse in est.',
       comments: [
-        { user: 'User3', comment: 'Decent product.' },
-        { user: 'User4', comment: 'Could be better.' },
+        { user: 'User1', comment: 'Great product!',rate:4.6,date:'10/18/2023' },
+        { user: 'User2', comment: 'Highly recommended.',rate:4.6,date:'10/18/2023' },
       ],
       images: [
-        'https://images.pexels.com/photos/96612/pexels-photo-96612.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-        'https://images.pexels.com/photos/430208/pexels-photo-430208.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+        '/assets/product_8.jpg',
+        '/assets/product_1.png',
       ],
       price: 79.99,
       discount: 15, // Percentage discount
@@ -116,15 +122,16 @@ const dummyProducts = [
     {
       id: 7,
       name: 'Product G',
+      category: 'CCTV',
       rating: 3.8,
-      description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis id consectetur purus ut faucibus. Pellentesque habitant morbi tristique senectus et netus et malesuada. Mi in nulla posuere sollicitudin aliquam ultrices sagittis. Lectus magna fringilla urna porttitor rhoncus. Malesuada fames ac turpis egestas integer. Senectus et netus et malesuada fames ac turpis. Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit sed. Nunc eget lorem dolor sed viverra ipsum. Duis tristique sollicitudin nibh sit amet commodo. Sollicitudin aliquam ultrices sagittis orci. Curabitur gravida arcu ac tortor dignissim convallis. Luctus accumsan tortor posuere ac ut consequat semper viverra nam. Pretium quam vulputate dignissim suspendisse in est.',
       comments: [
-        { user: 'User3', comment: 'Decent product.' },
-        { user: 'User4', comment: 'Could be better.' },
+        { user: 'User1', comment: 'Great product!',rate:4.6,date:'10/18/2023' },
+        { user: 'User2', comment: 'Highly recommended.',rate:4.6,date:'10/18/2023' },
       ],
       images: [
-        'https://media.istockphoto.com/id/1417833241/photo/cctv-camera-on-cement-wall-scan-the-area-for-surveillance-purposes.jpg?s=1024x1024&w=is&k=20&c=A1ojmekIQucSnK1e2hiecSEHMKpanAaEDU78Tnd4oGc=',
-        'https://media.istockphoto.com/id/1420920974/photo/cctv-camera-on-cement-wall-scan-the-area-for-surveillance-purpose-technology-and-innovation.jpg?s=1024x1024&w=is&k=20&c=MmrZhPZ-3zeE0A3qR6Mp_NSNEXCzpp1dlsHm8Fql8BY=',
+        '/assets/product_5.jpg',
+        '/assets/product_1.png',
       ],
       price: 79.99,
       discount: 15, // Percentage discount
@@ -135,15 +142,16 @@ const dummyProducts = [
     {
       id: 8,
       name: 'Product H',
+      category: 'CCTV',
       rating: 3.8,
-      description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis id consectetur purus ut faucibus. Pellentesque habitant morbi tristique senectus et netus et malesuada. Mi in nulla posuere sollicitudin aliquam ultrices sagittis. Lectus magna fringilla urna porttitor rhoncus. Malesuada fames ac turpis egestas integer. Senectus et netus et malesuada fames ac turpis. Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit sed. Nunc eget lorem dolor sed viverra ipsum. Duis tristique sollicitudin nibh sit amet commodo. Sollicitudin aliquam ultrices sagittis orci. Curabitur gravida arcu ac tortor dignissim convallis. Luctus accumsan tortor posuere ac ut consequat semper viverra nam. Pretium quam vulputate dignissim suspendisse in est.',
       comments: [
-        { user: 'User3', comment: 'Decent product.' },
-        { user: 'User4', comment: 'Could be better.' },
+        { user: 'User1', comment: 'Great product!',rate:4.6,date:'10/18/2023' },
+        { user: 'User2', comment: 'Highly recommended.',rate:4.6,date:'10/18/2023' },
       ],
       images: [
-        'https://media.istockphoto.com/id/848560812/photo/3d-rendering-three-security-cameras.jpg?s=1024x1024&w=is&k=20&c=RdFEH4n_oLQ1Wwbl2WlZXcaEXKkHVFjOH5dhHvJ7wd8=',
-        'https://media.istockphoto.com/id/539643726/photo/cctv-security-camera-closed-circuit-television-surveillance-cam.jpg?s=1024x1024&w=is&k=20&c=1TH2j20hMjV3VFonraZ4qLKeoW14eOrR45TnlNCO5EA=',
+        '/assets/product_6.jpg',
+        '/assets/product_1.png',
       ],
       price: 79.99,
       discount: 15, // Percentage discount
@@ -154,11 +162,12 @@ const dummyProducts = [
     {
       id: 9,
       name: 'Product I',
+      category: 'Fire Alarm',
       rating: 3.8,
-      description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis id consectetur purus ut faucibus. Pellentesque habitant morbi tristique senectus et netus et malesuada. Mi in nulla posuere sollicitudin aliquam ultrices sagittis. Lectus magna fringilla urna porttitor rhoncus. Malesuada fames ac turpis egestas integer. Senectus et netus et malesuada fames ac turpis. Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit sed. Nunc eget lorem dolor sed viverra ipsum. Duis tristique sollicitudin nibh sit amet commodo. Sollicitudin aliquam ultrices sagittis orci. Curabitur gravida arcu ac tortor dignissim convallis. Luctus accumsan tortor posuere ac ut consequat semper viverra nam. Pretium quam vulputate dignissim suspendisse in est.',
       comments: [
-        { user: 'User3', comment: 'Decent product.' },
-        { user: 'User4', comment: 'Could be better.' },
+        { user: 'User1', comment: 'Great product!',rate:4.6,date:'10/18/2023' },
+        { user: 'User2', comment: 'Highly recommended.',rate:4.6,date:'10/18/2023' },
       ],
       images: [
         '/assets/product_1.png',
@@ -173,15 +182,16 @@ const dummyProducts = [
     {
       id: 10,
       name: 'Product J',
+      category: 'Fire Alarm',
       rating: 3.8,
-      description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis id consectetur purus ut faucibus. Pellentesque habitant morbi tristique senectus et netus et malesuada. Mi in nulla posuere sollicitudin aliquam ultrices sagittis. Lectus magna fringilla urna porttitor rhoncus. Malesuada fames ac turpis egestas integer. Senectus et netus et malesuada fames ac turpis. Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit sed. Nunc eget lorem dolor sed viverra ipsum. Duis tristique sollicitudin nibh sit amet commodo. Sollicitudin aliquam ultrices sagittis orci. Curabitur gravida arcu ac tortor dignissim convallis. Luctus accumsan tortor posuere ac ut consequat semper viverra nam. Pretium quam vulputate dignissim suspendisse in est.',
       comments: [
-        { user: 'User3', comment: 'Decent product.' },
-        { user: 'User4', comment: 'Could be better.' },
+        { user: 'User1', comment: 'Great product!',rate:4.6,date:'10/18/2023' },
+        { user: 'User2', comment: 'Highly recommended.',rate:4.6,date:'10/18/2023' },
       ],
       images: [
-        'https://media.istockphoto.com/id/1133894680/photo/security-cctv-camera-in-the-office-building.jpg?s=1024x1024&w=is&k=20&c=xvQ644pji-ZSilcJXVOGZQDU3FOjHzAd3ydn4WPCABU=',
-        'https://media.istockphoto.com/id/511061106/photo/security-cctv-camera.jpg?s=1024x1024&w=is&k=20&c=SqDOugcE2gV5CMnnVvdlBBatPEDT3LZJSymd7MjhXX4=',
+        '/assets/product_2.png',
+        '/assets/product_1.png',
       ],
       price: 79.99,
       discount: 15, // Percentage discount

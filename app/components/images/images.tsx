@@ -1,44 +1,40 @@
 'use client';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import clsx from 'clsx';
+import { Spin } from 'antd';
 
 interface LazyImageProps {
     images:string;
-    images1?:string;
+    addedClass?: any;
     alt?:string;
+    size:"default" | "small" | "large" ;
 }
 
-export const LazyImages: React.FC<LazyImageProps> = ({ images,images1, alt }) => {
-  const [hovered, setHovered] = useState<boolean>(false);
-  const [loaded,setLoaded] = useState<boolean>(false);
+export const LazyImages: React.FC<LazyImageProps> = ({ images,addedClass, alt,size }) => {
+  const [loaded,setLoaded] = useState<boolean>(true);
 
-  const handleImageLoad = () =>{
-    setLoaded(true)
-  }
-  const handleMouseEnter = () => {
-    setHovered(true);
-  };
-  const handleMouseLeave = () => {
-    setHovered(false);
-  };
-  const containerStyle: React.CSSProperties = {
-    backgroundImage: `url('${hovered ? images1 : images}')`,
-    opacity: 1,
-    transition: 'opacity 0.5s ease, background-image 0.5s ease',
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center',
-  };
+  useEffect(() =>{
+    setTimeout(() =>{
+      setLoaded(false)
+    },1000)
+  },[])
+
   return (
-    <div className='w-full h-full p-2 rounded-t-lg'
-     style={containerStyle} 
-     onMouseEnter={handleMouseEnter}
-     onMouseLeave={handleMouseLeave}
-     >
-      <img className='object-cover w-full h-full rounded-t-lg'
-       src={hovered ? images1 : images} 
-       alt={alt} 
-       loading='lazy' 
-       onLoad={handleImageLoad} />
+    <>
+    <div className={clsx('relative',addedClass)}>
+      {loaded ? 
+      <div className='w-full h-full flex justify-center items-center bg-opacity-70'>
+        <Spin size={size || 'default'} />
+      </div> : 
+      <img  className={clsx('w-full', addedClass)}
+      src={images}
+      loading='lazy'
+      alt={alt} 
+      width={500} 
+      height={300}       
+      />}
     </div>
+
+    </>
   )
 }

@@ -139,10 +139,11 @@ export default function Productpage() {
               {dummyProducts?.map((data,idx) =>(
                 <Link href={`/product/${data.id}`} as={`/product/${data.id}`}
                  key={idx} className='w-full flex-grow basis-2/5 md:basis-52 h-max shadow-border rounded-t-lg hover:shadow-shine bg-gray-200 cursor-pointer'>
-                   <div className='w-full h-52 '>
+                   <div className='w-full h-full'>
                     <LazyImages
+                      size='large'
                       images={data.images[0]}
-                      images1={data.images[1]}
+                      addedClass={'rounded-t-lg h-52'}
                       alt='No image'
                     />
                    </div>
@@ -151,6 +152,11 @@ export default function Productpage() {
                         children={data.name} 
                         variant="text"
                         addedClass="sm:text-base md:text-2xl font-bold"
+                    />
+                    <CustomLabel
+                        children={data.category} 
+                        variant="text"
+                        addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
                     />
                    <CustomLabel
                         children={`₱${data.price}`} 
