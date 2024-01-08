@@ -4,6 +4,7 @@ import { BsFire } from 'react-icons/bs';
 import { FaChevronDown } from 'react-icons/fa';
 import { WiStars } from 'react-icons/wi';
 import { CustomButton, CustomCard, CustomLabel } from './components';
+import Link from 'next/link';
 
 export default function Home() {
   // Initializations
@@ -126,7 +127,7 @@ export default function Home() {
             />
 
             <CustomButton
-              children="View All"
+              children={<Link href={'/product'}>View All</Link>}
               buttonType="link"
               addedClass="text-base"
             />
@@ -191,7 +192,7 @@ export default function Home() {
             />
 
             <CustomButton
-              children="View All"
+              children={<Link href={'/product'}>View All</Link>}
               buttonType="link"
               addedClass="text-base"
             />

@@ -53,7 +53,7 @@ export default function CustomFooter() {
     },
   ];
   return (
-    <div className="bg-[#ECECEC] relative p-8 md:p-24">
+    <div id='about' className="bg-[#ECECEC] relative p-8 md:p-24">
       <div className="absolute p-1 bg-[#FFDD55] top-0 right-0 left-0 w-full"></div>
       <div className="w-full flex flex-col md:flex-row gap-4 items-start">
         {/* Navigate */}

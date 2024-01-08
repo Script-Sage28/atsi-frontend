@@ -95,7 +95,7 @@ export default function ProductDetails({ params }:{
             />
             </div>
             <CustomButton
-              children='Write Review'
+              children={show.form ? 'Cancel Review' : 'Write Review'}
               buttonType='default'
               onClick={() =>setShow({...show,form:!show.form})}
             />
