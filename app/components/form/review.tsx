@@ -8,13 +8,7 @@ interface FormProps{
 }
 
 export default function ReviewForm({isOpen}: FormProps) {
-    const [reviewDet,setReviewDet] = useState({
-        name:"",
-        email: "",
-        rate:'',
-        reviewTitle:'',
-        reviewBody:''
-    })
+
   return (
     <Form
     name="wrap"

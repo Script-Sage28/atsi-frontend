@@ -1,9 +1,9 @@
 'use client';
 import React, { useState } from 'react';
-import { Layout, Input, Space } from 'antd';
+import clsx from 'clsx';
+import { Layout, Input } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
-import clsx from 'clsx';
 import { IoMenu } from "react-icons/io5";
 import { MdOutlineClear } from "react-icons/md";
 
@@ -43,14 +43,17 @@ export default function CustomHeader() {
       url: '/login',
     },
   ];
+  const handleOpenChange = () =>{
+    setOpen(!open)
+  }
   return (
     <>
     <Header className="header p-2 md:p-8 w-full flex justify-between md:justify-none items-center">
       <div className="flex-1 w-full flex justify-between items-center ">
         {open && <MdOutlineClear size={40} className='md:hidden ease-in-out cursor-pointer' 
-        onClick={() =>setOpen(!open)} />}
+        onClick={handleOpenChange} />}
         {!open && <IoMenu size={40} className='md:hidden ease-in-out cursor-pointer' 
-        onClick={() =>setOpen(!open)} />}
+        onClick={handleOpenChange} />}
         <Image src="/assets/logo.png" width={100} height={100} alt="logo" />
       </div>
       <div className="hidden md:flex flex-grow space-x-20">

@@ -1,15 +1,28 @@
 'use client';
+import clsx from 'clsx';
 import React, { useState,useRef } from 'react'
 import { Carousel } from 'antd';
 import { LazyImages } from '../images/images';
-import clsx from 'clsx';
+
 
 interface CarouselProps{
     imgList?:string[],
 }
+interface InnerSlider {
+    currentSlide: number;
+    slideCount: number;
+  }
+interface CarouselRefType {
+    goTo(slide: number, dontAnimate?: boolean): void;
+    next: () => void;
+    prev: () => void;
+    autoPlay: (playType?: "update" | "leave" | "blur" | undefined) => void;
+    innerSliderts: any; 
+    innerSlider: React.MutableRefObject<InnerSlider | null>; 
+}
 export default function CustomCarousel({imgList = []}: CarouselProps) {
     const [current, setCurrent] = useState<number>(0);
-    const carouselRef = useRef<any>(null);
+    const carouselRef = useRef<CarouselRefType | null>(null);
 
     const handleBeforeChange = (from: number, to: number) =>{
         setCurrent(to)
