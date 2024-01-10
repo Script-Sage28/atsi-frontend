@@ -2,8 +2,8 @@
 import React from 'react'
 import { LockOutlined,EyeInvisibleOutlined, EyeTwoTone, UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
-import { CustomLabel } from '@/components';
 import Link from 'next/link';
+import { CustomLabel } from '@/components';
 
 export default function Login() {
     const onFinish = (values: any) => {

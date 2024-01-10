@@ -1,13 +1,14 @@
 'use client';
 import React, { useState } from 'react'
-import dummyProducts from '../dummydata';
-import { IoIosArrowBack } from "react-icons/io";
-import Link from 'next/link';
-import CustomCarousel from '@/components/carousel/carousel';
-import { CustomButton, CustomLabel } from '@/components';
 import { Rate,Avatar  } from 'antd';
-import CustomParagraph from '@/components/paragraph/paragraph';
+import Link from 'next/link';
+import { IoIosArrowBack } from 'react-icons/io';
+import dummyProducts from '../dummydata';
+import { CustomButton, CustomLabel } from '@/components';
+import CustomCarousel from '@/components/carousel/carousel';
 import ReviewForm from '@/components/form/review';
+import CustomParagraph from '@/components/paragraph/paragraph';
+
 
 
 export default function ProductDetails({ params }:{
@@ -19,6 +20,7 @@ export default function ProductDetails({ params }:{
   })
   const productId = params.id;
   const product = dummyProducts.find((data) => {
+    // eslint-disable-next-line eqeqeq
     return data.id == productId;
   });
   return (
@@ -49,12 +51,14 @@ export default function ProductDetails({ params }:{
             <div className='flex flex-col gap-4 items-center'>
               <CustomButton
                 buttonType='link'
+                // eslint-disable-next-line @next/next/no-img-element
                 icon={<img className='w-6' src='../assets/lazada.png'  />}
                 children='Order in Lazada now!'
                 addedClass={'flex items-center p-2 shadow-border w-48 border-gray-200 text-gray-600 border-2'}
               />
               <CustomButton
                 buttonType='link'
+                // eslint-disable-next-line @next/next/no-img-element
                 icon={<img className='w-12' src='../assets/shopee-logo-0.png'  />}
                 children='Order in Shopee now!'
                 addedClass={'flex items-center px-2 py-4 shadow-border w-48 border-gray-200 text-gray-600 border-2'}
@@ -68,7 +72,7 @@ export default function ProductDetails({ params }:{
               />
               <CustomButton
                 children={show.ellipsis ? 'Hide' : 'See more'}
-                onClick={() =>setShow({...show,ellipsis: !show.ellipsis})}
+                onClick={() =>{ setShow({...show,ellipsis: !show.ellipsis}); }}
                 buttonType='default'
                 addedClass={'bg-transparent text-indigo-400 font-semibold border-0'}
               />
@@ -97,7 +101,7 @@ export default function ProductDetails({ params }:{
             <CustomButton
               children={show.form ? 'Cancel Review' : 'Write Review'}
               buttonType='default'
-              onClick={() =>setShow({...show,form:!show.form})}
+              onClick={() =>{ setShow({...show,form:!show.form}); }}
             />
           </div>
         </div>

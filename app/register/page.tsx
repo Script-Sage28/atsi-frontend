@@ -2,8 +2,9 @@
 import React from 'react'
 import { LockOutlined,EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
-import { CustomLabel } from '@/components';
 import Link from 'next/link';
+import { CustomLabel } from '@/components';
+
 
 export default function Register() {
     const onFinish = (values: any) => {

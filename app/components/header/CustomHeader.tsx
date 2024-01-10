@@ -1,11 +1,11 @@
 'use client';
 import React, { useState } from 'react';
-import clsx from 'clsx';
 import { Layout, Input } from 'antd';
+import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
-import { IoMenu } from "react-icons/io5";
-import { MdOutlineClear } from "react-icons/md";
+import { IoMenu } from 'react-icons/io5';
+import { MdOutlineClear } from 'react-icons/md';
 
 export default function CustomHeader() {
   const [open,setOpen] = useState(false)

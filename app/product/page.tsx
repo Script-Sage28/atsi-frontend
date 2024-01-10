@@ -1,12 +1,12 @@
 'use client';
 import React, { useState } from 'react'
+import { Breadcrumb } from 'antd';
+import Link from 'next/link'
+import { FaListUl,FaCheck } from 'react-icons/fa6';
+import { TiThSmall } from 'react-icons/ti';
 import dummyProducts from './dummydata'
 import { CustomLabel,LazyImages } from '@/components';
-import { Breadcrumb } from 'antd';
-import { FaCheck } from "react-icons/fa6";
-import { TiThSmall } from "react-icons/ti";
-import { FaListUl } from "react-icons/fa6";
-import Link from 'next/link'
+
 
 const Categories = [
     {
@@ -104,7 +104,7 @@ export default function Productpage() {
                 <ul className='list-none flex flex-wrap flex-row md:flex-col gap-4 m-4'>
                 {Categories?.map((category,idx) => (
                     <li className='truncate flex items-center gap-2 cursor-pointer'
-                    onClick={() =>setFiltered({...filter,category: category.id})}
+                    onClick={() =>{ setFiltered({...filter,category: category.id}); }}
                     key={idx}>
                     <div className='w-8 md:w-6'>
                     {filter.category === category.id && <FaCheck size={25} className='text-green-500'/>}
@@ -123,7 +123,7 @@ export default function Productpage() {
                 <ul className='list-none flex flex-wrap flex-row md:flex-col gap-4 m-4'>
                 {Sorting?.map((sort,idx) => (
                     <li className='truncate flex items-center gap-2 cursor-pointer'
-                    onClick={() =>setFiltered({...filter,sort: sort.id})}
+                    onClick={() =>{ setFiltered({...filter,sort: sort.id}); }}
                     key={idx}>
                     <div className='w-8 md:w-6'>
                     {filter.sort === sort.id && <FaCheck size={25} className='text-green-500'/>}

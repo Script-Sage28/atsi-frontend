@@ -1,7 +1,7 @@
 'use client';
-import clsx from 'clsx';
 import React, { useState,useRef } from 'react'
 import { Carousel } from 'antd';
+import clsx from 'clsx';
 import { LazyImages } from '../images/images';
 
 
@@ -13,10 +13,10 @@ interface InnerSlider {
     slideCount: number;
   }
 interface CarouselRefType {
-    goTo(slide: number, dontAnimate?: boolean): void;
+    goTo: (slide: number, dontAnimate?: boolean) => void;
     next: () => void;
     prev: () => void;
-    autoPlay: (playType?: "update" | "leave" | "blur" | undefined) => void;
+    autoPlay: (playType?: 'update' | 'leave' | 'blur' | undefined) => void;
     innerSliderts: any; 
     innerSlider: React.MutableRefObject<InnerSlider | null>; 
 }
@@ -29,7 +29,7 @@ export default function CustomCarousel({imgList = []}: CarouselProps) {
     }
     const handleClickPreview = (idx: number) => {
         setCurrent(idx);
-        if (carouselRef.current) {
+        if (carouselRef.current != null) {
             carouselRef.current.goTo(idx);
         }
     };
@@ -39,7 +39,7 @@ export default function CustomCarousel({imgList = []}: CarouselProps) {
         <div className='flex flex-row md:flex-col gap-8 h-max md:h-80 m-4 md:m-8'>
         {imgList?.map((data,idx) =>(
             <div key={idx} className={clsx('w-20 h-20 md:h-16',current === idx ? 'scale-110' : 'opacity-25')}
-            onClick={() => handleClickPreview(idx)}
+            onClick={() => { handleClickPreview(idx); }}
             >
             <LazyImages
             size='small'
