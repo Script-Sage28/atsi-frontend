@@ -17,7 +17,7 @@ export default function ProductDetails({ params }:{
     ellipsis: false,
     form:false
   })
-  const productId = params.id
+  const productId = params.id;
   const product = dummyProducts.find((data) => {
     return data.id == productId;
   });
