@@ -3,12 +3,35 @@ import React from 'react'
 import { LockOutlined,EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import { RegisterAccount } from '@/Api/request';
 import { CustomLabel } from '@/components';
 
 
 export default function Register() {
-    const onFinish = (values: any) => {
+  const router = useRouter();
+    const onFinish = async(values: any) => {
         console.log('Received values of form: ', values);
+        const formData = new FormData();
+        formData.append('email',values.email)
+        formData.append('password',values.password)
+        formData.append('username',values.username)
+        formData.append('type','User')
+        try {
+          const response = await RegisterAccount.REGISTER(formData);
+      
+          if (response.status === 200) {
+            toast.success('Successfully registered!');
+            router.push(`/login`);
+          } else {
+            // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+            toast.error(response.data.message || 'Registration failed');
+          }
+        } catch (error: any) {
+          console.error('Error during registration:', error.message);
+          toast.error('An error occurred during registration.');
+        }
     };
   return (
     <div className='w-full flex flex-col justify-center items-center px-2 md:px-10 pt-4 md:pt-20'>
@@ -25,6 +48,7 @@ export default function Register() {
     name="normal_login"
     className=" p-4 w-full md:w-1/3 flex flex-col justify-center items-center"
     initialValues={{ remember: true }}
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     onFinish={onFinish}
     >
       <Form.Item
@@ -47,7 +71,10 @@ export default function Register() {
         label='Password'
         className='mb-2 w-full'
         name="password"
-        rules={[{ required: true, message: 'Please input your Password!' }]}
+        rules={[
+          { required: true, message: 'Please input your Password!' },
+          { min: 8, message: 'Password must be at least 8 characters long' },
+        ]}
       >
       <Input.Password
         prefix={<LockOutlined className="site-form-item-icon" />}

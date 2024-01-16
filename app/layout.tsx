@@ -2,6 +2,7 @@ import React from 'react';
 import { ConfigProvider } from 'antd';
 import type { Metadata } from 'next';
 // import { Oxygen } from 'next/font/google';
+import { Toaster } from 'react-hot-toast';
 import { CustomFooter, CustomHeader } from './components';
 import { appTheme } from '../theme/app-theme';
 import '@/styles/main.css';
@@ -25,6 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ConfigProvider theme={appTheme}>
+        <Toaster />
           <CustomHeader />
           {children}
           <CustomFooter />

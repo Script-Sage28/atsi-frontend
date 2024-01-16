@@ -3,11 +3,37 @@ import React from 'react'
 import { LockOutlined,EyeInvisibleOutlined, EyeTwoTone, UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import { LoginAccount } from '@/Api/request';
 import { CustomLabel } from '@/components';
+import useUserStore from '@/store/userStore';
+
 
 export default function Login() {
-    const onFinish = (values: any) => {
+  const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
+    const onFinish = async(values: any) => {
         console.log('Received values of form: ', values);
+        const formData = new FormData();
+        formData.append('password',values.password)
+        formData.append('username',values.username)
+        try {
+          const response = await LoginAccount.LOGIN(formData)
+          console.log(response)
+          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+          if (response.status === 200 && response.data.data) {
+            toast.success('Successfully Login!');
+            setUser(response.data.data)
+            router.push('/');
+          } else {
+            // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+            toast.error(response.data.message || 'Registration failed');
+          }    
+        } catch (error: any) {
+          console.error('Error during Login:', error.message);
+          toast.error('An error occurred during login.');
+        }
       };
   return (
     <div className='w-full flex flex-col justify-center items-center px-2 md:px-10 pt-4 md:pt-20'>
@@ -20,6 +46,7 @@ export default function Login() {
       name="normal_login"
       className=" p-4 w-full md:w-1/3 flex flex-col justify-center items-center"
       initialValues={{ remember: true }}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onFinish={onFinish}
     >
       <Form.Item

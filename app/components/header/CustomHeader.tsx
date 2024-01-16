@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 'use client';
 import React, { useState } from 'react';
 import { Layout, Input } from 'antd';
@@ -6,9 +7,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { IoMenu } from 'react-icons/io5';
 import { MdOutlineClear } from 'react-icons/md';
+import useUserStore from '@/store/userStore';
 
 export default function CustomHeader() {
   const [open,setOpen] = useState(false)
+  const user = useUserStore((state) => state.user)
   const { Header } = Layout;
   const { Search } = Input;
   const links = [
@@ -39,8 +42,8 @@ export default function CustomHeader() {
     },
     {
       id: 5,
-      name: 'Signin',
-      url: '/login',
+      name: user ? user.username : 'Signin',
+      url:  user ? '/' : '/login',
     },
   ];
   const handleOpenChange = () =>{
