@@ -1,70 +1,53 @@
 'use client';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BsFire } from 'react-icons/bs';
 import { FaChevronDown } from 'react-icons/fa';
 import { WiStars } from 'react-icons/wi';
+import { ProductsRequest } from './Api/request';
 import { CustomButton, CustomCard, CustomLabel } from './components';
+import { getProductsWithinLast5Days } from './helper/latestProducts';
+import { Peso } from './helper/pesoSign';
+// eslint-disable-next-line camelcase
+import { type T_ProductList } from './types/productList';
+
 
 export default function Home() {
-  // Initializations
-  interface Product {
-    id: number;
-    name: string;
-    category: string;
-    imageUrl: string;
-    price: string;
-    discount: string;
-    discountedPrice: string;
-  }
 
-  const products: Product[] = [
-    {
-      id: 0,
-      name: 'Product 1',
-      category: 'Fire Alarm',
-      imageUrl: '/assets/product_1.png',
-      price: '₱ 2,180.00',
-      discount: '',
-      discountedPrice: '',
-    },
-    {
-      id: 1,
-      name: 'Product 2',
-      category: 'CCTV',
-      imageUrl: '/assets/product_2.png',
-      price: '₱ 2,180.00',
-      discount: '',
-      discountedPrice: '',
-    },
-    {
-      id: 2,
-      name: 'Product 3',
-      category: 'Fire Alarm',
-      imageUrl: '/assets/product_3.png',
-      price: '₱ 2,180.00',
-      discount: '',
-      discountedPrice: '',
-    },
-    {
-      id: 3,
-      name: 'Product 4',
-      category: 'Fire Alarm',
-      imageUrl: '/assets/product_4.png',
-      price: '₱ 2,180.00',
-      discount: '',
-      discountedPrice: '',
-    },
-    {
-      id: 4,
-      name: 'Product 5',
-      category: 'Fire Alarm',
-      imageUrl: '/assets/product_1.png',
-      price: '₱ 2,180.00',
-      discount: '',
-      discountedPrice: '',
-    },
-  ];
+  // eslint-disable-next-line camelcase
+  const initialProductList: T_ProductList = {
+    onSale: [],
+    latest: [],
+    allProducts:[]
+  }
+  const [productList,setProductsList] = useState(initialProductList);
+  const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
+
+  useEffect(() =>{
+    const fetchProducts = async ():Promise<void> =>{
+      try {
+        const response = await ProductsRequest.GET_ALL({
+          price: '',
+          brandId: '',
+          categoryId: '',
+          name: '',
+          status: '',
+        });
+        const all = response.data.data.slice(0, 5);
+        const sale = response.data.data?.filter((val: { isSaleProduct: boolean; }) => val.isSaleProduct);
+        setProductsList(prev =>({
+          ...prev,
+          allProducts: all,
+          onSale: sale,
+          latest:getProductsWithinLast5Days(response.data.data).slice(0,5)
+        }));        
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    void fetchProducts()
+  },[])
 
   return (
     <>
@@ -125,7 +108,6 @@ export default function Home() {
               variant="title"
               titleLevel={4}
             />
-
             <CustomButton
               children={<Link href={'/product'}>View All</Link>}
               buttonType="link"
@@ -134,7 +116,8 @@ export default function Home() {
           </div>
 
           <div className="flex flex-wrap gap-5">
-            {products.map((product, idx) => (
+            {productList.onSale.length > 0 && productList.onSale.map((product, idx) => {
+              return (
               <CustomCard key={idx} addedClass="relative flex-grow sm:basis-2/5 md:basis-auto overflow-hidden">
                 <div className="bg-red-700 absolute -left-[75px] -top-[7px] -rotate-45 p-3 w-[200px] z-50 text-center">
                   <div className="break-normal text-center flex flex-col items-center justify-center">
@@ -147,13 +130,15 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="w-full flex-grow flex flex-col justify-start items-start">
-                  <div className="flex-grow w-full flex justify-center items-center py-5">
+                  <div className="flex-grow w-full min-h-[230px] flex justify-center items-center py-5">
+                  {product.media.length > 0 && (
                     <Image
-                      src={product.imageUrl}
+                      src={`${imgUrl}${product.media[0].url}`}
                       alt={product.name}
                       width={130}
-                      height={130}
+                      height={230}
                     />
+                  )}
                   </div>
 
                   <div className="w-full px-5 pb-2">
@@ -164,13 +149,13 @@ export default function Home() {
                     />
                     <div className="flex flex-col">
                       <CustomLabel
-                        children={product?.category}
+                        children={product?.category.name}
                         variant="text"
                         addedClass="font-semibold text-gray-400"
                       />
 
                       <CustomLabel
-                        children={product?.price}
+                        children={Peso(product?.price)}
                         variant="text"
                         addedClass="text-[#0038FF] text-2xl font-semibold"
                       />
@@ -178,7 +163,7 @@ export default function Home() {
                   </div>
                 </div>
               </CustomCard>
-            ))}
+            )})}
           </div>
         </div>
 
@@ -199,7 +184,7 @@ export default function Home() {
           </div>
 
           <div className="flex flex-wrap gap-5">
-            {products.map((product, idx) => (
+            {productList.latest?.length > 0 && productList.latest.map((product, idx) => (
               <CustomCard key={idx} addedClass="relative flex-grow sm:basis-2/5 md:basis-auto overflow-hidden">
                 <div className="bg-green-700 absolute  -left-[70px] -top-[10px] -rotate-45 p-3 w-[200px] z-50 text-center">
                   <div className="break-normal text-center flex flex-col items-center justify-center">
@@ -212,15 +197,16 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="w-full flex-grow flex flex-col justify-start items-start">
-                  <div className="flex-grow w-full flex justify-center items-center py-5">
+                  <div className="flex-grow w-full min-h-[230px] flex justify-center items-center py-5">
+                  {product.media.length > 0 && (
                     <Image
-                      src={product.imageUrl}
+                      src={`${imgUrl}${product.media[0].url}`}
                       alt={product.name}
                       width={130}
-                      height={130}
+                      height={230}
                     />
+                  )}
                   </div>
-
                   <div className="w-full px-5 pb-2">
                     <CustomLabel
                       children={product?.name}
@@ -229,13 +215,13 @@ export default function Home() {
                     />
                     <div className="flex flex-col">
                       <CustomLabel
-                        children={product?.category}
+                        children={product?.category.name}
                         variant="text"
                         addedClass="font-semibold text-gray-400"
                       />
 
                       <CustomLabel
-                        children={product?.price}
+                        children={Peso(product?.price)}
                         variant="text"
                         addedClass="text-2xl font-semibold"
                       />

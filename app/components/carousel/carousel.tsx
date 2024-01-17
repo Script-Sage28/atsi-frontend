@@ -20,7 +20,7 @@ interface CarouselRefType {
     innerSliderts: any; 
     innerSlider: React.MutableRefObject<InnerSlider | null>; 
 }
-export default function CustomCarousel({imgList = []}: CarouselProps) {
+export default function CustomCarousel({imgList}: CarouselProps) {
     const [current, setCurrent] = useState<number>(0);
     const carouselRef = useRef<CarouselRefType | null>(null);
 
@@ -51,7 +51,7 @@ export default function CustomCarousel({imgList = []}: CarouselProps) {
         </div>
         <div className='rounded-md w-96'>
         <Carousel dotPosition={'bottom'} ref={carouselRef} swipe beforeChange={handleBeforeChange}>
-        {imgList.map((data,idx) =>(
+        {imgList?.map((data,idx) =>(
             <div key={idx} className='w-full h-80'>
             <LazyImages
             size='large'

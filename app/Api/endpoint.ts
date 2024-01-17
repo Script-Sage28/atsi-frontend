@@ -1,6 +1,10 @@
 const Endpoints ={
     REGISTRATION: '/user/add',
-    LOGIN: '/user/login'
+    LOGIN: '/user/login',
+    GET_ALL_PRODUCTS: '/products/all',
+    CATEGORIES: '/categories/all',
+    BRANDS: '/brands/all',
+    PRODUCT_DETAILS: '/products/info/'
 }
 
 export default Endpoints
