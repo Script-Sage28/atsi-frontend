@@ -39,10 +39,7 @@ const Sorting = [
       value:'desc'
     }
   ];
-  interface BrandOption {
-    value: string;
-    label: string;
-  }
+
   
 export default function Productpage() {
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
@@ -63,7 +60,7 @@ export default function Productpage() {
       try {
         if(filter.brand?.name !== ''){
           const brandList = await BrandsRequest.GET_ALL({
-            name: filter.brand,
+            name: filter.brand?.name,
             status: '', 
           })
           const results = brandList.data.data;
@@ -104,15 +101,19 @@ export default function Productpage() {
    void fetchProducts()
   },[filter.sort,filter.category,filter.brand])
   
-  const handleBrandClick = (value: string,label:string) => {
-    console.log(value,label)
-    setFiltered((prevFilter) => ({
-      ...prevFilter,
-      brand: {
-        id: prevFilter.brand?.id === value ? '' : value,
-        name: prevFilter.brand?.name === label ? '' : label,
-      },
-    }));
+  const handleBrandClick = (value: string, options: { value: string; label: string; } | { value: string; label: string; }[]) => {
+    const selectedOptions = Array.isArray(options) ? options : [options];
+  
+    selectedOptions.forEach(option => {
+      console.log(option.value, option.label);
+      setFiltered((prevFilter) => ({
+        ...prevFilter,
+        brand: {
+          id: prevFilter.brand?.id === option.value ? '' : option.value,
+          name: prevFilter.brand?.name === option.label ? '' : option.label,
+        },
+      }));
+    });
   };
 const handleCategory = (name:string,id:string) =>{
   console.log(name)
@@ -177,11 +178,12 @@ console.log(filter)
               <Select
                 style={{ width: '100%' }}
                 size='middle'
-                onChange={(value, option) =>handleBrandClick(value,option?.label || '')}
-                options={brand?.map((data) => ({
+                value={filter.brand?.name}
+                onChange={(value, option) =>handleBrandClick(value,option)}
+                options={(brand?.map((data) => ({
                   value: data.id,
                   label: data.name,
-                })) as BrandOption[] || []}
+                })) as { value: string; label: string; }[])}
               />
               </div>
               <div className='w-[450px] flex flex-nowrap gap-4 items-center'>
@@ -208,7 +210,7 @@ console.log(filter)
                 </div>
               </div>
             </div>
-            {(brand?.length > 0 && filter.brand?.name !== '') && (
+            {(brand.length > 0 && filter.brand?.name !== '') && (
               <div className='w-full md:w-11/12 flex flex-col items-start flex-wrap ml-12 pt-8 pb-4 border-b-2 border-gray-400'>
                 <CustomLabel
                   children={brand[0].name}
