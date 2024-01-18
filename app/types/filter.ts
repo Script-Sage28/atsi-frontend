@@ -1,6 +1,6 @@
 export interface Filter{
-    brand?:string;
-    category?:string;
+    brand?:{ name: string; id: string };
+    category?:{ name: string; id: string };
     name?:string;
     status?:string;
     sort?: '' | 'asc' | 'desc' | 'lowest' | 'highest';

@@ -4,7 +4,7 @@ import { Spin } from 'antd';
 import clsx from 'clsx';
 
 interface LazyImageProps {
-    images:string;
+    images?:string;
     addedClass?: any;
     alt?:string;
     size:'default' | 'small' | 'large' ;
@@ -28,7 +28,7 @@ export const LazyImages: React.FC<LazyImageProps> = ({ images,addedClass, alt,si
       </div> : 
       // eslint-disable-next-line @next/next/no-img-element
       <img  className={clsx('w-full', addedClass)}
-      src={images}
+      src={(images !== '') ? images : '/assets/noimg.png'}
       loading='lazy'
       alt={alt} 
       width={500} 

@@ -9,7 +9,7 @@ import { T_Brand, T_Categories, T_Product } from '@/types/productList';
 import { BrandsRequest, CategoriesRequest } from '@/Api/request';
 import { Peso } from '@/helper/pesoSign';
 import { FilterSort } from '@/helper/filterSort';
-import { Skeleton } from 'antd';
+import { Skeleton,Select, Space } from 'antd';
 import { Filter } from '@/types/filter';
 import clsx from 'clsx';
 
@@ -39,17 +39,21 @@ const Sorting = [
       value:'desc'
     }
   ];
-
+  interface BrandOption {
+    value: string;
+    label: string;
+  }
+  
 export default function Productpage() {
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
   const [loading, setLoading] = useState<boolean>(false);
   const [product,setProducts] = useState<T_Product[]>([]);
   const [category,setCategory] = useState<T_Categories[]>([]);
-  const [brand,setBrand] = useState<T_Brand[]>([])
+  const [brand,setBrand] = useState<T_Brand[]>([]);
   const [filter,setFiltered] = useState<Filter>({
-    category: '',
-    sort: 'asc',
-    brand:'',
+    category: {name:'',id:''},
+    sort: '',
+    brand:{name:'',id:''},
     name:'',
     status:''
   })
@@ -57,22 +61,34 @@ export default function Productpage() {
   useEffect(() =>{
     const fetchProducts = async ():Promise<void> =>{
       try {
-        const catList = await CategoriesRequest.GET_ALL({
-          name: '',
-          status: '', 
-        })
-        const brandList = await BrandsRequest.GET_ALL({
-          name: '',
-          status: '', 
-        })
-        setBrand(brandList.data.data)
-        setCategory(catList.data.data)
+        if(filter.brand?.name !== ''){
+          const brandList = await BrandsRequest.GET_ALL({
+            name: filter.brand,
+            status: '', 
+          })
+          const results = brandList.data.data;
+          setBrand(results)
+          setCategory(results[0].Categories)
+        }else{
+          const brandList = await BrandsRequest.GET_ALL({
+            name: '',
+            status: '', 
+          })
+          const catList = await CategoriesRequest.GET_ALL({
+            name: '',
+            status: '', 
+          })
+          const results = brandList.data.data;
+          setBrand(results)
+          setCategory(catList.data.data)
+        }
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     }
     void fetchProducts()
-  },[])
+  },[filter.brand])
 
   useEffect(() =>{
     const fetchProducts = async():Promise<void> =>{
@@ -86,17 +102,35 @@ export default function Productpage() {
       }
     }
    void fetchProducts()
-  },[filter])
-console.log(filter)
-const handleBrandClick = (field: string, id: string) =>{
+  },[filter.sort,filter.category,filter.brand])
+  
+  const handleBrandClick = (value: string,label:string) => {
+    console.log(value,label)
+    setFiltered((prevFilter) => ({
+      ...prevFilter,
+      brand: {
+        id: prevFilter.brand?.id === value ? '' : value,
+        name: prevFilter.brand?.name === label ? '' : label,
+      },
+    }));
+  };
+const handleCategory = (name:string,id:string) =>{
+  console.log(name)
   setFiltered(prevFilter => ({
     ...prevFilter,
-    [field]: prevFilter[field as keyof typeof prevFilter] === id ? '' : id,
+    category: {id:prevFilter.category?.id === id ? '' : id,name:prevFilter.category?.name === name ? '' : name}
   }));
 };
+const handleSorting = (data: {value:string;name:string}) =>{
+  setFiltered(prevFilter => ({
+    ...prevFilter,
+    sort: data.value as '' | 'asc' | 'desc' | 'lowest' | 'highest' | undefined
+  }));
+};
+console.log(filter)
   return (
     <>
-    {(brand.length > 0 && category.length > 0) ? (<div className='w-full pl-4 md:pl-10 mb-10'>
+    {!loading ? (<div className='w-full pl-4 md:pl-10 mb-10'>
         <div>
         <Breadcrumb
             items={[{title: 'Home'},{title: <a href="">Products</a>}]}
@@ -106,14 +140,6 @@ const handleBrandClick = (field: string, id: string) =>{
             variant="text"
             addedClass="sm:text-base md:text-2xl font-bold"
         />
-        </div>
-        <div className='flex justify-end items-end gap-2 mr-8'>
-            <div className='border-2 border-black-500 p-1 rounded-md'>
-            <TiThSmall size={25} />
-            </div>
-            <div className='border-2 border-black-500 p-1 rounded-md'>
-            <FaListUl size={25} />
-            </div>
         </div>
         <div className='w-full flex flex-col md:flex-row gap-2'>
             {/* Filtering */}
@@ -127,78 +153,89 @@ const handleBrandClick = (field: string, id: string) =>{
                 <ul className='list-none flex flex-wrap flex-row md:flex-col gap-4 m-4'>
                 {category?.map((data,idx) => (
                     <li className='truncate flex items-center gap-2 cursor-pointer'
-                    onClick={() =>{handleBrandClick('category',data.id)}}
+                    onClick={() =>{handleCategory(data.name,data.id)}}
                     key={idx}>
                     <div className='w-8 md:w-6'>
-                    {filter.category === data.id && <FaCheck size={25} className='text-green-500'/>}
+                    {filter.category?.name === data.name && <FaCheck size={25} className='text-green-500'/>}
                     </div>
-                    <p className={clsx('m-0',filter.category === data.id ? 'font-bold' : 'font-normal')}>{data.name}</p>
+                    <p className={clsx('m-0',filter.category?.name === data.name ? 'font-bold' : 'font-normal')}>{data.name}</p>
                     </li>
                 ))}
                 </ul> 
               </div>
-              <CustomLabel
-                children="Brands"
-                variant='text'
-                addedClass='font-semibold text-xl uppercase tracking-widest'
-              />
-              <div className='w-full'>
-                <ul className='list-none flex flex-wrap flex-row md:flex-col gap-4 m-4'>
-                {brand?.map((data,idx) => (
-                    <li className='truncate flex items-center gap-2 cursor-pointer'
-                    onClick={() =>{handleBrandClick('brand',data.id)}}
-                    key={idx}>
-                    <div className='w-8 md:w-6'>
-                    {filter.brand === data.id && <FaCheck size={25} className='text-green-500'/>}
-                    </div>
-                    <p className={clsx('m-0',filter.brand === data.id ? 'font-bold' : 'font-normal')}>{data.name}</p>
-                    </li>
-                ))}
-                </ul> 
-              </div>
-              <CustomLabel
-                children="Sort by"
-                variant='text'
-                addedClass='font-semibold text-xl uppercase tracking-widest'
-              />
-              <div className='w-full'>
-                <ul className='list-none flex flex-wrap flex-row md:flex-col gap-4 m-4'>
-                {Sorting?.map((sort,idx) => (
-                    <li className='truncate flex items-center gap-2 cursor-pointer'
-                    onClick={() => {
-                      setFiltered((prevFilter) => {
-                        return{
-                        ...prevFilter,
-                        sort: prevFilter['sort'] === sort.value ? '' : sort.value as '' | 'asc' | 'desc' | 'lowest' | 'highest' | undefined
-                        }
-                      });
-                    }}
-                    key={idx}>
-                    <div className='w-8 md:w-6'>
-                    {(filter.sort === sort.value) && (
-                      <FaCheck size={25} className='text-green-500' />
-                    )}
-                    </div>
-                    <p className={clsx('m-0',filter.sort === sort.value ? 'font-bold' : 'font-normal')}>{sort.name}</p>
-                    </li>
-                ))}
-                </ul> 
-              </div>
+
             </div>
             {/* List */}
+            <div>
+            <div className='w-full flex gap-12 items-center flex-wrap px-12'>
+              <div className='flex-1'>
+              <CustomLabel
+                children="Shop by Brands"
+                variant='text'
+                addedClass='font-semibold text-md uppercase tracking-widest'
+              />
+              <Select
+                style={{ width: '100%' }}
+                size='middle'
+                onChange={(value, option) =>handleBrandClick(value,option?.label || '')}
+                options={brand?.map((data) => ({
+                  value: data.id,
+                  label: data.name,
+                })) as BrandOption[] || []}
+              />
+              </div>
+              <div className='w-[450px] flex flex-nowrap gap-4 items-center'>
+                <div className='flex-1 flex flex-col'>
+                <CustomLabel
+                  children="Sort by"
+                  variant='text'
+                  addedClass='font-semibold text-md uppercase tracking-widest'
+                /> 
+               <Select
+                  style={{ width: '100%' }}
+                  size='middle'
+                  onChange={(value) =>{handleSorting({value, name: value.name})}}
+                  options={Sorting}
+                />
+                </div>
+                <div className='flex justify-end items-end gap-2 shadow-border p-2 rounded-md'>
+                    <div className='border-2 border-black-500 p-1 rounded-md'>
+                    <TiThSmall size={25} />
+                    </div>
+                    <div className='border-2 border-black-500 p-1 rounded-md'>
+                    <FaListUl size={25} />
+                    </div>
+                </div>
+              </div>
+            </div>
+            {(brand?.length > 0 && filter.brand?.name !== '') && (
+              <div className='w-full md:w-11/12 flex flex-col items-start flex-wrap ml-12 pt-8 pb-4 border-b-2 border-gray-400'>
+                <CustomLabel
+                  children={brand[0].name}
+                  variant='text'
+                  addedClass='font-semibold text-xl uppercase tracking-widest mb-4'
+                /> 
+                <CustomLabel
+                  children={brand[0].description}
+                  variant='text'
+                  addedClass='font-semibold text-md uppercase tracking-widest'
+                /> 
+              </div>
+            )}
             <div className='w-full flex flex-wrap gap-4 md:p-8 justify-center md:justify-normal'>
-              {product?.map((data,idx) =>(
+              {product?.map((data,idx) =>{
+                const media = (data.media.length > 0 && data.media[0].url !== '') ? `${imgUrl}${data.media[0].url}` : '';
+                return(
                 <Link href={`/product/${data.id}`} as={`/product/${data.id}`}
                  key={idx} className='w-2/5 md:w-[250px] h-max shadow-border rounded-t-lg hover:shadow-shine bg-gray-200 cursor-pointer'>
                    <Skeleton style={{padding:8,height:'200px'}} loading={loading} avatar active>
-                   <div className='w-full h-full'>
-                    {data.media.length > 0 && 
+                   <div className='w-full min-h-[150px]'>
                     <LazyImages
                       size='large'
-                      images={`${imgUrl}${data.media[0].url}`}
+                      images={media}
                       addedClass={'rounded-t-lg h-52'}
                       alt='No image'
-                    />}
+                    />
                    </div>
                    <div className='h-3/5 p-4 hover:bg-white flex flex-col gap-2'>
                    <CustomLabel
@@ -219,8 +256,10 @@ const handleBrandClick = (field: string, id: string) =>{
                    </div>
                    </Skeleton>
                 </Link>
-              ))}
+              )})}
             </div>
+            </div>
+
         </div>
     
     </div>) : 

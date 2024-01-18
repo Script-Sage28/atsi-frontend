@@ -11,6 +11,7 @@ import { getProductsWithinLast5Days } from './helper/latestProducts';
 import { Peso } from './helper/pesoSign';
 // eslint-disable-next-line camelcase
 import { type T_ProductList } from './types/productList';
+import Noimg from '../public/assets/noimg.png'
 
 
 export default function Home() {
@@ -133,7 +134,7 @@ export default function Home() {
                   <div className="flex-grow w-full min-h-[230px] flex justify-center items-center py-5">
                   {product.media.length > 0 && (
                     <Image
-                      src={`${imgUrl}${product.media[0].url}`}
+                      src={product.media.length === 0 && (product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
                       alt={product.name}
                       width={130}
                       height={230}
@@ -200,7 +201,7 @@ export default function Home() {
                   <div className="flex-grow w-full min-h-[230px] flex justify-center items-center py-5">
                   {product.media.length > 0 && (
                     <Image
-                      src={`${imgUrl}${product.media[0].url}`}
+                      src={(product.media.length > 0 && product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
                       alt={product.name}
                       width={130}
                       height={230}
