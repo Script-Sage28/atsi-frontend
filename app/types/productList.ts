@@ -1,4 +1,5 @@
 
+
 export interface T_Brand {
     id: string;
     name: string;
@@ -41,7 +42,7 @@ export interface T_Product {
     stock: number;
     price: number;
     discountedPrice: null | number;
-    rating: number;
+    rating: number | undefined;
     status: string;
     lazadaLink: null | string;
     shoppeeLink: null | string;
@@ -103,6 +104,25 @@ export interface T_Product {
       updatedBy: null | string;
       status: string;
     };
+    productReviews: Array<{
+      id: string;
+      content: string;
+      productsId: string;
+      usersId: string;
+      createdAt: Date; 
+      updatedAt: string | null;
+      rating:number | undefined;
+      user:{
+        id: string;
+        username: string;
+        email: string;
+        password: string;
+        status: string;
+        createdAt: string;
+        updatedAt: string | null;
+        type: string;
+      }
+    }>;
 }
 export interface T_ProductList {
     onSale: T_Product[];

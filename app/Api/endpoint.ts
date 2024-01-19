@@ -4,7 +4,8 @@ const Endpoints ={
     GET_ALL_PRODUCTS: '/products/all',
     CATEGORIES: '/categories/all',
     BRANDS: '/brands/all',
-    PRODUCT_DETAILS: '/products/info/'
+    PRODUCT_DETAILS: '/products/info/',
+    REVIEW: '/products/product-review'
 }
 
 export default Endpoints

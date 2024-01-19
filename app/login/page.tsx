@@ -13,28 +13,28 @@ import useUserStore from '@/store/userStore';
 export default function Login() {
   const router = useRouter();
   const setUser = useUserStore((state) => state.setUser);
-    const onFinish = async(values: any) => {
-        console.log('Received values of form: ', values);
-        const formData = new FormData();
-        formData.append('password',values.password)
-        formData.append('username',values.username)
-        try {
-          const response = await LoginAccount.LOGIN(formData)
-          console.log(response)
+  const onFinish = async(values: any) => {
+      console.log('Received values of form: ', values);
+      const formData = new FormData();
+      formData.append('password',values.password)
+      formData.append('username',values.username)
+      try {
+        const response = await LoginAccount.LOGIN(formData)
+        console.log(response)
           // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-          if (response.status === 200 && response.data.data) {
-            toast.success('Successfully Login!');
-            setUser(response.data.data)
-            router.push('/');
-          } else {
-            // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-            toast.error(response.data.message || 'Registration failed');
-          }    
-        } catch (error: any) {
-          console.error('Error during Login:', error.message);
-          toast.error('An error occurred during login.');
+        if(response.data.message){
+          toast.error(response.data.message);
+          router.push('/login');
+        }else{
+          toast.success('Successfully Login!');
+          setUser(response.data.data)
+          router.push('/');
         }
-      };
+      } catch (error: any) {
+        console.error('Error during Login:', error.message);
+        toast.error('An error occurred during login.');
+      }
+    };
   return (
     <div className='w-full flex flex-col justify-center items-center px-2 md:px-10 pt-4 md:pt-20'>
         <CustomLabel

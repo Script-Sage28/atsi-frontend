@@ -19,3 +19,6 @@ export const BrandsRequest ={
 export const GetProductDetails ={
     INFO: (params:any) => axiosInstance.get(Endpoints.PRODUCT_DETAILS+params)
 }
+export const ProductReview ={
+    RATE: (data:any) => axiosInstance.post(Endpoints.REVIEW,data)
+}

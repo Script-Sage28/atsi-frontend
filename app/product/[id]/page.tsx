@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { Rate,Avatar, Skeleton  } from 'antd';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
-import { GetProductDetails } from '@/Api/request';
 import { CustomButton, CustomLabel } from '@/components';
 import CustomCarousel from '@/components/carousel/carousel';
 import ReviewForm from '@/components/form/review';
 import CustomParagraph from '@/components/paragraph/paragraph';
 import { FetchingDetails } from '@/helper/getDetails';
 import { T_Product } from '@/types/productList';
+import { Peso } from '@/helper/pesoSign';
 
 
 export default function ProductDetails({ params }:{
@@ -56,7 +56,7 @@ export default function ProductDetails({ params }:{
                 />
                 <Rate disabled value={details.rating} allowHalf />
                 <CustomLabel
-                    children={`₱${details.price}`} 
+                    children={Peso(details.price)} 
                     variant="text"
                     addedClass="text-lg font-semibold text-[#ff4e4e]"
                 />
@@ -96,7 +96,7 @@ export default function ProductDetails({ params }:{
             </div>
         </div>
       {/* Comments/Rating */}
-      {/* <div className='flex flex-col justify-center items-center py-4'>
+      <div className='flex flex-col justify-center items-center py-4'>
         <div className='w-full flex flex-col gap-4 mb-4 md:w-1/2'>
           <CustomLabel
             children='CUSTOMER REVIEWS'
@@ -104,9 +104,9 @@ export default function ProductDetails({ params }:{
           />
           <div className='flex justify-between items-center sm:mx-4'>
             <div className='flex flex-col'>
-            <Rate disabled value={data?.rating} allowHalf />
+            <Rate disabled value={details?.rating} allowHalf />
             <CustomLabel
-              children={`Based on ${data?.comments.length} reviews.`}
+              children={`Based on ${details.productReviews.length} reviews.`}
               variant='text'
             />
             </div>
@@ -120,31 +120,32 @@ export default function ProductDetails({ params }:{
         <div className='w-full md:w-1/2'>
           <ReviewForm
             isOpen={show.form}
+            productId={details.id}
           />
         </div>
         <div className='w-full md:w-1/2 flex flex-col gap-4'>
-          {product?.comments.map((data,idx) =>(
+          {details.productReviews?.map((data,idx) =>(
             <div className='shadow-border p-4 flex flex-col gap-2'>
               <div className='flex items-center gap-2'>
-               <Avatar size={40}>{data.user}</Avatar> 
+               <Avatar size={40}>{data.user?.username}</Avatar> 
                <div>
                   <div className='flex items-center gap-4'>
-                    <Rate disabled value={data.rate} allowHalf />
-                    <p>{data.date}</p>
+                    <Rate disabled value={data.rating} allowHalf />
+                    <p>{new Date(data.createdAt).toLocaleString()}</p>
                   </div>
                   <CustomLabel
-                    children={data.user}
+                    children={data.user.email}
                     variant='text'
                   />
                </div>
               </div>
               <div>
-                <CustomParagraph text={data.comment}/>
+                <CustomParagraph text={data.content}/>
               </div>
             </div>
           ))}
         </div>
-      </div>         */}
+      </div>        
     </div>) : 
     <Skeleton style={{padding:32,height:'500px'}} paragraph={{rows:8}} loading={loading} active />}
     </>

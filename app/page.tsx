@@ -102,7 +102,7 @@ export default function Home() {
       {/* Products Section */}
       <div id="products" className="w-full flex flex-col gap-8 p-8 md:px-40 md:py-14">
         {/* Sales Products */}
-        <div className="w-full h-auto flex flex-col gap-10">
+        {productList.onSale.length > 0 && <div className="w-full h-auto flex flex-col gap-10">
           <div className="flex flex-row items-start justify-between">
             <CustomLabel
               children="Sales Products"
@@ -166,10 +166,10 @@ export default function Home() {
               </CustomCard>
             )})}
           </div>
-        </div>
+        </div>}
 
         {/* New Products */}
-        <div className="flex flex-col gap-10">
+        {productList.latest.length > 0 && <div className="flex flex-col gap-10">
           <div className="flex flex-row items-start justify-between">
             <CustomLabel
               children="Latest Products"
@@ -186,7 +186,7 @@ export default function Home() {
 
           <div className="flex flex-wrap gap-5">
             {productList.latest?.length > 0 && productList.latest.map((product, idx) => (
-              <CustomCard key={idx} addedClass="relative flex-grow sm:basis-2/5 md:basis-auto overflow-hidden">
+              <CustomCard key={idx} addedClass="relative flex-grow max-w-[250px] sm:basis-2/5 md:basis-auto overflow-hidden">
                 <div className="bg-green-700 absolute  -left-[70px] -top-[10px] -rotate-45 p-3 w-[200px] z-50 text-center">
                   <div className="break-normal text-center flex flex-col items-center justify-center">
                     <WiStars color="white" size={30} />
@@ -198,15 +198,14 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="w-full flex-grow flex flex-col justify-start items-start">
-                  <div className="flex-grow w-full min-h-[230px] flex justify-center items-center py-5">
-                  {product.media.length > 0 && (
+                  <div className="flex-grow w-full min-h-[230px]  flex justify-center items-center py-5">
                     <Image
                       src={(product.media.length > 0 && product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
                       alt={product.name}
                       width={130}
                       height={230}
                     />
-                  )}
+                  
                   </div>
                   <div className="w-full px-5 pb-2">
                     <CustomLabel
@@ -232,7 +231,7 @@ export default function Home() {
               </CustomCard>
             ))}
           </div>
-        </div>
+        </div>}
       </div>
     </>
   );

@@ -2,13 +2,42 @@
 import React from 'react'
 import { Button, Form, Input,Rate } from 'antd';
 import clsx from 'clsx';
+import toast from 'react-hot-toast';
+import { ProductReview } from '@/Api/request';
+import useUserStore from '@/store/userStore';
 
 interface FormProps{
     isOpen: boolean;
+    productId: string;
 }
 
-export default function ReviewForm({isOpen}: FormProps) {
+export default function ReviewForm({isOpen,productId}: FormProps) {
+  const user = useUserStore((state) => state.user);
 
+  const handleFormSubmit = async (values: any) => {
+    console.log('Received values of form: ', values);
+  
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+    if (!user?.id) {
+      toast.error('You must login before taking this action!');
+      return; 
+    }
+  
+    try {
+      const formData = new FormData();
+      formData.append('rating', values.rate);
+      formData.append('userId', user.id);
+      formData.append('comment', values.content);
+      formData.append('productId', productId);
+      await ProductReview.RATE(formData);
+  
+    } catch (error: any) {
+      console.error('Error during Login:', error.message);
+    }
+  };
+  const onFinish = async(values: any) => {
+    void handleFormSubmit(values);
+  };
   return (
     <Form
     name="wrap"
@@ -16,25 +45,16 @@ export default function ReviewForm({isOpen}: FormProps) {
     labelAlign="left"
     wrapperCol={{ flex: 1 }}
     colon={false}
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    onFinish={onFinish}
     className={clsx('transition duration-600 ease-in-out',isOpen ? 'w-full p-4 translate-y-6' : 'hidden -translate-y-24')}
   >
-    <Form.Item label="Name" name="name" rules={[{ required: true }]}>
-      <Input className='bg-gray-200' placeholder='Enter your name(public)' />
-    </Form.Item>
-
-    <Form.Item label="Email" name="email" rules={[{ required: true }]}>
-      <Input className='bg-gray-200' placeholder='Enter your email(public)' />
-    </Form.Item>
 
     <Form.Item label="Rating" name="rate" rules={[{ required: true }]}>
        <Rate />
     </Form.Item>
 
-    <Form.Item label="Review Title" name="reviewTitle" rules={[{ required: true }]}>
-      <Input className='bg-gray-200' placeholder='Give your review a title' />
-    </Form.Item>
-
-    <Form.Item label="Reveiw" name="reviewBody" rules={[{ required: true }]}>
+    <Form.Item label="Reveiw" name="content" rules={[{ required: true }]}>
       <Input className='bg-gray-200' placeholder='Write your comments here' />
     </Form.Item>
 
