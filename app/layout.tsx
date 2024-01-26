@@ -16,7 +16,6 @@ export const metadata: Metadata = {
   title: 'ATSI - Auxytech Technology Solutions',
   description: 'ATSI web app developed by Angelo Mien',
 };
-
 export default function RootLayout({
   children,
 }: {
@@ -25,12 +24,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+      
         <ConfigProvider theme={appTheme}>
         <Toaster />
           <CustomHeader />
           {children}
           <CustomFooter />
         </ConfigProvider>
+  
       </body>
     </html>
   );

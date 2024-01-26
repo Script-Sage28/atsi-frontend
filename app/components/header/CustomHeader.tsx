@@ -1,17 +1,26 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 'use client';
-import React, { useState } from 'react';
+import React, { type ChangeEvent, useCallback, useState, useEffect } from 'react';
 import { Layout, Input } from 'antd';
 import clsx from 'clsx';
+import { debounce } from 'lodash';
 import Image from 'next/image';
 import Link from 'next/link';
 import { IoMenu } from 'react-icons/io5';
 import { MdOutlineClear } from 'react-icons/md';
+import { ProductsRequest } from '@/Api/request';
 import useUserStore from '@/store/userStore';
+import { T_Product } from '@/types/productList';
 
 export default function CustomHeader() {
+  const useDebounce = (func: any) => debounce(func, 1000);
   const [open,setOpen] = useState(false)
-  const user = useUserStore((state) => state.user)
+  const user = useUserStore((state) => state.user);
+  const [product,setProducts] = useState<T_Product[]>([])
+  const [filter, setFilter] = useState({
+    name: '',
+    status: '',
+  });
   const { Header } = Layout;
   const { Search } = Input;
   const links = [
@@ -27,27 +36,37 @@ export default function CustomHeader() {
     },
     {
       id: 2,
-      name: 'Blog',
-      url: '/#Home',
-    },
-    {
-      id: 3,
       name: 'Contact Us',
       url: '/#Home',
     },
     {
-      id: 4,
+      id: 3,
       name: 'Products',
-      url: '/#products',
+      url: '/product',
     },
     {
-      id: 5,
+      id: 4,
       name: user ? user.username : 'Signin',
       url:  user ? '/' : '/login',
     },
   ];
   const handleOpenChange = () =>{
     setOpen(!open)
+  }
+
+  const onSetFilter = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFilter((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }, []);
+  const SearchProduct = async() =>{
+    console.log('sera')
+    if(filter.name){
+      const res = await ProductsRequest.GET_ALL(filter);
+      setProducts(res.data.data)
+    }
   }
   return (
     <>
@@ -74,7 +93,20 @@ export default function CustomHeader() {
         placeholder="Search Products..."
         allowClear
         className='bg-white rounded-md'
+        name='name'
+        onChange={useDebounce(onSetFilter)}
+        onSearch={SearchProduct}
       />
+      <ul className='px-1 py-4 h-max'>
+      {product.map((data,idx) =>{
+        return(
+          <Link href={`/product/${data.id}`} as={`/product/${data.id}`}
+           className="px-4 py-2 bg-white rounded-md text-base"
+           key={idx}>{data.name}</Link>
+        )
+      })}
+      </ul>
+
       </div>
       <div className="flex flex-wrap flex-col gap-4 px-4 pb-12 pt-4 md:hidden">
           {links?.map((link, idx) => (

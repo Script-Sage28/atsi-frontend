@@ -167,8 +167,8 @@ console.log(filter)
 
             </div>
             {/* List */}
-            <div>
-            <div className='w-full flex gap-12 items-center flex-wrap px-12'>
+            <div className='w-full'>
+            <div className='w-full flex gap-4 md:gap-12 items-center flex-wrap px-2 md:px-12 mb-4'>
               <div className='flex-1'>
               <CustomLabel
                 children="Shop by Brands"
@@ -186,7 +186,7 @@ console.log(filter)
                 })) as { value: string; label: string; }[])}
               />
               </div>
-              <div className='w-[450px] flex flex-nowrap gap-4 items-center'>
+              <div className='w-full md:w-[450px] flex flex-nowrap gap-4 items-bottom'>
                 <div className='flex-1 flex flex-col'>
                 <CustomLabel
                   children="Sort by"
@@ -202,10 +202,10 @@ console.log(filter)
                 </div>
                 <div className='flex justify-end items-end gap-2 shadow-border p-2 rounded-md'>
                     <div className='border-2 border-black-500 p-1 rounded-md'>
-                    <TiThSmall size={25} />
+                    <TiThSmall size={20} />
                     </div>
                     <div className='border-2 border-black-500 p-1 rounded-md'>
-                    <FaListUl size={25} />
+                    <FaListUl size={20} />
                     </div>
                 </div>
               </div>
@@ -229,7 +229,7 @@ console.log(filter)
                 const media = (data.media.length > 0 && data.media[0].url !== '') ? `${imgUrl}${data.media[0].url}` : '';
                 return(
                 <Link href={`/product/${data.id}`} as={`/product/${data.id}`}
-                 key={idx} className='w-2/5 md:w-[250px] h-max shadow-border rounded-t-lg hover:shadow-shine bg-gray-200 cursor-pointer'>
+                 key={idx} className='w-[200px] md:w-[250px] h-max shadow-border rounded-t-lg hover:shadow-shine bg-gray-200 cursor-pointer'>
                    <Skeleton style={{padding:8,height:'200px'}} loading={loading} avatar active>
                    <div className='w-full min-h-[150px]'>
                     <LazyImages

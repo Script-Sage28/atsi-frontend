@@ -27,7 +27,7 @@ export const LazyImages: React.FC<LazyImageProps> = ({ images,addedClass, alt,si
         <Spin size={size ?? 'default'} />
       </div> : 
       // eslint-disable-next-line @next/next/no-img-element
-      <img  className={clsx('w-full', addedClass)}
+      <img  className={clsx('w-full object-fill', addedClass)}
       src={(images !== '') ? images : '/assets/noimg.png'}
       loading='lazy'
       alt={alt} 

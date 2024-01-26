@@ -10,6 +10,7 @@ import CustomParagraph from '@/components/paragraph/paragraph';
 import { FetchingDetails } from '@/helper/getDetails';
 import { T_Product } from '@/types/productList';
 import { Peso } from '@/helper/pesoSign';
+import { getNickName } from '@/helper/formatName';
 
 
 export default function ProductDetails({ params }:{
@@ -65,6 +66,7 @@ export default function ProductDetails({ params }:{
                     buttonType='link'
                     // eslint-disable-next-line @next/next/no-img-element
                     icon={<img className='w-6' src='../assets/lazada.png'  />}
+                    onClick={() => { window.open(`${details.lazadaLink}`, '_blank')}}
                     children='Order in Lazada now!'
                     addedClass={'flex items-center p-2 shadow-border w-48 border-gray-200 text-gray-600 border-2'}
                   />
@@ -73,6 +75,7 @@ export default function ProductDetails({ params }:{
                     // eslint-disable-next-line @next/next/no-img-element
                     icon={<img className='w-12' src='../assets/shopee-logo-0.png'  />}
                     children='Order in Shopee now!'
+                    onClick={() => { window.open(`${details.shoppeeLink}`, '_blank')}}
                     addedClass={'flex items-center px-2 py-4 shadow-border w-48 border-gray-200 text-gray-600 border-2'}
                   />
                 </div>
@@ -102,14 +105,7 @@ export default function ProductDetails({ params }:{
             children='CUSTOMER REVIEWS'
             variant='text'
           />
-          <div className='flex justify-between items-center sm:mx-4'>
-            <div className='flex flex-col'>
-            <Rate disabled value={details?.rating} allowHalf />
-            <CustomLabel
-              children={`Based on ${details.productReviews.length} reviews.`}
-              variant='text'
-            />
-            </div>
+          <div className='flex justify-end items-end sm:mx-4'>
             <CustomButton
               children={show.form ? 'Cancel Review' : 'Write Review'}
               buttonType='default'
@@ -127,11 +123,11 @@ export default function ProductDetails({ params }:{
           {details.productReviews?.map((data,idx) =>(
             <div className='shadow-border p-4 flex flex-col gap-2'>
               <div className='flex items-center gap-2'>
-               <Avatar size={40}>{data.user?.username}</Avatar> 
+               <Avatar size={40}>{getNickName(data.user?.username)}</Avatar> 
                <div>
                   <div className='flex items-center gap-4'>
                     <Rate disabled value={data.rating} allowHalf />
-                    <p>{new Date(data.createdAt).toLocaleString()}</p>
+                    <p className='text-sm md:text-base'>{new Date(data.createdAt).toLocaleString()}</p>
                   </div>
                   <CustomLabel
                     children={data.user.email}
