@@ -35,6 +35,7 @@ export interface T_Categories {
     Brands: T_Brand;
 }
 export interface T_Product {
+    map(arg0: (data: T_Product, idx: import("react").Key | null | undefined) => import("react").JSX.Element): import("react").ReactNode;
     id: string;
     name: string;
     description: string;

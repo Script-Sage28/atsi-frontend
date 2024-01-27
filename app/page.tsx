@@ -5,22 +5,24 @@ import Link from 'next/link';
 import { BsFire } from 'react-icons/bs';
 import { FaChevronDown } from 'react-icons/fa';
 import { WiStars } from 'react-icons/wi';
-import { ProductsRequest } from './Api/request';
 import { CustomButton, CustomCard, CustomLabel } from './components';
 import { getProductsWithinLast5Days } from './helper/latestProducts';
 import { Peso } from './helper/pesoSign';
+import { ProductsRequest } from './service/request';
 // eslint-disable-next-line camelcase
 import { type T_ProductList } from './types/productList';
+import { loadProducts, selector } from './zustand/store/store.provider';
 import Noimg from '../public/assets/noimg.png'
+import useStore from '@/zustand/store/store';
 
 
 export default function Home() {
-
+  const products = useStore(selector('product'));
   // eslint-disable-next-line camelcase
   const initialProductList: T_ProductList = {
-    onSale: [],
-    latest: [],
-    allProducts:[]
+    allProducts: products.list.slice(0,5),
+    onSale: products.list?.filter((val: { isSaleProduct: boolean; }) => val.isSaleProduct).slice(0,5),
+    latest: getProductsWithinLast5Days(products.list).slice(0,5)
   }
   const [productList,setProductsList] = useState(initialProductList);
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
@@ -35,8 +37,9 @@ export default function Home() {
           name: '',
           status: '',
         });
+        loadProducts(response.data.data)
         const all = response.data.data.slice(0, 5);
-        const sale = response.data.data?.filter((val: { isSaleProduct: boolean; }) => val.isSaleProduct);
+        const sale = response.data.data?.filter((val: { isSaleProduct: boolean; }) => val.isSaleProduct).slice(0,5);
         setProductsList(prev =>({
           ...prev,
           allProducts: all,
@@ -119,7 +122,7 @@ export default function Home() {
           <div className="flex flex-wrap gap-5">
             {productList.onSale.length > 0 && productList.onSale.map((product, idx) => {
               return (
-              <CustomCard key={idx} addedClass="relative flex-grow sm:basis-2/5 md:basis-auto overflow-hidden">
+              <CustomCard key={idx} addedClass="relative flex-grow max-w-[250px] sm:basis-2/5 md:basis-auto overflow-hidden">
                 <div className="bg-red-700 absolute -left-[75px] -top-[7px] -rotate-45 p-3 w-[200px] z-50 text-center">
                   <div className="break-normal text-center flex flex-col items-center justify-center">
                     <BsFire color="white" size={20} />
@@ -132,14 +135,12 @@ export default function Home() {
                 </div>
                 <div className="w-full flex-grow flex flex-col justify-start items-start">
                   <div className="flex-grow w-full min-h-[230px] flex justify-center items-center py-5">
-                  {product.media.length > 0 && (
                     <Image
-                      src={product.media.length === 0 && (product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
+                      src={(product.media.length > 0 && product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
                       alt={product.name}
                       width={130}
                       height={230}
                     />
-                  )}
                   </div>
 
                   <div className="w-full px-5 pb-2">

@@ -1,4 +1,4 @@
-import { ProductsRequest } from '@/Api/request';
+import { ProductsRequest } from '@/service/request';
 import { Filter } from '@/types/filter';
 import { T_Product } from '@/types/productList';
 

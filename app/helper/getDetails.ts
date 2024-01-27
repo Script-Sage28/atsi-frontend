@@ -1,4 +1,4 @@
-import { GetProductDetails } from '@/Api/request'
+import { GetProductDetails } from '@/service/request'
 
 export const FetchingDetails = async(id:string) =>{
     const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;

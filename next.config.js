@@ -1,8 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-        domains: ['pub-5b8c8880a977485aa114f08d809019fb.r2.dev'],
+  reactStrictMode: false,
+  images: {
+    domains: ['pub-5b8c8880a977485aa114f08d809019fb.r2.dev'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
       },
-}
+    ],
+  },
+  env: {
+    API_URL: process.env.NEXT_PUBLIC_API_URL,
+    AUTH_SECRET: process.env.NEXTAUTH_SECRET,
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

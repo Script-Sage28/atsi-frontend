@@ -5,7 +5,7 @@ import { Button, Form, Input } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { RegisterAccount } from '@/Api/request';
+import { RegisterAccount } from '@/service/request';
 import { CustomLabel } from '@/components';
 
 

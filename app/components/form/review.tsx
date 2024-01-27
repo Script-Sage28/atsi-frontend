@@ -3,8 +3,9 @@ import React from 'react'
 import { Button, Form, Input,Rate } from 'antd';
 import clsx from 'clsx';
 import toast from 'react-hot-toast';
-import { ProductReview } from '@/Api/request';
-import useUserStore from '@/store/userStore';
+import { ProductReview } from '@/service/request';
+import useStore from '@/zustand/store/store';
+import { selector } from '@/zustand/store/store.provider';
 
 interface FormProps{
     isOpen: boolean;
@@ -12,13 +13,13 @@ interface FormProps{
 }
 
 export default function ReviewForm({isOpen,productId}: FormProps) {
-  const user = useUserStore((state) => state.user);
+  const user = useStore(selector('user'))
 
   const handleFormSubmit = async (values: any) => {
     console.log('Received values of form: ', values);
   
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (!user?.id) {
+    if (!user.info?.id) {
       toast.error('You must login before taking this action!');
       return; 
     }
@@ -26,11 +27,10 @@ export default function ReviewForm({isOpen,productId}: FormProps) {
     try {
       const formData = new FormData();
       formData.append('rating', values.rate);
-      formData.append('userId', user.id);
+      formData.append('userId', user.info?.id);
       formData.append('comment', values.content);
       formData.append('productId', productId);
       await ProductReview.RATE(formData);
-  
     } catch (error: any) {
       console.error('Error during Login:', error.message);
     }

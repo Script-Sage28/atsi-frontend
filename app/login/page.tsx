@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+/* eslint-disable @typescript-eslint/no-confusing-void-expression */
 'use client';
 import React from 'react'
 import { LockOutlined,EyeInvisibleOutlined, EyeTwoTone, UserOutlined } from '@ant-design/icons';
@@ -5,31 +7,23 @@ import { Button, Form, Input } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { LoginAccount } from '@/Api/request';
 import { CustomLabel } from '@/components';
-import useUserStore from '@/store/userStore';
+import useStore from '@/zustand/store/store';
+import { login, saveUserInfo, selector } from '@/zustand/store/store.provider';
 
 
 export default function Login() {
   const router = useRouter();
-  const setUser = useUserStore((state) => state.setUser);
+  const user = useStore(selector('user'))
   const onFinish = async(values: any) => {
-      console.log('Received values of form: ', values);
       const formData = new FormData();
       formData.append('password',values.password)
       formData.append('username',values.username)
       try {
-        const response = await LoginAccount.LOGIN(formData)
-        console.log(response)
-          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-        if(response.data.message){
-          toast.error(response.data.message);
-          router.push('/login');
-        }else{
-          toast.success('Successfully Login!');
-          setUser(response.data.data)
-          router.push('/');
-        }
+        // eslint-disable-next-line @typescript-eslint/await-thenable
+        const res = await login(formData)
+        saveUserInfo(res)
+        router.push('/')
       } catch (error: any) {
         console.error('Error during Login:', error.message);
         toast.error('An error occurred during login.');
@@ -77,7 +71,7 @@ export default function Login() {
       </Form.Item>
 
       <Form.Item className='flex flex-col justify-center items-center'>
-        <Button type="default" htmlType="submit" className="bg-sky-500 my-4 px-8 text-white font-semibold">
+        <Button type="default" htmlType="submit" loading={user.loading} className="bg-sky-500 my-4 px-8 text-white font-semibold">
           Log in
         </Button>
         <div>

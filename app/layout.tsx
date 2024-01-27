@@ -7,6 +7,7 @@ import { CustomFooter, CustomHeader } from './components';
 import { appTheme } from '../theme/app-theme';
 import '@/styles/main.css';
 
+
 // const inter = Oxygen({
 //   subsets: ['latin'],
 //   weight: '300',
