@@ -52,7 +52,6 @@ export default function Home() {
     }
     void fetchProducts()
   },[])
-
   return (
     <>
       {/* Landing Page */}
@@ -122,7 +121,9 @@ export default function Home() {
           <div className="flex flex-wrap gap-5">
             {productList.onSale.length > 0 && productList.onSale.map((product, idx) => {
               return (
-              <CustomCard key={idx} addedClass="relative flex-grow max-w-[250px] sm:basis-2/5 md:basis-auto overflow-hidden">
+              <CustomCard addedClass='flex-grow max-w-[250px] sm:basis-2/5 md:basis-auto' key={idx}>
+                <Link className='relative w-full overflow-hidden'
+                 key={idx} href={`/product/${product.id}`} passHref>
                 <div className="bg-red-700 absolute -left-[75px] -top-[7px] -rotate-45 p-3 w-[200px] z-50 text-center">
                   <div className="break-normal text-center flex flex-col items-center justify-center">
                     <BsFire color="white" size={20} />
@@ -164,6 +165,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+                </Link>
               </CustomCard>
             )})}
           </div>
@@ -187,7 +189,9 @@ export default function Home() {
 
           <div className="flex flex-wrap gap-5">
             {productList.latest?.length > 0 && productList.latest.map((product, idx) => (
-              <CustomCard key={idx} addedClass="relative flex-grow max-w-[250px] sm:basis-2/5 md:basis-auto overflow-hidden">
+              <CustomCard addedClass='flex-grow max-w-[250px] sm:basis-2/5 md:basis-auto' key={idx}>
+              <Link className='relative w-full overflow-hidden'
+               key={idx} href={`/product/${product.id}`} passHref>
                 <div className="bg-green-700 absolute  -left-[70px] -top-[10px] -rotate-45 p-3 w-[200px] z-50 text-center">
                   <div className="break-normal text-center flex flex-col items-center justify-center">
                     <WiStars color="white" size={30} />
@@ -229,6 +233,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+                </Link>
               </CustomCard>
             ))}
           </div>

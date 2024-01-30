@@ -84,6 +84,11 @@ export default function CustomHeader() {
       url:  user.info?.username ? '/' : '/login',
     },
   ];
+
+  useEffect(() => {
+    SearchProduct()
+  },[filter.name])
+
   const handleOpenChange = () =>{
     if (!open) {
       setValue('username', user.info?.username);
@@ -130,7 +135,6 @@ export default function CustomHeader() {
     }
   }
   const hanldeLogout = () =>{
-    console.log('run')
     logout()
   }
   const content = (
@@ -158,7 +162,6 @@ export default function CustomHeader() {
     </FormItem>
     </Form>
   }
-  console.log(user)
   return (
     <>
     <Header className="header p-2 md:p-8 w-full flex justify-between md:justify-none items-center">
@@ -202,7 +205,7 @@ export default function CustomHeader() {
         onChange={useDebounce(onSetFilter)}
         onSearch={SearchProduct}
       />
-      <ul className='px-1 py-4 h-max'>
+      <ul className='px-1 py-4 h-max flex flex-col gap-2'>
       {product.map((data,idx) =>{
         return(
           <Link href={`/product/${data.id}`} as={`/product/${data.id}`}
@@ -217,7 +220,6 @@ export default function CustomHeader() {
           {links?.map((link, idx) => (
             <Link href={link.url} className="font-semibold flex-grow text-gray-500 hover:text-white hover:bg-zinc-500 p-4 rounded-md" 
             key={idx}>
-
               {link.name}
             </Link>
           ))}

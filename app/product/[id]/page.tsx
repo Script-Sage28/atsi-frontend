@@ -44,12 +44,12 @@ export default function ProductDetails({ params }:{
       <p>Go Back</p>
       </Link >
        <div className='flex flex-col md:flex-row justify-center items-top gap-4'>
-            <div className='w-max h-full m-4'>
+            <div className='w-full h-full m-4'>
               <CustomCarousel
                 imgList={imgList}
               />
             </div>
-            <div className='flex flex-col shadow-border p-8 w-96 h-full overflow-auto rounded-md'>
+            <div className='flex flex-col shadow-border p-8 w-full md:w-96 h-full overflow-auto rounded-md'>
               <div className='flex flex-col gap-2'>
                 <CustomLabel
                   children={details.name}
@@ -120,8 +120,8 @@ export default function ProductDetails({ params }:{
           />
         </div>
         <div className='w-full md:w-1/2 flex flex-col gap-4'>
-          {details.productReviews?.map((data,idx) =>(
-            <div className='shadow-border p-4 flex flex-col gap-2'>
+          {details.productReviews.length > 0 ? (details.productReviews?.map((data,idx) =>(
+            <div key={idx} className='shadow-border p-4 flex flex-col gap-2'>
               <div className='flex items-center gap-2'>
                <Avatar size={40}>{getNickName(data.user?.username)}</Avatar> 
                <div>
@@ -139,7 +139,7 @@ export default function ProductDetails({ params }:{
                 <CustomParagraph text={data.content}/>
               </div>
             </div>
-          ))}
+          ))) : (<p>No Customer review yet</p>)}
         </div>
       </div>        
     </div>) : 

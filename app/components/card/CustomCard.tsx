@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 interface Props {
   children: React.ReactNode;
   addedClass?: string;
+  onClick?:  () => void;
 }
 
 export default function CustomCard(props: Props) {
@@ -20,6 +21,7 @@ export default function CustomCard(props: Props) {
         props.addedClass,
         'rounded-2xl border relative border-gray-300 hover:drop-shadow-md bg-white flex flex-col items-center justify-between space-y-0',
       )}
+      onClick={props.onClick}
     >
       {props.children}
     </motion.div>
