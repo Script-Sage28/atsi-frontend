@@ -36,7 +36,7 @@ export default function CustomCarousel({imgList}: CarouselProps) {
     };
     const imgListLength = imgList?.length ?? 0;
   return (
-    <div className='flex flex-col-reverse md:flex-row gap-4 w-full h-full'>
+    <div className='flex flex-col-reverse justify-center items-center md:flex-row gap-4 w-full h-full'>
         {imgListLength > 0 ? (<>
         <div className='flex flex-row md:flex-col gap-8 h-max md:h-80 m-4 md:m-8'>
               {imgList?.map((data, idx) => (
@@ -49,19 +49,20 @@ export default function CustomCarousel({imgList}: CarouselProps) {
                           alt="Preview Image" />
                   </div>
               ))}
-          </div><div className='rounded-md w-full md:w-96 p-4'>
-                  <Carousel dotPosition={'bottom'} ref={carouselRef} swipe beforeChange={handleBeforeChange}>
-                      {imgList?.map((data, idx) => (
-                          <div key={idx} className='w-full h-80'>
-                              <LazyImages
-                                  size='large'
-                                  images={data}
-                                  alt='Noimage'
-                                  addedClass={'rounded-md'} />
-                          </div>
-                      ))}
-                  </Carousel>
-              </div>
+          </div>
+          <div className='rounded-md w-full md:w-96 p-4'>
+            <Carousel dotPosition={'bottom'} ref={carouselRef} swipe beforeChange={handleBeforeChange}>
+                {imgList?.map((data, idx) => (
+                    <div key={idx} className='w-full h-80'>
+                        <LazyImages
+                            size='large'
+                            images={data}
+                            alt='Noimage'
+                            addedClass={'rounded-md'} />
+                    </div>
+                ))}
+            </Carousel>
+        </div>
     </>) : (<div className='flex w-full justify-center items-center flex-row md:flex-col gap-8 h-max md:h-80 m-4 md:m-8'>
         No Images Found!
     </div>)}

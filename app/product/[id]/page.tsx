@@ -44,12 +44,12 @@ export default function ProductDetails({ params }:{
       <p>Go Back</p>
       </Link >
        <div className='flex flex-col md:flex-row justify-center items-top gap-4'>
-            <div className='w-full h-full m-4'>
+            <div className='w-full md:w-1/2 h-full m-4'>
               <CustomCarousel
                 imgList={imgList}
               />
             </div>
-            <div className='flex flex-col shadow-border p-8 w-full md:w-96 h-full overflow-auto rounded-md'>
+            <div className='flex flex-col shadow-border p-8 w-full md:w-1/2 md:w-96 h-full overflow-auto rounded-md'>
               <div className='flex flex-col gap-2'>
                 <CustomLabel
                   children={details.name}
