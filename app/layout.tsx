@@ -24,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <link rel="icon" type="image/png" href="assets/logo.png" sizes="32x32" />
+      <link rel="icon" type="image/png" href={`/logo.png `}/>
       <body>
         <ConfigProvider theme={appTheme}>
         <Toaster />
