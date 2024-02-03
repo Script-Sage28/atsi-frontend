@@ -71,7 +71,7 @@ export default function CustomHeader() {
     {
       id: 2,
       name: 'Contact Us',
-      url: '/#Home',
+      url: '/#about',
     },
     {
       id: 3,

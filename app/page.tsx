@@ -52,6 +52,7 @@ export default function Home() {
     }
     void fetchProducts()
   },[])
+
   return (
     <>
       {/* Landing Page */}
@@ -78,11 +79,11 @@ export default function Home() {
             <div className="my-8 md:my-0 flex flex-row gap-5">
               <CustomButton
                 addedClass="bg-[#00A3FF] p-4 md:p-7 rounded-md md:rounded-xl flex items-center justify-center md:text-xl"
-                children="View Products"
+                children={<Link href={`/#product`}>View Products</Link>}
               />
               <CustomButton
                 addedClass="bg-white text-[#00A3FF] border border-[#00A3FF] p-4 md:p-7 rounded-md md:rounded-xl flex items-center justify-center md:text-xl"
-                children="Browse More"
+                children={<Link href={`/product`}>Browse More</Link>}
               />
             </div>
           </div>
@@ -228,7 +229,7 @@ export default function Home() {
                       <CustomLabel
                         children={Peso(product?.price)}
                         variant="text"
-                        addedClass="text-2xl font-semibold"
+                        addedClass="text-[#0038FF] text-2xl font-semibold"
                       />
                     </div>
                   </div>

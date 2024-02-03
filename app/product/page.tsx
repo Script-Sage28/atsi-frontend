@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react'
-import { Breadcrumb } from 'antd';
+import { Breadcrumb, Space } from 'antd';
 import Link from 'next/link'
 import { FaListUl,FaCheck } from 'react-icons/fa6';
 import { TiThSmall } from 'react-icons/ti';
@@ -53,6 +53,7 @@ export default function Productpage() {
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
   const product = useStore(selector('product'))
   const shopby = useStore(selector('brand_category'))
+  const { Option } = Select;
   const [loading, setLoading] = useState<boolean>(false);
   const [isRow,setIsRow] = useState<boolean>(true)
   const [filter,setFiltered] = useState<Filter>({
@@ -141,48 +142,50 @@ const handleSorting = (data: {value:string}) =>{
     sort: data.value as '' | 'asc' | 'desc' | 'lowest' | 'highest' | undefined
   }));
 };
-console.log(shopby)
-console.log(product)
   return (
     <>
     {product.list.length > 0 ? (<div className='w-full pl-4 md:pl-10 mb-10'>
-        <div>
+        <div className='mb-4'>
         <Breadcrumb
             items={[{title: 'Home'},{title: <a href="">Products</a>}]}
         />
         <CustomLabel
             children="Products List" 
             variant="text"
-            addedClass="sm:text-base md:text-2xl font-bold"
+            addedClass="sm:text-base md:text-2xl font-bold mb-8"
         />
         </div>
         <div className='w-full flex flex-col md:flex-row gap-2'>
             {/* Filtering */}
-            <div className='w-full md:w-48 h-full p-4 rounded-lg md:shadow-border'>
-              <CustomLabel
-                children="Categories"
-                variant='text'
-                addedClass='font-semibold text-xl uppercase tracking-widest'
-              />
-              <div className='w-full'>
-                <ul className='list-none flex flex-wrap flex-row md:flex-col gap-4 m-4'>
-                {shopby.category.map((data: T_Categories) => (
-                    <li className='truncate flex items-center gap-2 cursor-pointer'
-                    onClick={() =>{handleCategory(data.name,data.id)}}
-                    key={data.id}>
-                    <div className='w-8 md:w-6'>
-                    {filter.category?.name === data.name && <FaCheck size={25} className='text-green-500'/>}
-                    </div>
-                    <p className={clsx('m-0',filter.category?.name === data.name ? 'font-bold' : 'font-normal')}>{data.name}</p>
-                    </li>
-                ))}
-                </ul> 
+            <div className='flex h-max flex-col gap-4'>
+              <div className='flex flex-col shadow-border w-80 p-4'>
+                <p className='text-red-400 mb-4 font-bold'>DELIVERY</p>
+                <p className='m-0'>METRO MANILA ONLY FOR ORDER</p>
+                <p className='m-0'> 1000 PESO ABOVE. 2-3 working days</p>
               </div>
-
+              <div className='w-full md:w-80 h-full p-4 rounded-lg md:shadow-border'>
+                <CustomLabel
+                  children={shopby.brand.length > 0 && filter.brand?.name !== '' ? `${shopby.brand[0].name} Categories` : "All Categories"}
+                  variant='text'
+                  addedClass='font-semibold text-xl uppercase tracking-widest'
+                />
+                <div className='w-full h-max'>
+                  <ul className='list-none flex flex-wrap flex-row md:flex-col pt-4 justify-start gap-4'>
+                  {shopby.category.map((data: T_Categories) => (
+                      <li className='truncate flex items-start gap-2 cursor-pointer'
+                      onClick={() =>{handleCategory(data.name,data.id)}}
+                      key={data.id}>
+                      <p className={clsx('m-0',filter.category?.name === data.name ? 'font-bold text-red-400 text-lg' : 'font-normal')}>{data.name}</p>
+                      </li>
+                  ))}
+                  </ul> 
+                </div>
+              </div>
             </div>
+
             {/* List */}
             <div className='w-full'>
-            <div className='w-full flex gap-4 md:gap-12 items-center flex-wrap px-2 md:px-12 mb-4'>
+            <div className='w-full flex gap-4 md:gap-12 items-start flex-wrap px-2 md:pr-12 md:pl-8 mb-4'>
               <div className='flex-1'>
               <Select
                 style={{ width: '100%',height:'50px' }}
@@ -202,8 +205,10 @@ console.log(product)
                   size='middle'
                   value={filter.sort ? filter.sort : 'Sort by'}
                   onChange={(value) =>{handleSorting({value})}}
-                  options={Sorting}
-                />
+                  options={Sorting.map(option => ({ value: option.value, label: option.name }))}
+                  optionLabelProp="label" 
+
+                  />
                 </div>
                 <div className='flex justify-end items-end gap-2 shadow-border p-2 rounded-md'>
                     <div onClick={() => { setIsRow(true)}}
@@ -231,7 +236,7 @@ console.log(product)
                 /> 
               </div>
             )}
-            <div className={clsx(isRow ? 'flex-row' : 'flex-col','w-full flex flex-wrap gap-4 md:p-8 justify-center items-center md:justify-normal')}>
+            {product.list.length > 0 ? (<div className={clsx(isRow ? 'flex-row' : 'flex-col','w-full flex flex-wrap gap-4 md:p-8 justify-center items-center md:justify-normal')}>
               {product.list.map((data:T_Product,idx: React.Key | null | undefined) =>{
                 const media = (data.media.length > 0 && data.media[0].url !== '') ? `${imgUrl}${data.media[0].url}` : '';
                 const HTMLViewer = () => {
@@ -244,13 +249,14 @@ console.log(product)
                 {isRow ? <Link href={`/product/${data.id}`} as={`/product/${data.id}`} key={idx} 
                  className={clsx('w-[200px] md:w-[250px] h-max shadow-border rounded-t-lg hover:shadow-shine bg-gray-200 cursor-pointer')}>
                    <Skeleton style={{padding:8,height:'200px'}} loading={loading} avatar active>
-                   <div className='w-full min-h-[150px]'>
+                   <div className='w-full min-h-[150px] flex justify-center items-center relative'>
                     <LazyImages
                       size='large'
                       images={media}
                       addedClass={'rounded-t-lg h-52'}
                       alt='No image'
                     />
+                     {data.status !== 'Available' && <div className='absolute px-4 py-2 bg-black text-white w-max'><p>{data.status === 'Out_of_Stock' ? data.status.replace(/_/g, ' ') : data.status}</p></div>}
                    </div>
                    <div className='h-3/5 p-4 hover:bg-white flex flex-col gap-2'>
                    <CustomLabel
@@ -263,8 +269,16 @@ console.log(product)
                         variant="text"
                         addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
                     />
+                    {data.discount && <CustomLabel
+                        children={`${data.discount}% Off`} 
+                        variant="text"
+                        addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
+                    />}
                    <CustomLabel
-                        children={Peso(data.price)} 
+                        children={data.discountedPrice ? (<div className='flex gap-4'>
+                        <p className='m-0'>{Peso(data.discountedPrice)}</p>
+                        <p className='m-0 line-through text-gray-600'>{Peso(data.price)}</p>
+                      </div>) : Peso(data.price)} 
                         variant="text"
                         addedClass="text-lg font-semibold text-[#ff4e4e]"
                     />
@@ -274,13 +288,14 @@ console.log(product)
                 <Link href={`/product/${data.id}`} as={`/product/${data.id}`} key={idx} 
                 className={clsx('w-[500px] md:w-full h-max shadow-border flex flex-col md:flex-row rounded-t-lg hover:shadow-shine bg-gray-200 cursor-pointer')}>
                   <Skeleton style={{padding:8,height:'200px'}} loading={loading} avatar active>
-                  <div className='w-full min-h-[150px]'>
+                  <div className='w-full max-w-[350px] min-h-[150px] flex justify-center items-center relative'>
                    <LazyImages
                      size='large'
                      images={media}
                      addedClass={'rounded-t-lg h-[250px] w-full'}
                      alt='No image'
                    />
+                    {data.status !== 'Available' && <div className='absolute px-4 py-2 bg-black text-white w-max'><p>{data.status === 'Out_of_Stock' ? data.status.replace(/_/g, ' ') : data.status}</p></div>}
                   </div>
                   <div className='p-4 hover:bg-white flex flex-col md:flex-row gap-2 w-full'>
                     <div className='w-[80%] flex justify-center items-center flex-col'>
@@ -300,7 +315,10 @@ console.log(product)
                     </div>
 
                   <CustomLabel
-                       children={Peso(data.price)} 
+                       children={data.discountedPrice ? (<div className='flex gap-8'>
+                        <p className='m-0'>{Peso(data.discountedPrice)}</p>
+                        <p className='m-0 line-through'>{Peso(data.price)}</p>
+                       </div>) : Peso(data.price)} 
                        variant="text"
                        addedClass="text-2xl font-semibold text-[#ff4e4e] w-[20%]"
                    />
@@ -309,7 +327,7 @@ console.log(product)
                </Link>}
                 </>
               )})}
-            </div>
+            </div>) : (<p>No products Available</p>)}
             </div>
 
         </div>

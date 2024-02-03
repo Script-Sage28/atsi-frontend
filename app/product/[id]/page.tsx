@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Rate,Avatar, Skeleton  } from 'antd';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
+import { FaWhatsapp } from "react-icons/fa";
 import { CustomButton, CustomLabel } from '@/components';
 import CustomCarousel from '@/components/carousel/carousel';
 import ReviewForm from '@/components/form/review';
@@ -34,9 +35,9 @@ export default function ProductDetails({ params }:{
     }
      fetch()
   },[])
+ 
   return (
     <>
-  
   {details ? 
        (<div className='p-4'>
       <Link href={'/product'}  className='flex items-center m-4'>
@@ -55,28 +56,38 @@ export default function ProductDetails({ params }:{
                   children={details.name}
                   variant='text'
                 />
-                <Rate disabled value={details.rating} allowHalf />
                 <CustomLabel
-                    children={Peso(details.price)} 
+                    children={details.discountedPrice ? (<div className='flex gap-8'>
+                    <p className='m-0'>{Peso(details.discountedPrice)}</p>
+                    <p className='m-0 line-through'>{Peso(details.price)}</p>
+                  </div>) : Peso(details.price)} 
                     variant="text"
                     addedClass="text-lg font-semibold text-[#ff4e4e]"
                 />
                 <div className='flex flex-col gap-4 items-center'>
-                  <CustomButton
+                  {details.lazadaLink && <CustomButton
                     buttonType='link'
                     // eslint-disable-next-line @next/next/no-img-element
                     icon={<img className='w-6' src='../assets/lazada.png'  />}
                     onClick={() => { window.open(`${details.lazadaLink}`, '_blank')}}
                     children='Order in Lazada now!'
                     addedClass={'flex items-center p-2 shadow-border w-48 border-gray-200 text-gray-600 border-2'}
-                  />
-                  <CustomButton
+                  />}
+                  {details.shoppeeLink && <CustomButton
                     buttonType='link'
                     // eslint-disable-next-line @next/next/no-img-element
                     icon={<img className='w-12' src='../assets/shopee-logo-0.png'  />}
                     children='Order in Shopee now!'
                     onClick={() => { window.open(`${details.shoppeeLink}`, '_blank')}}
                     addedClass={'flex items-center px-2 py-4 shadow-border w-48 border-gray-200 text-gray-600 border-2'}
+                  />}
+                  <CustomButton
+                    buttonType='link'
+                    // eslint-disable-next-line @next/next/no-img-element
+                    icon={<FaWhatsapp />}
+                    children='Message on WhatsApp'
+                    onClick={() => { window.open(`https://api.whatsapp.com/send/?phone=%2B639179639906&text&type=phone_number&app_absent=0`, '_blank')}}
+                    addedClass={'flex items-center bg-green-400 px-2 py-4 shadow-border w-48 border-gray-200 text-gray-600 border-2'}
                   />
                 </div>
                 <hr />
@@ -85,12 +96,14 @@ export default function ProductDetails({ params }:{
                     isEllipsis={show.ellipsis}
                     text={details.description}
                   />
+                {details.description.length > 100 && (
                   <CustomButton
                     children={show.ellipsis ? 'Hide' : 'See more'}
-                    onClick={() =>{ setShow({...show,ellipsis: !show.ellipsis}); }}
+                    onClick={() =>{ setShow({...show, ellipsis: !show.ellipsis}); }}
                     buttonType='default'
                     addedClass={'bg-transparent text-indigo-400 font-semibold border-0'}
                   />
+                )}
                 </div>
               </div>
               <div>
