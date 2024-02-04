@@ -1,12 +1,13 @@
 'use client';
-import React, { useState, useEffect } from 'react'
-import { Breadcrumb, Space } from 'antd';
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react'
+import { Breadcrumb, Input, Space } from 'antd';
+import { debounce } from 'lodash';
 import Link from 'next/link'
-import { FaListUl,FaCheck } from 'react-icons/fa6';
+import { FaListUl } from 'react-icons/fa6';
 import { TiThSmall } from 'react-icons/ti';
 import { CustomLabel,LazyImages } from '@/components';
 import { T_Brand, T_Categories, T_Product } from '@/types/productList';
-import { BrandsRequest, CategoriesRequest } from '@/service/request';
+import { BrandsRequest, CategoriesRequest, ProductsRequest } from '@/service/request';
 import { Peso } from '@/helper/pesoSign';
 import { FilterSort } from '@/helper/filterSort';
 import { Skeleton,Select } from 'antd';
@@ -50,10 +51,11 @@ const Sorting = [
 
   
 export default function Productpage() {
+  const useDebounce = (func: any) => debounce(func, 1000);
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
   const product = useStore(selector('product'))
   const shopby = useStore(selector('brand_category'))
-  const { Option } = Select;
+  const { Search } = Input;
   const [loading, setLoading] = useState<boolean>(false);
   const [isRow,setIsRow] = useState<boolean>(true)
   const [filter,setFiltered] = useState<Filter>({
@@ -142,6 +144,21 @@ const handleSorting = (data: {value:string}) =>{
     sort: data.value as '' | 'asc' | 'desc' | 'lowest' | 'highest' | undefined
   }));
 };
+const onSetFilter = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+  setFiltered((prevState) => ({
+    ...prevState,
+    [name]: value,
+  }));
+}, []);
+
+const SearchProduct = async() =>{
+  if(filter.name){
+    const res = await ProductsRequest.GET_ALL(filter);
+    console.log(res)
+    loadProducts(res.data.data)
+  }
+}
   return (
     <>
     {product.list.length > 0 ? (<div className='w-full pl-4 md:pl-10 mb-10'>
@@ -185,6 +202,17 @@ const handleSorting = (data: {value:string}) =>{
 
             {/* List */}
             <div className='w-full'>
+            <div className='w-1/2 md:pl-8 mb-4 h-max'>
+              <Search
+                  placeholder="Search Products..."
+                  allowClear
+                  className='bg-white rounded-md h-[50px]'
+                  name='name'
+                  size='large'
+                  onChange={useDebounce(onSetFilter)}
+                  onSearch={SearchProduct}
+                />
+              </div>
             <div className='w-full flex gap-4 md:gap-12 items-start flex-wrap px-2 md:pr-12 md:pl-8 mb-4'>
               <div className='flex-1'>
               <Select
