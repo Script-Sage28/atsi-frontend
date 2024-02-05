@@ -157,6 +157,11 @@ export default function Home() {
                         variant="text"
                         addedClass="font-semibold text-gray-400"
                       />
+                     {product?.discount && <CustomLabel
+                        children={`${product?.discount}% Off`} 
+                        variant="text"
+                        addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
+                    />}
 
                     <CustomLabel
                         children={product?.discountedPrice ? (<div className='flex gap-4'>
@@ -228,6 +233,11 @@ export default function Home() {
                         variant="text"
                         addedClass="font-semibold text-gray-400"
                       />
+                    {product?.discount && <CustomLabel
+                        children={`${product?.discount}% Off`} 
+                        variant="text"
+                        addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
+                    />}
                     <CustomLabel
                         children={product?.discountedPrice ? (<div className='flex gap-4'>
                         <p className='m-0'>{Peso(product?.discountedPrice)}</p>
