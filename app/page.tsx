@@ -158,11 +158,14 @@ export default function Home() {
                         addedClass="font-semibold text-gray-400"
                       />
 
-                      <CustomLabel
-                        children={Peso(product?.price)}
+                    <CustomLabel
+                        children={product?.discountedPrice ? (<div className='flex gap-4'>
+                        <p className='m-0'>{Peso(product?.discountedPrice)}</p>
+                        <p className='m-0 line-through text-gray-600'>{Peso(product?.price)}</p>
+                      </div>) : Peso(product?.price)} 
                         variant="text"
-                        addedClass="text-[#0038FF] text-2xl font-semibold"
-                      />
+                        addedClass="text-lg font-semibold text-[#ff4e4e]"
+                    />
                     </div>
                   </div>
                 </div>
@@ -225,12 +228,14 @@ export default function Home() {
                         variant="text"
                         addedClass="font-semibold text-gray-400"
                       />
-
-                      <CustomLabel
-                        children={Peso(product?.price)}
+                    <CustomLabel
+                        children={product?.discountedPrice ? (<div className='flex gap-4'>
+                        <p className='m-0'>{Peso(product?.discountedPrice)}</p>
+                        <p className='m-0 line-through text-gray-600'>{Peso(product?.price)}</p>
+                      </div>) : Peso(product?.price)} 
                         variant="text"
-                        addedClass="text-[#0038FF] text-2xl font-semibold"
-                      />
+                        addedClass="text-lg font-semibold text-[#ff4e4e]"
+                    />
                     </div>
                   </div>
                 </div>

@@ -56,14 +56,14 @@ export default function ProductDetails({ params }:{
                   children={details.name}
                   variant='text'
                 />
-                <CustomLabel
-                    children={details.discountedPrice ? (<div className='flex gap-8'>
-                    <p className='m-0'>{Peso(details.discountedPrice)}</p>
-                    <p className='m-0 line-through'>{Peso(details.price)}</p>
-                  </div>) : Peso(details.price)} 
-                    variant="text"
-                    addedClass="text-lg font-semibold text-[#ff4e4e]"
-                />
+                    <CustomLabel
+                        children={details?.discountedPrice ? (<div className='flex gap-4'>
+                        <p className='m-0'>{Peso(details?.discountedPrice)}</p>
+                        <p className='m-0 line-through text-gray-600'>{Peso(details?.price)}</p>
+                      </div>) : Peso(details?.price)} 
+                        variant="text"
+                        addedClass="text-lg font-semibold text-[#ff4e4e]"
+                    />
                 <div className='flex flex-col gap-4 items-center'>
                   {details.lazadaLink && <CustomButton
                     buttonType='link'
