@@ -20,9 +20,9 @@ export default function Home() {
   const products = useStore(selector('product'));
   // eslint-disable-next-line camelcase
   const initialProductList: T_ProductList = {
-    allProducts: products.list.slice(0,5),
-    onSale: products.list?.filter((val: { isSaleProduct: boolean; }) => val.isSaleProduct).slice(0,5),
-    latest: getProductsWithinLast5Days(products.list).slice(0,5)
+    allProducts: products.list.slice(0,6),
+    onSale: products.list?.filter((val: { isSaleProduct: boolean; }) => val.isSaleProduct).slice(0,6),
+    latest: getProductsWithinLast5Days(products.list).slice(0,6)
   }
   const [productList,setProductsList] = useState(initialProductList);
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
@@ -119,10 +119,10 @@ export default function Home() {
             />
           </div>
 
-          <div className="flex flex-wrap gap-5">
+          <div className="flex flex-wrap justify-between items-center gap-5">
             {productList.onSale.length > 0 && productList.onSale.map((product, idx) => {
               return (
-              <CustomCard addedClass='flex-grow max-w-[250px] sm:basis-2/5 md:basis-auto' key={idx}>
+              <CustomCard addedClass='flex-grow max-w-[250px] sm:basis-2/5 md:basis-auto h-[350px]' key={idx}>
                 <Link className='relative w-full overflow-hidden'
                  key={idx} href={`/product/${product.id}`} passHref>
                 <div className="bg-red-700 absolute -left-[75px] -top-[7px] -rotate-45 p-3 w-[200px] z-50 text-center">
@@ -196,9 +196,9 @@ export default function Home() {
             />
           </div>
 
-          <div className="flex flex-wrap gap-5">
+          <div className="flex flex-wrap gap-5 justify-between items-center">
             {productList.latest?.length > 0 && productList.latest.map((product, idx) => (
-              <CustomCard addedClass='flex-grow max-w-[250px] sm:basis-2/5 md:basis-auto' key={idx}>
+              <CustomCard addedClass='flex-grow max-w-[250px] sm:basis-2/5 md:basis-auto h-[350px]' key={idx}>
               <Link className='relative w-full overflow-hidden'
                key={idx} href={`/product/${product.id}`} passHref>
                 <div className="bg-green-700 absolute  -left-[70px] -top-[10px] -rotate-45 p-3 w-[200px] z-50 text-center">

@@ -275,7 +275,7 @@ const SearchProduct = async() =>{
                 return(
                 <>
                 {isRow ? <Link href={`/product/${data.id}`} as={`/product/${data.id}`} key={idx} 
-                 className={clsx('w-[200px] md:w-[250px] h-max shadow-border rounded-t-lg hover:shadow-shine bg-gray-200 cursor-pointer')}>
+                 className={clsx('w-[200px] md:w-[250px] h-max shadow-border rounded-t-lg hover:shadow-shine bg-gray-200 h-[370px] cursor-pointer')}>
                    <Skeleton style={{padding:8,height:'200px'}} loading={loading} avatar active>
                    <div className='w-full min-h-[150px] flex justify-center items-center relative'>
                     <LazyImages

@@ -70,14 +70,14 @@ export default function ProductDetails({ params }:{
                         variant="text"
                         addedClass="text-lg font-semibold text-[#ff4e4e]"
                     />
-                <div className='flex flex-col gap-4 items-center'>
+                <div className='flex flex-col gap-4 items-center w-full'>
                   {details.lazadaLink && <CustomButton
                     buttonType='link'
                     // eslint-disable-next-line @next/next/no-img-element
                     icon={<img className='w-6' src='../assets/lazada.png'  />}
                     onClick={() => { window.open(`${details.lazadaLink}`, '_blank')}}
                     children='Order in Lazada now!'
-                    addedClass={'flex items-center p-2 shadow-border w-48 border-gray-200 text-gray-600 border-2'}
+                    addedClass={'flex items-center p-2 justify-center shadow-border w-full border-gray-200 text-gray-600 border-2'}
                   />}
                   {details.shoppeeLink && <CustomButton
                     buttonType='link'
@@ -85,7 +85,7 @@ export default function ProductDetails({ params }:{
                     icon={<img className='w-12' src='../assets/shopee-logo-0.png'  />}
                     children='Order in Shopee now!'
                     onClick={() => { window.open(`${details.shoppeeLink}`, '_blank')}}
-                    addedClass={'flex items-center px-2 py-4 shadow-border w-48 border-gray-200 text-gray-600 border-2'}
+                    addedClass={'flex items-center px-2 py-4 justify-center shadow-border w-full  border-gray-200 text-gray-600 border-2'}
                   />}
                   <CustomButton
                     buttonType='link'
@@ -93,7 +93,7 @@ export default function ProductDetails({ params }:{
                     icon={<FaWhatsapp />}
                     children='Message on WhatsApp'
                     onClick={() => { window.open(`https://api.whatsapp.com/send/?phone=%2B639179639906&text&type=phone_number&app_absent=0`, '_blank')}}
-                    addedClass={'flex items-center bg-green-400 px-2 py-4 shadow-border w-48 border-gray-200 text-gray-600 border-2'}
+                    addedClass={'flex items-center bg-green-400 justify-center px-2 py-4 shadow-border w-full border-gray-200 text-gray-600 border-2'}
                   />
                 </div>
                 <hr />
