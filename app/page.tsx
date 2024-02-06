@@ -119,10 +119,10 @@ export default function Home() {
             />
           </div>
 
-          <div className="flex flex-wrap justify-between items-center gap-5">
+          <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-5">
             {productList.onSale.length > 0 && productList.onSale.map((product, idx) => {
               return (
-              <CustomCard addedClass='flex-grow max-w-[250px] sm:basis-2/5 md:basis-auto h-[350px]' key={idx}>
+              <CustomCard addedClass='flex grow sm:max-w-[150px] md:max-w-[250px] basis-[150px] md:w-[150px] h-[350px]' key={idx}>
                 <Link className='relative w-full overflow-hidden'
                  key={idx} href={`/product/${product.id}`} passHref>
                 <div className="bg-red-700 absolute -left-[75px] -top-[7px] -rotate-45 p-3 w-[200px] z-50 text-center">
@@ -135,7 +135,7 @@ export default function Home() {
                     />
                   </div>
                 </div>
-                <div className="w-full flex-grow flex flex-col justify-start items-start">
+                <div className="w-full flex flex-col justify-start items-start">
                   <div className="flex-grow w-full min-h-[230px] flex justify-center items-center py-5">
                     <Image
                       src={(product.media.length > 0 && product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
@@ -150,6 +150,7 @@ export default function Home() {
                       children={product?.name}
                       variant="title"
                       titleLevel={5}
+                      addedClass='line-clamp-1'
                     />
                     <div className="flex flex-col">
                       <CustomLabel
@@ -157,14 +158,14 @@ export default function Home() {
                         variant="text"
                         addedClass="font-semibold text-gray-400"
                       />
-                     {product?.discount && <CustomLabel
+                     {((product?.discount) != null) && <CustomLabel
                         children={`${product?.discount}% Off`} 
                         variant="text"
                         addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
                     />}
 
                     <CustomLabel
-                        children={product?.discountedPrice ? (<div className='flex gap-4'>
+                        children={((product?.discountedPrice) != null) ? (<div className='flex gap-4'>
                         <p className='m-0'>{Peso(product?.discountedPrice)}</p>
                         <p className='m-0 line-through text-gray-600'>{Peso(product?.price)}</p>
                       </div>) : Peso(product?.price)} 
@@ -196,9 +197,9 @@ export default function Home() {
             />
           </div>
 
-          <div className="flex flex-wrap gap-5 justify-between items-center">
+          <div className="flex flex-wrap md:flex-nowrap gap-4 w-full justify-between items-center">
             {productList.latest?.length > 0 && productList.latest.map((product, idx) => (
-              <CustomCard addedClass='flex-grow max-w-[250px] sm:basis-2/5 md:basis-auto h-[350px]' key={idx}>
+              <CustomCard addedClass='flex grow sm:max-w-[150px] md:max-w-[250px] basis-[150px] md:w-[150px] h-[350px]' key={idx}>
               <Link className='relative w-full overflow-hidden'
                key={idx} href={`/product/${product.id}`} passHref>
                 <div className="bg-green-700 absolute  -left-[70px] -top-[10px] -rotate-45 p-3 w-[200px] z-50 text-center">
@@ -226,6 +227,7 @@ export default function Home() {
                       children={product?.name}
                       variant="title"
                       titleLevel={5}
+                      addedClass='line-clamp-1'
                     />
                     <div className="flex flex-col">
                       <CustomLabel
@@ -233,13 +235,13 @@ export default function Home() {
                         variant="text"
                         addedClass="font-semibold text-gray-400"
                       />
-                    {product?.discount && <CustomLabel
+                    {((product?.discount) != null) && <CustomLabel
                         children={`${product?.discount}% Off`} 
                         variant="text"
                         addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
                     />}
                     <CustomLabel
-                        children={product?.discountedPrice ? (<div className='flex gap-4'>
+                        children={((product?.discountedPrice) != null) ? (<div className='flex gap-4'>
                         <p className='m-0'>{Peso(product?.discountedPrice)}</p>
                         <p className='m-0 line-through text-gray-600'>{Peso(product?.price)}</p>
                       </div>) : Peso(product?.price)} 

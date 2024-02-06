@@ -17,7 +17,7 @@ const config: Config = {
         'fit-to-screen-without-header': 'calc(100vh - 64px)',
       },
       screens: {
-        'sm': '576px',   // Small screens
+        'sm': '375px',   // Small screens
         'md': '960px',   // Medium screens
         'lg': '1440px',
       },

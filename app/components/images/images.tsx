@@ -13,7 +13,6 @@ interface LazyImageProps {
 // ... (previous imports)
 
 export const LazyImages: React.FC<LazyImageProps> = ({ images, addedClass, alt, size }) => {
-  console.log(images);
   const [loaded, setLoaded] = useState<boolean>(true);
 
   useEffect(() => {
@@ -24,6 +23,7 @@ export const LazyImages: React.FC<LazyImageProps> = ({ images, addedClass, alt, 
 
   const isValidImageUrl = (url: string): boolean => {
     try {
+      // eslint-disable-next-line no-new
       new URL(url);
       return true;
     } catch (error) {
@@ -31,13 +31,10 @@ export const LazyImages: React.FC<LazyImageProps> = ({ images, addedClass, alt, 
     }
   };
 
-  const handleImageError = () => {
-    // If the image fails to load, setLoaded to true to show the default image
-    setLoaded(true);
-  };
 
   // If the images URL is not valid or empty, set it to the default image
-  const imageUrl = isValidImageUrl(images) ? images : '/assets/noimg.png';
+  const imageUrl = images !== undefined && isValidImageUrl(images) ? images : '/assets/noimg.png';
+
 
   return (
     <>

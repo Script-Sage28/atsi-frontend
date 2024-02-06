@@ -74,7 +74,9 @@ export default function Productpage() {
             name: filter.brand?.name,
             status: '', 
           })
+          console.log(brandList)
           const results = brandList.data.data;
+          console.log(results)
           const data = {
             brand: results,
             category: results[0].Categories
@@ -202,7 +204,7 @@ const SearchProduct = async() =>{
 
             {/* List */}
             <div className='w-full'>
-            <div className='w-1/2 md:pl-8 mb-4 h-max'>
+            <div className='w-11/12 md:w-1/2 pl-2 md:pl-8 mb-2 h-max'>
               <Search
                   placeholder="Search Products..."
                   allowClear
@@ -264,7 +266,7 @@ const SearchProduct = async() =>{
                 /> 
               </div>
             )}
-            {product.list.length > 0 ? (<div className={clsx(isRow ? 'flex-row' : 'flex-col','w-full flex flex-wrap gap-4 md:p-8 justify-center items-center md:justify-normal')}>
+            {product.list.length > 0 ? (<div className={clsx(isRow ? 'flex-row' : 'flex-col','w-full flex flex-wrap gap-4 md:p-8 justify-center items-center md:justify-center')}>
               {product.list.map((data:T_Product,idx: React.Key | null | undefined) =>{
                 const media = (data.media.length > 0 && data.media[0].url !== '') ? `${imgUrl}${data.media[0].url}` : '';
                 const HTMLViewer = () => {
@@ -275,7 +277,7 @@ const SearchProduct = async() =>{
                 return(
                 <>
                 {isRow ? <Link href={`/product/${data.id}`} as={`/product/${data.id}`} key={idx} 
-                 className={clsx('w-[200px] md:w-[250px] h-max shadow-border rounded-t-lg hover:shadow-shine bg-gray-200 h-[370px] cursor-pointer')}>
+                 className={clsx('w-[200px] md:w-[230px] shadow-border rounded-t-lg hover:shadow-shine bg-gray-200 h-[370px] cursor-pointer')}>
                    <Skeleton style={{padding:8,height:'200px'}} loading={loading} avatar active>
                    <div className='w-full min-h-[150px] flex justify-center items-center relative'>
                     <LazyImages
