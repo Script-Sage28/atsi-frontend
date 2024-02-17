@@ -74,9 +74,7 @@ export default function Productpage() {
             name: filter.brand?.name,
             status: '', 
           })
-          console.log(brandList)
           const results = brandList.data.data;
-          console.log(results)
           const data = {
             brand: results,
             category: results[0].Categories
@@ -157,10 +155,11 @@ const onSetFilter = useCallback((e: ChangeEvent<HTMLInputElement>) => {
 const SearchProduct = async() =>{
   if(filter.name){
     const res = await ProductsRequest.GET_ALL(filter);
-    console.log(res)
+    
     loadProducts(res.data.data)
   }
 }
+console.log(product.list)
   return (
     <>
     {product.list.length > 0 ? (<div className='w-full pl-4 md:pl-10 mb-10'>
@@ -363,7 +362,12 @@ const SearchProduct = async() =>{
         </div>
     
     </div>) : 
-    <Skeleton style={{padding:32,height:'500px'}} paragraph={{rows:8}} loading={loading} active />}
+    (<>
+    <Skeleton style={{padding:32,height:'500px'}} paragraph={{rows:8}} loading={loading} active />
+    <div className='w-full h-52 flex justify-center items-center'>
+      <p>No products Available now</p>
+    </div>
+    </>)}
     </>
   )
 }

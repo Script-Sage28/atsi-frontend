@@ -23,13 +23,14 @@ const initialState: ProductState = {
 const createProductSlice: StateCreator<ProductSlice> = (set) =>({
     product: initialState,
     loadProducts: async (payload) =>{
+        console.log(payload)
         try {
             set((state) => ({
                 ...state,
                 product:{
                     ...state.product,
                     loading: false,
-                    list: payload,
+                    list: payload?.filter((item: { isDeleted: boolean; }) => !item.isDeleted),
                     responseMsg: null
                 }
             }))

@@ -74,11 +74,16 @@ export default function CustomHeader() {
     },
     {
       id: 3,
+      name: 'Blog',
+      url: '/#about',
+    },
+    {
+      id: 4,
       name: 'Products',
       url: '/product',
     },
     {
-      id: 4,
+      id: 5,
       name: user.info?.username ? user.info?.username : 'Signin',
       url:  user.info?.username ? '/' : '/login',
     },
@@ -163,7 +168,7 @@ export default function CustomHeader() {
   }
   return (
     <>
-    <Header className="header p-2 md:p-8 w-full flex justify-between md:justify-none items-center">
+    <Header className="header sticky z-50 top-0 p-2 md:p-8 w-full flex justify-between md:justify-none items-center">
       <div className="flex-1 w-full flex justify-between items-center ">
         {open && <MdOutlineClear size={40} className='md:hidden ease-in-out cursor-pointer' 
         onClick={handleOpenChange} />}
@@ -176,7 +181,7 @@ export default function CustomHeader() {
         {links?.map((link, idx) => {
           return(
           <React.Fragment key={idx}>
-          {link.id !== 4 ? <Link href={link.url} className="font-semibold" key={idx}
+          {link.id !== 5 ? <Link href={link.url} className="font-semibold" key={idx}
           >
             {link.name}
           </Link> : user.info?.username ?

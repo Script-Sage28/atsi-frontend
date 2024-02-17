@@ -20,9 +20,9 @@ export default function Home() {
   const products = useStore(selector('product'));
   // eslint-disable-next-line camelcase
   const initialProductList: T_ProductList = {
-    allProducts: products.list.slice(0,6),
-    onSale: products.list?.filter((val: { isSaleProduct: boolean; }) => val.isSaleProduct).slice(0,6),
-    latest: getProductsWithinLast5Days(products.list).slice(0,6)
+    allProducts: products.list?.slice(0,5),
+    onSale: products.list?.filter((val: { isSaleProduct: boolean; }) => val.isSaleProduct).slice(0,5),
+    latest: getProductsWithinLast5Days(products.list).slice(0,5)
   }
   const [productList,setProductsList] = useState(initialProductList);
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
@@ -38,13 +38,13 @@ export default function Home() {
           status: '',
         });
         loadProducts(response.data.data)
-        const all = response.data.data.slice(0, 5);
-        const sale = response.data.data?.filter((val: { isSaleProduct: boolean; }) => val.isSaleProduct).slice(0,5);
+        const all = response.data.data?.filter((item: { isDeleted: boolean; }) => !item.isDeleted).slice(0, 5);
+        const sale = response.data.data?.filter((val: { isSaleProduct: boolean,isDeleted:boolean }) => val.isSaleProduct && !val.isDeleted).slice(0,5);
         setProductsList(prev =>({
           ...prev,
           allProducts: all,
           onSale: sale,
-          latest:getProductsWithinLast5Days(response.data.data).slice(0,5)
+          latest:getProductsWithinLast5Days(response.data.data?.filter((item: { isDeleted: boolean; }) => !item.isDeleted)).slice(0,5)
         }));        
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -52,7 +52,7 @@ export default function Home() {
     }
     void fetchProducts()
   },[])
-
+console.log(productList)
   return (
     <>
       {/* Landing Page */}
@@ -105,7 +105,7 @@ export default function Home() {
       {/* Products Section */}
       <div id="products" className="w-full flex flex-col gap-8 p-8 md:px-40 md:py-14">
         {/* Sales Products */}
-        {productList.onSale.length > 0 && <div className="w-full h-auto flex flex-col gap-10">
+        {productList.onSale?.length > 0 && <div className="w-full h-auto flex flex-col gap-10">
           <div className="flex flex-row items-start justify-between">
             <CustomLabel
               children="Sales Products"
@@ -119,8 +119,8 @@ export default function Home() {
             />
           </div>
 
-          <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-5">
-            {productList.onSale.length > 0 && productList.onSale.map((product, idx) => {
+          <div className="flex flex-wrap md:flex-wrap justify-start items-center gap-5">
+            {productList.onSale?.length > 0 && productList.onSale.map((product, idx) => {
               return (
               <CustomCard addedClass='flex grow sm:max-w-[150px] md:max-w-[250px] basis-[150px] md:w-[150px] h-[350px]' key={idx}>
                 <Link className='relative w-full overflow-hidden'
@@ -197,7 +197,7 @@ export default function Home() {
             />
           </div>
 
-          <div className="flex flex-wrap md:flex-nowrap gap-4 w-full justify-between items-center">
+          <div className="flex flex-wrap md:flex-nowrap gap-4 w-full justify-start items-center">
             {productList.latest?.length > 0 && productList.latest.map((product, idx) => (
               <CustomCard addedClass='flex grow sm:max-w-[150px] md:max-w-[250px] basis-[150px] md:w-[150px] h-[350px]' key={idx}>
               <Link className='relative w-full overflow-hidden'
