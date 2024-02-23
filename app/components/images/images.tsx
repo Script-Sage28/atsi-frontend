@@ -1,7 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Spin } from 'antd';
+import { Spin,Image } from 'antd';
 import clsx from 'clsx';
+
 
 interface LazyImageProps {
   images?: string;
@@ -45,13 +46,11 @@ export const LazyImages: React.FC<LazyImageProps> = ({ images, addedClass, alt, 
           </div>
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
-          <img
-            className={clsx('w-full object-fill', addedClass)}
+          <Image
+            className={clsx('w-full object-contain', addedClass)}
             src={imageUrl}
             loading='lazy'
             alt={alt}
-            width={500}
-            height={300}
           />
         )}
       </div>

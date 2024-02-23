@@ -36,9 +36,9 @@ export default function CustomCarousel({imgList}: CarouselProps) {
     };
     const imgListLength = imgList?.length ?? 0;
   return (
-    <div className='flex flex-col-reverse justify-center items-center md:flex-row gap-4 w-full h-full'>
+    <div className='flex flex-col-reverse justify-center items-top md:flex-row gap-4 w-full h-full'>
         {imgListLength > 0 ? (<>
-        <div className='flex flex-row md:flex-col gap-8 h-max md:h-80 m-4 md:m-8'>
+        <div className='flex flex-row md:flex-col gap-8 md:h-52 m-4 md:m-8 overflow-y-auto overflow-x-hidden'>
               {imgList?.map((data, idx) => (
                   <div key={idx} className={clsx('w-20 h-20 md:h-16', current === idx ? 'scale-110' : 'opacity-25')}
                       onClick={() => { handleClickPreview(idx); } }
@@ -50,10 +50,10 @@ export default function CustomCarousel({imgList}: CarouselProps) {
                   </div>
               ))}
           </div>
-          <div className='rounded-md w-full md:w-96 p-4'>
+          <div className='rounded-md w-full md:w-96 p-4 '>
             <Carousel dotPosition={'bottom'} ref={carouselRef} swipe beforeChange={handleBeforeChange}>
                 {imgList?.map((data, idx) => (
-                    <div key={idx} className='w-full h-80'>
+                    <div key={idx} className='w-full '>
                         <LazyImages
                             size='large'
                             images={data}
