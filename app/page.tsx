@@ -263,11 +263,11 @@ export default function Home() {
       </div>
       <div id='blogs' className='flex justify-top flex-col gap-4 items-center p-8'>
         <h3 className='text-[#0029FF] font-semi-bold text-md'>Blogs</h3>
-        <div className='h-max w-full flex flex-wrap item-center justify-center'>
+        <div className='h-max w-full flex flex-wrap item-center  gap-4 justify-center'>
           {blogs?.map((data:T_Blogs,idx) =>{
             return(
             <div className='bg-[#435EEA] shadow-custom w-[887px] h-[450px] rounded-md relative pt-16'>
-                <div className='absolute -right-8 top-12 w-[323.26px] h-[310px] rounded-lg shadow-custom1'>
+                <div className='absolute -right-8 top-12 w-[323.26px] h-[310px] rounded-lg bg-white shadow-custom1'>
                 <Image
                   src={imgUrl + data.imageUrl}
                   alt={data?.title}

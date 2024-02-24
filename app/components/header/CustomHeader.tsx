@@ -75,7 +75,7 @@ export default function CustomHeader() {
     {
       id: 3,
       name: 'Blog',
-      url: '/#about',
+      url: '/#blogs',
     },
     {
       id: 4,
