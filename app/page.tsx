@@ -8,9 +8,9 @@ import { WiStars } from 'react-icons/wi';
 import { CustomButton, CustomCard, CustomLabel } from './components';
 import { getProductsWithinLast5Days } from './helper/latestProducts';
 import { Peso } from './helper/pesoSign';
-import { ProductsRequest } from './service/request';
+import { AllBlogs, ProductsRequest } from './service/request';
 // eslint-disable-next-line camelcase
-import { type T_ProductList } from './types/productList';
+import { T_Blogs, type T_ProductList } from './types/productList';
 import { loadProducts, selector } from './zustand/store/store.provider';
 import Noimg from '../public/assets/noimg.png'
 import useStore from '@/zustand/store/store';
@@ -25,6 +25,7 @@ export default function Home() {
     latest: getProductsWithinLast5Days(products.list).slice(0,5)
   }
   const [productList,setProductsList] = useState(initialProductList);
+  const [blogs,setBlogs] = useState([])
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
 
   useEffect(() =>{
@@ -37,6 +38,10 @@ export default function Home() {
           name: '',
           status: '',
         });
+        const res = await AllBlogs.FETCH({
+
+        })
+        setBlogs(res.data.data.filter((item: { isDeleted: boolean; }) => !item.isDeleted))
         loadProducts(response.data.data)
         const all = response.data.data?.filter((item: { isDeleted: boolean; }) => !item.isDeleted).slice(0, 5);
         const sale = response.data.data?.filter((val: { isSaleProduct: boolean,isDeleted:boolean }) => val.isSaleProduct).slice(0,5);
@@ -52,6 +57,7 @@ export default function Home() {
     }
     void fetchProducts()
   },[])
+  console.log(blogs)
   return (
     <>
       {/* Landing Page */}
@@ -100,9 +106,8 @@ export default function Home() {
           <FaChevronDown size={30} />
         </div>
       </div>
-
       {/* Products Section */}
-      <div id="products" className="w-full flex flex-col gap-8 p-8 md:px-40 md:py-14">
+      <div id="products" className="w-full flex flex-col gap-8 p-8 md:px-40 md:py-8">
         {/* Sales Products */}
         {productList.onSale?.length > 0 && <div className="w-full h-auto flex flex-col gap-10">
           <div className="flex flex-row items-start justify-between">
@@ -255,6 +260,49 @@ export default function Home() {
             ))}
           </div>
         </div>}
+      </div>
+      <div id='blogs' className='flex justify-top flex-col gap-4 items-center p-8'>
+        <h3 className='text-[#0029FF] font-semi-bold text-md'>Blogs</h3>
+        <div className='h-max w-full flex flex-wrap item-center justify-center'>
+          {blogs?.map((data:T_Blogs,idx) =>{
+            return(
+            <div className='bg-[#435EEA] shadow-custom w-[887px] h-[450px] rounded-md relative pt-16'>
+                <div className='absolute -right-8 top-12 w-[323.26px] h-[310px] rounded-lg shadow-custom1'>
+                <Image
+                  src={imgUrl + data.imageUrl}
+                  alt={data?.title}
+                  className='object-fill w-full h-full rounded-lg'
+                  width={130}
+                  height={230}
+                />
+                </div>
+                <div className='w-[481px] h-80 p-4 leading-7'>
+                  <div className='px-8'>
+                    <p className='text-[#C0C0C0]'>{new Date(data.createdAt).toLocaleDateString()}</p>
+                    <p className='text-white font-bold text-2xl'>{data.title}</p>
+                  </div>
+                  <div className='p-8'>
+                    <div className='text-white text-md font-semibold line-clamp-4' dangerouslySetInnerHTML={{ __html: data.content }} />
+                  </div>
+                  <div className='flex justify-center items-center absolute bottom-28 w-[450px]'>
+                  <CustomButton
+                      children={<Link href={'/product'}>Read More</Link>}
+                      buttonType="link"
+                      addedClass="text-md bg-white text-[#435EEA] font-bold hover:bg-white w-52 h-12"
+                    />
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <div className='w-[887px] flex justify-end items-end'>
+        <CustomButton
+          children={<Link href={'/product'}>View more</Link>}
+          buttonType="link"
+          addedClass="text-base"
+        />          
+        </div>
       </div>
     </>
   );

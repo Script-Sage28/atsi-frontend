@@ -6,7 +6,8 @@ const Endpoints ={
     BRANDS: '/brands/all',
     PRODUCT_DETAILS: '/products/info/',
     REVIEW: '/products/product-review',
-    UPDATE_USER: '/user/update/'
+    UPDATE_USER: '/user/update/',
+    BLOGS:'/blogs/all'
 }
 
 export default Endpoints

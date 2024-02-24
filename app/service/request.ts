@@ -1,6 +1,10 @@
 import axiosInstance from './axios';
 import Endpoints from './endpoint';
 
+
+export const AllBlogs ={
+    FETCH: async(params:any) => await axiosInstance.get(Endpoints.BLOGS, { params })
+}
 export const BrandsRequest ={
     GET_ALL: async (params:any) => await axiosInstance.get(Endpoints.BRANDS, { params })
 }
