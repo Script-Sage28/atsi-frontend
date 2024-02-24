@@ -63,7 +63,8 @@ export default function Productpage() {
     sort: '',
     brand:{name:'',id:''},
     name:'',
-    status:''
+    status:'',
+    price:''
   })
 
   useEffect(() =>{
@@ -139,6 +140,7 @@ const handleCategory = (name:string,id:string) =>{
   }));
 };
 const handleSorting = (data: {value:string}) =>{
+  console.log(data)
   setFiltered(prevFilter => ({
     ...prevFilter,
     sort: data.value as '' | 'asc' | 'desc' | 'lowest' | 'highest' | undefined
@@ -155,11 +157,9 @@ const onSetFilter = useCallback((e: ChangeEvent<HTMLInputElement>) => {
 const SearchProduct = async() =>{
   if(filter.name){
     const res = await ProductsRequest.GET_ALL(filter);
-    
     loadProducts(res.data.data)
   }
 }
-console.log(product.list)
   return (
     <>
     {product.list.length > 0 ? (<div className='w-full pl-4 md:pl-10 mb-10'>

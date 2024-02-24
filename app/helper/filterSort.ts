@@ -5,9 +5,9 @@ import { T_Product } from '@/types/productList';
 export const FilterSort = async(filter: Filter): Promise<T_Product[]> =>{
     try {
         let results;
-
+        console.log(filter)
         const response = await ProductsRequest.GET_ALL({
-            price: (filter.sort === 'lowest' || filter.sort === 'highest') ? filter.sort : '',
+            price: ((filter.sort === 'lowest' || filter.sort === 'highest') && filter.sort === 'highest') ? 'desc' : '',
             brandId: filter.brand?.id || '',
             categoryId: filter.category?.id || '',
             name: filter.name || '',

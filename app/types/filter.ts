@@ -4,4 +4,5 @@ export interface Filter{
     name?:string;
     status?:string;
     sort?: '' | 'asc' | 'desc' | 'lowest' | 'highest';
+    price?: '' | 'asc' | 'desc'
 }

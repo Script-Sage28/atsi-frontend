@@ -39,7 +39,7 @@ export default function Home() {
         });
         loadProducts(response.data.data)
         const all = response.data.data?.filter((item: { isDeleted: boolean; }) => !item.isDeleted).slice(0, 5);
-        const sale = response.data.data?.filter((val: { isSaleProduct: boolean,isDeleted:boolean }) => val.isSaleProduct && !val.isDeleted).slice(0,5);
+        const sale = response.data.data?.filter((val: { isSaleProduct: boolean,isDeleted:boolean }) => val.isSaleProduct).slice(0,5);
         setProductsList(prev =>({
           ...prev,
           allProducts: all,
@@ -52,7 +52,6 @@ export default function Home() {
     }
     void fetchProducts()
   },[])
-console.log(productList)
   return (
     <>
       {/* Landing Page */}
