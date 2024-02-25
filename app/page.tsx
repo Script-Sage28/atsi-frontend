@@ -266,7 +266,7 @@ export default function Home() {
         <div className='h-max w-full flex flex-wrap item-center  gap-4 justify-center'>
           {blogs?.map((data:T_Blogs,idx) =>{
             return(
-            <div className='bg-[#435EEA] shadow-custom w-[887px] h-[450px] rounded-md relative pt-16'>
+            <div key={idx} className='bg-[#435EEA] shadow-custom w-[887px] h-[450px] rounded-md relative pt-16'>
                 <div className='absolute -right-8 top-12 w-[323.26px] h-[310px] rounded-lg bg-white shadow-custom1'>
                 <Image
                   src={imgUrl + data.imageUrl}

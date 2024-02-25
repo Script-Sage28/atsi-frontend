@@ -82,7 +82,7 @@ export default function ProductDetails({ params }:{
                   {details.shoppeeLink && <CustomButton
                     buttonType='link'
                     // eslint-disable-next-line @next/next/no-img-element
-                    icon={<img className='w-12' src='../assets/shopee-logo-0.png'  />}
+                    icon={<img className='w-8' src='../assets/shopee-logo-0.png'  />}
                     children='Order in Shopee now!'
                     onClick={() => { window.open(`${details.shoppeeLink}`, '_blank')}}
                     addedClass={'flex items-center px-2 py-4 justify-center shadow-border w-full  border-gray-200 text-gray-600 border-2'}

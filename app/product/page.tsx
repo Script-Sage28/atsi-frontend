@@ -160,9 +160,15 @@ const SearchProduct = async() =>{
     loadProducts(res.data.data)
   }
 }
+const handleClear = () =>{
+  setFiltered(prevFilter => ({
+    ...prevFilter,
+    brand:{name:'',id:''},
+  }));
+};
   return (
     <>
-    {product.list.length > 0 ? (<div className='w-full pl-4 md:pl-10 mb-10'>
+    <div className='w-full pl-4 md:pl-10 mb-10'>
         <div className='mb-4'>
         <Breadcrumb
             items={[{title: 'Home'},{title: <a href="">Products</a>}]}
@@ -236,7 +242,7 @@ const SearchProduct = async() =>{
                   onChange={(value) =>{handleSorting({value})}}
                   options={Sorting.map(option => ({ value: option.value, label: option.name }))}
                   optionLabelProp="label" 
-
+                  onClear={()=> handleClear()}
                   />
                 </div>
                 <div className='flex justify-end items-end gap-2 shadow-border p-2 rounded-md'>
@@ -270,7 +276,7 @@ const SearchProduct = async() =>{
                 const media = (data.media.length > 0 && data.media[0].url !== '') ? `${imgUrl}${data.media[0].url}` : '';
                 const HTMLViewer = () => {
                   return (
-                    <div dangerouslySetInnerHTML={{ __html: data.description }} />
+                    <div className='line-clamp-4' dangerouslySetInnerHTML={{ __html: data.description }} />
                   );
                 };
                 return(
@@ -321,7 +327,7 @@ const SearchProduct = async() =>{
                    <LazyImages
                      size='large'
                      images={media}
-                     addedClass={'rounded-t-lg h-[250px] w-full'}
+                     addedClass={'rounded-t-lg h-[150px] w-[150px]'}
                      alt='No image'
                    />
                     {data.status !== 'Available' && <div className='absolute px-4 py-2 bg-black text-white w-max'><p>{data.status === 'Out_of_Stock' ? data.status.replace(/_/g, ' ') : data.status}</p></div>}
@@ -336,7 +342,7 @@ const SearchProduct = async() =>{
                    <CustomLabel
                        children={data.category.name} 
                        variant="text"
-                       addedClass="sm:text-sm md:text-md text-gray-500 font-semibold"
+                       addedClass="sm:text-sm md:text-md text-gray-500 font-semibold line-clamp- 4"
                    />
                     <div>
                       {HTMLViewer()}
@@ -356,18 +362,16 @@ const SearchProduct = async() =>{
                </Link>}
                 </>
               )})}
-            </div>) : (<p>No products Available</p>)}
+            </div>) : (
+            <div className='w-full h-96 flex justify-center items-center'>
+            <p>No products Available</p>
+            </div>
+            )}
             </div>
 
         </div>
     
-    </div>) : 
-    (<>
-    <Skeleton style={{padding:32,height:'500px'}} paragraph={{rows:8}} loading={loading} active />
-    <div className='w-full h-52 flex justify-center items-center'>
-      <p>No products Available now</p>
     </div>
-    </>)}
     </>
   )
 }
