@@ -304,13 +304,13 @@ const handleClear = () =>{
                         variant="text"
                         addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
                     />
-                    {data.discount && <CustomLabel
+                    {(data.discount && data.discount !== 0) && <CustomLabel
                         children={`${data.discount}% Off`} 
                         variant="text"
                         addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
                     />}
                    <CustomLabel
-                        children={data.discountedPrice ? (<div className='flex gap-4'>
+                        children={(data.discountedPrice && data.discountedPrice !== 0) ? (<div className='flex gap-4'>
                         <p className='m-0'>{Peso(data.discountedPrice)}</p>
                         <p className='m-0 line-through text-gray-600'>{Peso(data.price)}</p>
                       </div>) : Peso(data.price)} 
@@ -350,7 +350,7 @@ const handleClear = () =>{
                     </div>
 
                   <CustomLabel
-                       children={data.discountedPrice ? (<div className='flex gap-8'>
+                       children={(data.discountedPrice && data.discountedPrice !== 0) ? (<div className='flex gap-8'>
                         <p className='m-0'>{Peso(data.discountedPrice)}</p>
                         <p className='m-0 line-through'>{Peso(data.price)}</p>
                        </div>) : Peso(data.price)} 

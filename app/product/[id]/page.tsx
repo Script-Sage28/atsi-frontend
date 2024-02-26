@@ -57,13 +57,13 @@ export default function ProductDetails({ params }:{
                   variant='text'
                   addedClass='font-bold text-lg'
                 />
-                    {details?.discount && <CustomLabel
+                    {(details?.discount && details?.discount !== 0) && <CustomLabel
                         children={`${details?.discount}% Off`} 
                         variant="text"
                         addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
                     />}
                     <CustomLabel
-                        children={details?.discountedPrice ? (<div className='flex gap-4'>
+                        children={(details?.discountedPrice && details?.discountedPrice !== 0) ? (<div className='flex gap-4'>
                         <p className='m-0'>{Peso(details?.discountedPrice)}</p>
                         <p className='m-0 line-through text-gray-600'>{Peso(details?.price)}</p>
                       </div>) : Peso(details?.price)} 
