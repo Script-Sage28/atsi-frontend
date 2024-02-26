@@ -49,7 +49,7 @@ export default function Home() {
           ...prev,
           allProducts: all,
           onSale: sale,
-          latest:getProductsWithinLast5Days(response.data.data?.filter((item: { isDeleted: boolean; }) => !item.isDeleted)).slice(0,5)
+          latest:response.data.data?.filter((item: { isNewRelease: boolean; }) => item.isNewRelease).slice(0,5)
         }));        
       } catch (error) {
         console.error('Error fetching data:', error);
