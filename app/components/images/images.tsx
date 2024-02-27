@@ -5,7 +5,7 @@ import clsx from 'clsx';
 
 
 interface LazyImageProps {
-  images?: string;
+  images?: any;
   addedClass?: any;
   alt?: string;
   size: 'default' | 'small' | 'large';
@@ -21,22 +21,8 @@ export const LazyImages: React.FC<LazyImageProps> = ({ images, addedClass, alt, 
       setLoaded(false);
     }, 1000);
   }, []);
-
-  const isValidImageUrl = (url: string): boolean => {
-    try {
-      // eslint-disable-next-line no-new
-      new URL(url);
-      return true;
-    } catch (error) {
-      return false;
-    }
-  };
-
-
-  // If the images URL is not valid or empty, set it to the default image
-  const imageUrl = images !== undefined && isValidImageUrl(images) ? images : '/assets/noimg.png';
-
-
+  const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
+  console.log(images)
   return (
     <>
       <div className={clsx('relative', addedClass)}>
@@ -44,14 +30,24 @@ export const LazyImages: React.FC<LazyImageProps> = ({ images, addedClass, alt, 
           <div className='w-full h-full flex justify-center items-center bg-opacity-70'>
             <Spin size={size ?? 'default'} />
           </div>
+        ) : images instanceof Object ? (
+          <Image.PreviewGroup
+            items={images.map((item: { url: any; }) => imgUrl + item.url)}
+          >
+            <Image
+              className={clsx('w-full object-contain', addedClass)}
+              src={imgUrl + images[0]?.url}
+              loading='lazy'
+              alt={alt}
+            />
+          </Image.PreviewGroup>
         ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <Image
-            className={clsx('w-full object-contain', addedClass)}
-            src={imageUrl}
-            loading='lazy'
-            alt={alt}
-          />
+            <Image
+              className={clsx('w-full object-contain', addedClass)}
+              src={images}
+              loading='lazy'
+              alt={alt}
+            />
         )}
       </div>
     </>

@@ -25,16 +25,20 @@ export default function ProductDetails({ params }:{
   const productId = params.id;
   const [details,setDetails] = useState<T_Product | null>(null);
   const [imgList,setImgList] = useState([]);
+  const fetch = async():Promise<void> =>{
+    setLoading(true)
+    const response = await FetchingDetails(productId)
+    setImgList(response.img)
+    setDetails(response.results)
+    setLoading(false)
+  }
   useEffect(() =>{
-    const fetch = async():Promise<void> =>{
-      setLoading(true)
-      const response = await FetchingDetails(productId)
-      setImgList(response.img)
-      setDetails(response.results)
-      setLoading(false)
-    }
      fetch()
   },[])
+
+  const handleReviewSubmit = async () => {
+    await fetch(); 
+  };
  
   return (
     <>
@@ -58,7 +62,7 @@ export default function ProductDetails({ params }:{
                   addedClass='font-bold text-lg'
                 />
                     {(details?.discount && details?.discount !== 0) && <CustomLabel
-                        children={`${details?.discount}% Off`} 
+                        children={`DISCOUNTED PRICE`} 
                         variant="text"
                         addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
                     />}
@@ -128,7 +132,7 @@ export default function ProductDetails({ params }:{
             <CustomButton
               children={show.form ? 'Cancel Review' : 'Write Review'}
               buttonType='default'
-              onClick={() =>{ setShow({...show,form:!show.form}); }}
+              onClick={() =>{ setShow({...show,form:!show.form}) }}
             />
           </div>
         </div>
@@ -136,6 +140,10 @@ export default function ProductDetails({ params }:{
           <ReviewForm
             isOpen={show.form}
             productId={details.id}
+            setLoading={setLoading}
+            isLoading={loading}
+            setShow={() =>{ setShow({...show,form:!show.form})}}
+            onReviewSubmit={handleReviewSubmit} 
           />
         </div>
         <div className='w-full md:w-1/2 flex flex-col gap-4'>
@@ -149,7 +157,7 @@ export default function ProductDetails({ params }:{
                     <p className='text-sm md:text-base'>{new Date(data.createdAt).toLocaleString()}</p>
                   </div>
                   <CustomLabel
-                    children={data.user.email}
+                    children={data.user.username}
                     variant='text'
                   />
                </div>

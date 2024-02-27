@@ -77,7 +77,7 @@ export default function Productpage() {
           })
           const results = brandList.data.data;
           const data = {
-            brand: results,
+            brand: shopby.brand,
             category: results[0].Categories
           }
           loadBrandCategory(data)
@@ -140,7 +140,6 @@ const handleCategory = (name:string,id:string) =>{
   }));
 };
 const handleSorting = (data: {value:string}) =>{
-  console.log(data)
   setFiltered(prevFilter => ({
     ...prevFilter,
     sort: data.value as '' | 'asc' | 'desc' | 'lowest' | 'highest' | undefined
@@ -225,6 +224,7 @@ const handleClear = () =>{
               <Select
                 style={{ width: '100%',height:'50px' }}
                 size='middle'
+                allowClear
                 value={filter.brand?.name ? filter.brand?.name : 'Shop by Brands'}
                 onChange={(value, option) =>handleBrandClick(value,option)}
                 options={(shopby.brand.map((data:T_Brand) => ({
@@ -238,6 +238,7 @@ const handleClear = () =>{
                <Select
                   style={{ width: '100%',height:'50px' }}
                   size='middle'
+                  allowClear
                   value={filter.sort ? filter.sort : 'Sort by'}
                   onChange={(value) =>{handleSorting({value})}}
                   options={Sorting.map(option => ({ value: option.value, label: option.name }))}
@@ -281,19 +282,20 @@ const handleClear = () =>{
                 };
                 return(
                 <>
-                {isRow ? <Link href={`/product/${data.id}`} as={`/product/${data.id}`} key={idx} 
+                {isRow ? <div key={idx} 
                  className={clsx('w-[200px] md:w-[230px] shadow-border rounded-t-lg hover:shadow-shine bg-gray-200 h-[370px] cursor-pointer')}>
                    <Skeleton style={{padding:8,height:'200px'}} loading={loading} avatar active>
                    <div className='w-full min-h-[150px] flex justify-center items-center relative'>
                     <LazyImages
                       size='large'
-                      images={media}
+                      images={data.media}
                       addedClass={'rounded-t-lg h-52'}
                       alt='No image'
                     />
                      {data.status !== 'Available' && <div className='absolute px-4 py-2 bg-black text-white w-max'><p>{data.status === 'Out_of_Stock' ? data.status.replace(/_/g, ' ') : data.status}</p></div>}
                    </div>
-                   <div className='h-3/5 p-4 hover:bg-white flex flex-col gap-2'>
+                   <Link href={`/product/${data.id}`} as={`/product/${data.id}`} 
+                   className='h-3/5 p-4 hover:bg-white flex flex-col gap-2'>
                    <CustomLabel
                         children={data.name} 
                         variant="text"
@@ -305,7 +307,7 @@ const handleClear = () =>{
                         addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
                     />
                     {(data.discount && data.discount !== 0) && <CustomLabel
-                        children={`${data.discount}% Off`} 
+                        children={`DISCOUNTED PRICE`} 
                         variant="text"
                         addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
                     />}
@@ -317,9 +319,9 @@ const handleClear = () =>{
                         variant="text"
                         addedClass="text-lg font-semibold text-[#ff4e4e]"
                     />
-                   </div>
+                   </Link>
                    </Skeleton>
-                </Link> :
+                </div> :
                 <Link href={`/product/${data.id}`} as={`/product/${data.id}`} key={idx} 
                 className={clsx('w-[500px] md:w-full h-max shadow-border flex flex-col md:flex-row rounded-t-lg hover:shadow-shine bg-gray-200 cursor-pointer')}>
                   <Skeleton style={{padding:8,height:'200px'}} loading={loading} avatar active>

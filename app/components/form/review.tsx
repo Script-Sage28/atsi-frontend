@@ -10,9 +10,13 @@ import { selector } from '@/zustand/store/store.provider';
 interface FormProps{
     isOpen: boolean;
     productId: string;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    isLoading:boolean;
+    setShow:() => void;
+    onReviewSubmit:() => void;
 }
 
-export default function ReviewForm({isOpen,productId}: FormProps) {
+export default function ReviewForm({isOpen,productId,setLoading,isLoading,setShow,onReviewSubmit}: FormProps) {
   const user = useStore(selector('user'))
 
   const handleFormSubmit = async (values: any) => {
@@ -25,14 +29,19 @@ export default function ReviewForm({isOpen,productId}: FormProps) {
     }
   
     try {
+      setLoading(true)
       const formData = new FormData();
       formData.append('rating', values.rate);
       formData.append('userId', user.info?.id);
       formData.append('comment', values.content);
       formData.append('productId', productId);
       await ProductReview.RATE(formData);
+      setLoading(false)
+      setShow()
+      onReviewSubmit();
     } catch (error: any) {
       console.error('Error during Login:', error.message);
+      setLoading(false)
     }
   };
   const onFinish = async(values: any) => {
@@ -59,8 +68,8 @@ export default function ReviewForm({isOpen,productId}: FormProps) {
     </Form.Item>
 
     <Form.Item label=" ">
-      <Button type="default" className='bg-sky-400 text-white' htmlType="submit">
-        Submit Review
+      <Button type="default" disabled={isLoading} className='bg-sky-400 text-white' htmlType="submit">
+        {isLoading ? 'Submitting' : 'Submit Review'}
       </Button>
     </Form.Item>
   </Form>
