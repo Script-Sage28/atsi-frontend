@@ -165,6 +165,12 @@ const handleClear = () =>{
     brand:{name:'',id:''},
   }));
 };
+const handleClearSort = () =>{
+  setFiltered(prevFilter => ({
+    ...prevFilter,
+    sort: '',
+  }));
+};
 
   return (
     <>
@@ -246,7 +252,7 @@ const handleClear = () =>{
                   onChange={(value) =>{handleSorting({value})}}
                   options={Sorting.map(option => ({ value: option.value, label: option.name }))}
                   optionLabelProp="label" 
-                  onClear={()=> handleClear()}
+                  onClear={()=> handleClearSort()}
                   />
                 </div>
                 <div className='flex justify-end items-end gap-2 shadow-border p-2 rounded-md'>
