@@ -165,6 +165,7 @@ const handleClear = () =>{
     brand:{name:'',id:''},
   }));
 };
+
   return (
     <>
     <div className='w-full pl-4 md:pl-10 mb-10'>
@@ -231,6 +232,8 @@ const handleClear = () =>{
                   value: data.id,
                   label: data.name,
                 })) as { value: string; label: string; }[])}
+                optionLabelProp="label" 
+                onClear={()=> handleClear()}
               />
               </div>
               <div className='w-full md:w-[450px] flex flex-nowrap gap-4 items-bottom'>
