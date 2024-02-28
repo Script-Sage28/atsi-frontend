@@ -57,6 +57,7 @@ export default function Productpage() {
   const shopby = useStore(selector('brand_category'))
   const { Search } = Input;
   const [loading, setLoading] = useState<boolean>(false);
+  const [selectedBrand,setSelectedBrand] = useState([])
   const [isRow,setIsRow] = useState<boolean>(true)
   const [filter,setFiltered] = useState<Filter>({
     category: {name:'',id:''},
@@ -80,6 +81,8 @@ export default function Productpage() {
             brand: shopby.brand,
             category: results[0].Categories
           }
+          console.log(shopby.brand)
+          setSelectedBrand(shopby.brand?.filter((item:T_Brand) => item.id === filter.brand?.id))
           loadBrandCategory(data)
         }else{
           const brandList = await BrandsRequest.GET_ALL({
@@ -121,9 +124,7 @@ export default function Productpage() {
   
   const handleBrandClick = (value: string, options: { value: string; label: string; } | { value: string; label: string; }[]) => {
     const selectedOptions = Array.isArray(options) ? options : [options];
-  
     selectedOptions.forEach(option => {
-      console.log(option.value, option.label);
       setFiltered((prevFilter) => ({
         ...prevFilter,
         brand: {
@@ -133,45 +134,44 @@ export default function Productpage() {
       }));
     });
   };
-const handleCategory = (name:string,id:string) =>{
-  setFiltered(prevFilter => ({
-    ...prevFilter,
-    category: {id:prevFilter.category?.id === id ? '' : id,name:prevFilter.category?.name === name ? '' : name}
-  }));
-};
-const handleSorting = (data: {value:string}) =>{
-  setFiltered(prevFilter => ({
-    ...prevFilter,
-    sort: data.value as '' | 'asc' | 'desc' | 'lowest' | 'highest' | undefined
-  }));
-};
-const onSetFilter = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
-  setFiltered((prevState) => ({
-    ...prevState,
-    [name]: value,
-  }));
-}, []);
-
-const SearchProduct = async() =>{
-  if(filter.name){
-    const res = await ProductsRequest.GET_ALL(filter);
-    loadProducts(res.data.data)
+  const handleCategory = (name:string,id:string) =>{
+    setFiltered(prevFilter => ({
+      ...prevFilter,
+      category: {id:prevFilter.category?.id === id ? '' : id,name:prevFilter.category?.name === name ? '' : name}
+    }));
+  };
+  const handleSorting = (data: {value:string}) =>{
+    setFiltered(prevFilter => ({
+      ...prevFilter,
+      sort: data.value as '' | 'asc' | 'desc' | 'lowest' | 'highest' | undefined
+    }));
+  };
+  const onSetFilter = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFiltered((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }, []);
+  const SearchProduct = async() =>{
+    if(filter.name){
+      const res = await ProductsRequest.GET_ALL(filter);
+      loadProducts(res.data.data)
+    }
   }
-}
-const handleClear = () =>{
-  setFiltered(prevFilter => ({
-    ...prevFilter,
-    brand:{name:'',id:''},
-  }));
-};
-const handleClearSort = () =>{
-  setFiltered(prevFilter => ({
-    ...prevFilter,
-    sort: '',
-  }));
-};
-
+  const handleClear = () =>{
+    setFiltered(prevFilter => ({
+      ...prevFilter,
+      brand:{name:'',id:''},
+    }));
+  };
+  const handleClearSort = () =>{
+    setFiltered(prevFilter => ({
+      ...prevFilter,
+      sort: '',
+    }));
+  };
+console.log(selectedBrand)
   return (
     <>
     <div className='w-full pl-4 md:pl-10 mb-10'>
@@ -267,19 +267,21 @@ const handleClearSort = () =>{
                 </div>
               </div>
             </div>
-            {(shopby.brand.length > 0 && filter.brand?.name !== '') && (
-              <div className='w-full md:w-11/12 flex flex-col items-start flex-wrap ml-12 pt-8 pb-4 border-b-2 border-gray-400'>
+            {(selectedBrand?.length > 0) && (
+              selectedBrand?.map((item:T_Brand,idx) =>(
+              <div key={idx} className='w-full md:w-11/12 flex flex-col items-start flex-wrap ml-12 pt-8 pb-4 border-b-2 border-gray-400'>
                 <CustomLabel
-                  children={shopby.brand[0].name}
+                  children={item.name}
                   variant='text'
                   addedClass='font-semibold text-xl uppercase tracking-widest mb-4'
                 /> 
                 <CustomLabel
-                  children={shopby.brand[0].description}
+                  children={item.description}
                   variant='text'
                   addedClass='font-semibold text-md uppercase tracking-widest'
                 /> 
               </div>
+              ))
             )}
             {product.list.length > 0 ? (<div className={clsx(isRow ? 'flex-row' : 'flex-col','w-full flex flex-wrap gap-4 md:p-8 justify-center items-center md:justify-center')}>
               {product.list.map((data:T_Product,idx: React.Key | null | undefined) =>{

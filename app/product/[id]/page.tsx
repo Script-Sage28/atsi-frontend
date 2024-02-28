@@ -12,6 +12,7 @@ import { FetchingDetails } from '@/helper/getDetails';
 import { T_Product } from '@/types/productList';
 import { Peso } from '@/helper/pesoSign';
 import { getNickName } from '@/helper/formatName';
+import { CustomSwiper } from '@/components/swiper';
 
 
 export default function ProductDetails({ params }:{
@@ -49,9 +50,13 @@ export default function ProductDetails({ params }:{
       <p>Go Back</p>
       </Link >
        <div className='flex flex-col md:flex-row justify-center items-top gap-4'>
-            <div className='w-full md:w-1/2 h-full m-4'>
-              <CustomCarousel
-                imgList={imgList}
+            <div className='w-full md:w-1/2 h-full m-4 justify-center items-center flex'>
+              <CustomSwiper
+                images={imgList}
+                imgHeight={320}
+                imgWidth={350}
+                slideNum={1}
+                addedClass='w-[350px] h-[350px]'
               />
             </div>
             <div className='flex flex-col shadow-border p-8 w-full md:w-1/2 md:w-96 h-full overflow-auto rounded-md'>

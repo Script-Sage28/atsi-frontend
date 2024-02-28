@@ -12,6 +12,7 @@ export const FilterSort = async(filter: Filter): Promise<T_Product[]> =>{
             categoryId: filter.category?.id || '',
             name: filter.name || '',
             status: filter.status || '',
+            
         });
 
         results = response.data.data;

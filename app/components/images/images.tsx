@@ -22,7 +22,6 @@ export const LazyImages: React.FC<LazyImageProps> = ({ images, addedClass, alt, 
     }, 1000);
   }, []);
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
-  console.log(images)
   return (
     <>
       <div className={clsx('relative', addedClass)}>

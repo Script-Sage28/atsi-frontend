@@ -29,6 +29,7 @@
     "react-query": "^3.39.3",
     "react-quill": "^2.0.0",
     "sharp": "^0.33.1",
+    "swiper": "^11.0.7",
     "zod": "^3.22.4",
     "zustand": "^4.4.3"
   },
