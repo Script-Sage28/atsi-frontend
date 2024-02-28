@@ -1,13 +1,12 @@
 
-import { useState } from 'react';
+import { useRef } from 'react';
 import Image from 'next/image';
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import { Navigation,Thumbs ,FreeMode} from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
-
+import { Swiper, SwiperSlide,type SwiperRef } from 'swiper/react';
 
 interface Images{
     images?:any;
@@ -19,19 +18,16 @@ interface Images{
 }
 
 export const CustomSwiper = (props:Images) => {
-  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const swiperRef = useRef<SwiperRef>(null);
+
   return (
     <div className='flex flex-col w-full h-max gap-4 justify-center items-center'>
     <Swiper
-      style={{
-        '--swiper-navigation-color': '#fff',
-        '--swiper-pagination-color': '#fff',
-      }}
       modules={[FreeMode, Navigation, Thumbs]}
       spaceBetween={props.spaceBetween ?? 20}
       slidesPerView={props.slideNum ?? 2}
       navigation={true}
-      thumbs={{ swiper: thumbsSwiper }}
+      ref={swiperRef}
       className={props.addedClass}
     >
       {props.images?.map((item:string,idx: number) =>(
@@ -48,7 +44,7 @@ export const CustomSwiper = (props:Images) => {
       ))}
     </Swiper>
     <Swiper
-      onSwiper={setThumbsSwiper}
+      ref={swiperRef}
       spaceBetween={2}
       slidesPerView={4}
       freeMode={true}
