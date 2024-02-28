@@ -20,7 +20,6 @@ interface Images{
 
 export const CustomSwiper = (props:Images) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-
   return (
     <div className='flex flex-col w-full h-max gap-4 justify-center items-center'>
     <Swiper
