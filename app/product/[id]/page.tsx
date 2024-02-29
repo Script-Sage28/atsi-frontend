@@ -29,6 +29,7 @@ export default function ProductDetails({ params }:{
   const fetch = async():Promise<void> =>{
     setLoading(true)
     const response = await FetchingDetails(productId)
+    console.log(response)
     setImgList(response.img)
     setDetails(response.results)
     setLoading(false)

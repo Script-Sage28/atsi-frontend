@@ -120,19 +120,26 @@ export default function Productpage() {
       }
     }
    void fetchProducts()
-  },[filter.sort,filter.category,filter.brand])
+  },[filter.sort,filter.category,filter.brand,filter.name])
   
-  const handleBrandClick = (value: string, options: { value: string; label: string; } | { value: string; label: string; }[]) => {
-    const selectedOptions = Array.isArray(options) ? options : [options];
-    selectedOptions.forEach(option => {
+  const handleBrandClick = (value: string | undefined, options: { value: string; label: string; } | { value: string; label: string; }[]) => {
+    if (value === undefined) {
+      // Clear selection
+      setFiltered((prevFilter) => ({
+        ...prevFilter,
+        brand:{name:'',id:''},
+      }));
+    } else {
+      // Option is selected
+      const selectedOption = Array.isArray(options) ? options[0] : options;
       setFiltered((prevFilter) => ({
         ...prevFilter,
         brand: {
-          id: prevFilter.brand?.id === option.value ? '' : option.value,
-          name: prevFilter.brand?.name === option.label ? '' : option.label,
+          id: selectedOption.value,
+          name: selectedOption.label
         },
       }));
-    });
+    }
   };
   const handleCategory = (name:string,id:string) =>{
     setFiltered(prevFilter => ({
@@ -153,12 +160,7 @@ export default function Productpage() {
       [name]: value,
     }));
   }, []);
-  const SearchProduct = async() =>{
-    if(filter.name){
-      const res = await ProductsRequest.GET_ALL(filter);
-      loadProducts(res.data.data)
-    }
-  }
+
   const handleClear = () =>{
     setFiltered(prevFilter => ({
       ...prevFilter,
@@ -171,7 +173,8 @@ export default function Productpage() {
       sort: '',
     }));
   };
-console.log(selectedBrand)
+
+  console.log(filter)
   return (
     <>
     <div className='w-full pl-4 md:pl-10 mb-10'>
@@ -218,12 +221,10 @@ console.log(selectedBrand)
             <div className='w-11/12 md:w-1/2 pl-2 md:pl-8 mb-2 h-max'>
               <Search
                   placeholder="Search Products..."
-                  allowClear
                   className='bg-white rounded-md h-[50px]'
                   name='name'
                   size='large'
                   onChange={useDebounce(onSetFilter)}
-                  onSearch={SearchProduct}
                 />
               </div>
             <div className='w-full flex gap-4 md:gap-12 items-start flex-wrap px-2 md:pr-12 md:pl-8 mb-4'>
@@ -239,7 +240,6 @@ console.log(selectedBrand)
                   label: data.name,
                 })) as { value: string; label: string; }[])}
                 optionLabelProp="label" 
-                onClear={()=> handleClear()}
               />
               </div>
               <div className='w-full md:w-[450px] flex flex-nowrap gap-4 items-bottom'>
