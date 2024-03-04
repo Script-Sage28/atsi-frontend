@@ -63,7 +63,7 @@ export default function ReviewForm({isOpen,productId,setLoading,isLoading,setSho
        <Rate />
     </Form.Item>
 
-    <Form.Item label="Reveiw" name="content" rules={[{ required: true }]}>
+    <Form.Item label="Review" name="content" rules={[{ required: true }]}>
       <Input className='bg-gray-200' placeholder='Write your comments here' />
     </Form.Item>
 

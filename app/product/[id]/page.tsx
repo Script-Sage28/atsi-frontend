@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaWhatsapp } from "react-icons/fa";
 import { CustomButton, CustomLabel } from '@/components';
-import CustomCarousel from '@/components/carousel/carousel';
+import AtsiImg from '../../logo.png'
 import ReviewForm from '@/components/form/review';
 import CustomParagraph from '@/components/paragraph/paragraph';
 import { FetchingDetails } from '@/helper/getDetails';
@@ -13,6 +13,7 @@ import { T_Product } from '@/types/productList';
 import { Peso } from '@/helper/pesoSign';
 import { getNickName } from '@/helper/formatName';
 import { CustomSwiper } from '@/components/swiper';
+import Image from 'next/image';
 
 
 export default function ProductDetails({ params }:{
@@ -52,13 +53,19 @@ export default function ProductDetails({ params }:{
       </Link >
        <div className='flex flex-col md:flex-row justify-center items-top gap-4'>
             <div className='w-full md:w-1/2 h-full m-4 justify-center items-center flex'>
-              <CustomSwiper
+              {imgList.length > 0 ? <CustomSwiper
                 images={imgList}
                 imgHeight={320}
                 imgWidth={350}
                 slideNum={1}
                 addedClass='w-[350px] h-[350px]'
-              />
+              /> : 
+              <Image
+              src={AtsiImg}
+              width={200}
+              alt='atsi'
+              height={200}
+            />}
             </div>
             <div className='flex flex-col shadow-border p-8 w-full md:w-1/2 md:w-96 h-full overflow-auto rounded-md'>
               <div className='flex flex-col gap-2'>

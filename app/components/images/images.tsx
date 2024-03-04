@@ -22,7 +22,7 @@ export const LazyImages: React.FC<LazyImageProps> = ({ images, addedClass, alt, 
   }, []);
 
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
-  console.log(images)
+
   const renderImage = () => {
     if (loaded) {
       return (

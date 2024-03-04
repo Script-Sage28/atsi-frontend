@@ -15,6 +15,7 @@ import { Filter } from '@/types/filter';
 import clsx from 'clsx';
 import useStore from '@/zustand/store/store';
 import { loadBrandCategory, loadProducts, selector } from '@/zustand/store/store.provider';
+import AtsiImg from '../logo.png'
 
 const Sorting = [
     {
@@ -191,7 +192,7 @@ export default function Productpage() {
         <div className='w-full flex flex-col md:flex-row gap-2'>
             {/* Filtering */}
             <div className='flex h-max flex-col gap-4'>
-              <div className='flex flex-col shadow-border w-80 p-4'>
+              <div className='flex flex-col shadow-border w-full md:w-80 p-4'>
                 <p className='text-red-400 mb-4 font-bold'>DELIVERY</p>
                 <p className='m-0'>METRO MANILA ONLY FOR ORDER</p>
                 <p className='m-0'> 1000 PESO ABOVE. 2-3 working days</p>
@@ -218,7 +219,7 @@ export default function Productpage() {
 
             {/* List */}
             <div className='w-full'>
-            <div className='w-11/12 md:w-1/2 pl-2 md:pl-8 mb-2 h-max'>
+            <div className='w-full md:w-11/12 md:w-1/2 pl-2 md:pl-8 mb-2 h-max'>
               <Search
                   placeholder="Search Products..."
                   className='bg-white rounded-md h-[50px]'
@@ -255,7 +256,7 @@ export default function Productpage() {
                   onClear={()=> handleClearSort()}
                   />
                 </div>
-                <div className='flex justify-end items-end gap-2 shadow-border p-2 rounded-md'>
+                <div className='hidden md:flex lg:flex justify-end items-end gap-2 shadow-border p-2 rounded-md'>
                     <div onClick={() => { setIsRow(true)}}
                      className='border-2 border-black-500 p-1 rounded-md cursor-pointer'>
                     <TiThSmall size={20} />
@@ -269,7 +270,7 @@ export default function Productpage() {
             </div>
             {(selectedBrand?.length > 0) && (
               selectedBrand?.map((item:T_Brand,idx) =>(
-              <div key={idx} className='w-full md:w-11/12 flex flex-col items-start flex-wrap ml-12 pt-8 pb-4 border-b-2 border-gray-400'>
+              <div key={idx} className='w-full md:w-11/12 flex flex-col items-start flex-wrap md:ml-12 pt-8 pb-4 border-b-2 border-gray-400 mb-4'>
                 <CustomLabel
                   children={item.name}
                   variant='text'
@@ -285,7 +286,7 @@ export default function Productpage() {
             )}
             {product.list.length > 0 ? (<div className={clsx(isRow ? 'flex-row' : 'flex-col','w-full flex flex-wrap gap-4 md:p-8 justify-center items-center md:justify-center')}>
               {product.list.map((data:T_Product,idx: React.Key | null | undefined) =>{
-                const media = (data.media.length > 0 && data.media[0].url !== '') ? `${imgUrl}${data.media[0].url}` : '';
+                const media = (data.media.length > 0 && data.media[0].url !== '') ? `${imgUrl}${data.media[0].url}` : AtsiImg;
                 const HTMLViewer = () => {
                   return (
                     <div className='line-clamp-4' dangerouslySetInnerHTML={{ __html: data.description }} />
@@ -336,7 +337,7 @@ export default function Productpage() {
                 <Link href={`/product/${data.id}`} as={`/product/${data.id}`} key={idx} 
                 className={clsx('w-[500px] md:w-full h-max shadow-border flex flex-col md:flex-row rounded-t-lg hover:shadow-shine bg-gray-200 cursor-pointer')}>
                   <Skeleton style={{padding:8,height:'200px'}} loading={loading} avatar active>
-                  <div className='w-full max-w-[350px] min-h-[150px] flex justify-center items-center relative'>
+                  <div className='w-full max-w-[350px] min-h-[180px] flex justify-center items-center relative'>
                    <LazyImages
                      size='large'
                      images={media}
@@ -363,9 +364,9 @@ export default function Productpage() {
                     </div>
 
                   <CustomLabel
-                       children={(data.discountedPrice && data.discountedPrice !== 0) ? (<div className='flex gap-8'>
+                       children={(data.discountedPrice && data.discountedPrice !== 0) ? (<div className='flex gap-8\2 flex-col'>
                         <p className='m-0'>{Peso(data.discountedPrice)}</p>
-                        <p className='m-0 line-through'>{Peso(data.price)}</p>
+                        <p className='m-0 line-through text-gray-600'>{Peso(data.price)}</p>
                        </div>) : Peso(data.price)} 
                        variant="text"
                        addedClass="text-2xl font-semibold text-[#ff4e4e] w-[20%]"

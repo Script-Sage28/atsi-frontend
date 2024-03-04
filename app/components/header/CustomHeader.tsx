@@ -168,7 +168,7 @@ export default function CustomHeader() {
   }
   return (
     <>
-    <Header className="header sticky z-50 top-0 p-2 md:p-8 bg-white w-full flex justify-between md:justify-none items-center">
+    <Header className="header sticky z-50 top-0 p-2 md:p-8 bg-white w-full flex justify-between items-center">
       <div className="flex-1 w-full flex justify-between items-center ">
         {open && <MdOutlineClear size={40} className='md:hidden ease-in-out cursor-pointer' 
         onClick={handleOpenChange} />}
@@ -176,8 +176,7 @@ export default function CustomHeader() {
         onClick={handleOpenChange} />}
         <Image src="/assets/logo.png" width={100} height={100} alt="logo" />
       </div>
-      <div className="hidden md:flex flex-grow space-x-20">
-
+      <div className="hidden md:flex flex-grow justify-end items-end space-x-20">
         {links?.map((link, idx) => {
           return(
           <React.Fragment key={idx}>
@@ -220,7 +219,7 @@ export default function CustomHeader() {
       </ul>
 
       </div>
-      <div className="flex flex-wrap flex-col gap-4 px-4 pb-12 pt-4 md:hidden">
+      <div className="flex flex-wrap flex-col gap-4 px-4 pb-12 pt-4  md:hidden">
           {links?.map((link, idx) => (
             <Link href={link.url} className="font-semibold flex-grow text-gray-500 hover:text-white hover:bg-zinc-500 p-4 rounded-md" 
             key={idx}>

@@ -57,7 +57,6 @@ export default function Home() {
     }
     void fetchProducts()
   },[])
-  console.log(blogs)
   return (
     <>
       {/* Landing Page */}
@@ -126,7 +125,7 @@ export default function Home() {
           <div className="flex flex-wrap md:flex-wrap justify-start items-center gap-5">
             {productList.onSale?.length > 0 && productList.onSale.map((product, idx) => {
               return (
-              <CustomCard addedClass='flex grow sm:max-w-[150px] md:max-w-[250px] basis-[150px] md:w-[150px] h-[350px]' key={idx}>
+              <CustomCard addedClass='flex md:grow lg:grow w-[250px] sm:max-w-[190px] md:max-w-[250px] md:w-[150px] h-[350px]' key={idx}>
                 <Link className='relative w-full overflow-hidden'
                  key={idx} href={`/product/${product.id}`} passHref>
                 <div className="bg-red-700 absolute -left-[75px] -top-[7px] -rotate-45 p-3 w-[200px] z-40 text-center">
@@ -266,25 +265,25 @@ export default function Home() {
         <div className='h-max w-full flex flex-wrap item-center  gap-4 justify-center'>
           {blogs?.map((data:T_Blogs,idx) =>{
             return(
-            <div key={idx} className='bg-[#435EEA] shadow-custom w-[887px] h-[450px] rounded-md relative pt-16'>
-                <div className='absolute -right-8 top-12 w-[323.26px] h-[310px] rounded-lg bg-white shadow-custom1'>
+            <div key={idx} className='bg-[#435EEA] shadow-custom w-[400px] md:w-[887px] lg:w-[1087px] h-[450px] rounded-md relative md:pt-16'>
+                <div className='flex md:grid justify-center items-center md:absolute  md:-right-8 top-12 w-full  md:w-[323.26px] h-32 md:h-[310px] rounded-lg md:bg-white md:shadow-custom1'>
                 <Image
                   src={imgUrl + data.imageUrl}
                   alt={data?.title}
-                  className='object-fill w-full h-full rounded-lg'
+                  className='object-fill w-40 md:w-full mt-4 md:mt-0 h-full rounded-lg'
                   width={130}
                   height={230}
                 />
                 </div>
-                <div className='w-[481px] h-80 p-4 leading-7'>
-                  <div className='px-8'>
+                <div className='md:w-[481px] h-80 p-4 leading-7'>
+                  <div className='md:px-8'>
                     <p className='text-[#C0C0C0]'>{new Date(data.createdAt).toLocaleDateString()}</p>
                     <p className='text-white font-bold text-2xl'>{data.title}</p>
                   </div>
-                  <div className='p-8'>
+                  <div className='md:p-8'>
                     <div className='text-white text-md font-semibold line-clamp-4' dangerouslySetInnerHTML={{ __html: data.content }} />
                   </div>
-                  <div className='flex justify-center items-center absolute bottom-28 w-[450px]'>
+                  <div className='flex justify-center items-center absolute bottom-12 md:bottom-28 w-full md:w-[450px]'>
                   <CustomButton
                       children={<Link href={'/product'}>Read More</Link>}
                       buttonType="link"
@@ -296,9 +295,9 @@ export default function Home() {
             )
           })}
         </div>
-        <div className='w-[887px] flex justify-end items-end'>
+        <div className='w-full flex justify-center items-center'>
         <CustomButton
-          children={<Link href={'/product'}>View more</Link>}
+          children={<Link href={'/product'}>Load more</Link>}
           buttonType="link"
           addedClass="text-base"
         />          
