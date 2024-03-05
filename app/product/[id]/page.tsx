@@ -160,17 +160,19 @@ export default function ProductDetails({ params }:{
           />
         </div>
         <div className='w-full md:w-1/2 flex flex-col gap-4'>
-          {details.productReviews.length > 0 ? (details.productReviews?.map((data,idx) =>(
+          {details.productReviews.length > 0 ? (details.productReviews?.map((data,idx) =>{
+            console.log(data)
+            return(
             <div key={idx} className='shadow-border p-4 flex flex-col gap-2'>
               <div className='flex items-center gap-2'>
-               <Avatar size={40}>{getNickName(data.user?.username)}</Avatar> 
+               <Avatar size={40}>{getNickName(data.createdByUser?.username)}</Avatar> 
                <div>
                   <div className='flex items-center gap-4'>
                     <Rate disabled value={data.rating} allowHalf />
                     <p className='text-sm md:text-base'>{new Date(data.createdAt).toLocaleString()}</p>
                   </div>
                   <CustomLabel
-                    children={data.user.username}
+                    children={data.createdByUser?.username}
                     variant='text'
                   />
                </div>
@@ -179,7 +181,7 @@ export default function ProductDetails({ params }:{
                 <CustomParagraph text={data.content}/>
               </div>
             </div>
-          ))) : (<p>No Customer review yet</p>)}
+          )})) : (<p>No Customer review yet</p>)}
         </div>
       </div>        
     </div>) : 

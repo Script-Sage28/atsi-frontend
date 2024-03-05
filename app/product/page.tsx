@@ -284,7 +284,7 @@ export default function Productpage() {
               </div>
               ))
             )}
-            {product.list.length > 0 ? (<div className={clsx(isRow ? 'flex-row' : 'flex-col','w-full flex flex-wrap gap-4 md:p-8 justify-center items-center md:justify-center')}>
+            {product.list?.length > 0 ? (<div className={clsx(isRow ? 'flex-row' : 'flex-col','w-full flex flex-wrap gap-4 md:p-8 justify-center items-center md:justify-center')}>
               {product.list.map((data:T_Product,idx: React.Key | null | undefined) =>{
                 const media = (data.media.length > 0 && data.media[0].url !== '') ? `${imgUrl}${data.media[0].url}` : AtsiImg;
                 const HTMLViewer = () => {

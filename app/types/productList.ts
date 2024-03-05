@@ -125,7 +125,7 @@ export interface T_Product {
       createdAt: Date; 
       updatedAt: string | null;
       rating:number | undefined;
-      user:{
+      createdByUser:{
         id: string;
         username: string;
         email: string;
