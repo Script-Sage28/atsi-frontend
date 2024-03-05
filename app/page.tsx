@@ -185,7 +185,7 @@ export default function Home() {
         </div>}
 
         {/* New Products */}
-        {productList.latest.length > 0 && <div className="flex flex-col gap-10">
+        {productList.latest?.length > 0 && <div className="flex flex-col gap-10">
           <div className="flex flex-row items-start justify-between">
             <CustomLabel
               children="Latest Products"
