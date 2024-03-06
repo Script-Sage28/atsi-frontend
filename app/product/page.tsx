@@ -58,7 +58,7 @@ export default function Productpage() {
   const shopby = useStore(selector('brand_category'))
   const { Search } = Input;
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedBrand,setSelectedBrand] = useState([])
+  const [selectedBrand, setSelectedBrand] = useState<T_Brand[]>([]);
   const [isRow,setIsRow] = useState<boolean>(true)
   const [filter,setFiltered] = useState<Filter>({
     category: {name:'',id:''},
@@ -162,12 +162,6 @@ export default function Productpage() {
     }));
   }, []);
 
-  const handleClear = () =>{
-    setFiltered(prevFilter => ({
-      ...prevFilter,
-      brand:{name:'',id:''},
-    }));
-  };
   const handleClearSort = () =>{
     setFiltered(prevFilter => ({
       ...prevFilter,
@@ -175,7 +169,6 @@ export default function Productpage() {
     }));
   };
 
-  console.log(filter)
   return (
     <>
     <div className='w-full pl-4 md:pl-10 mb-10'>
@@ -199,7 +192,7 @@ export default function Productpage() {
               </div>
               <div className='w-full md:w-80 h-full p-4 rounded-lg md:shadow-border'>
                 <CustomLabel
-                  children={shopby.brand.length > 0 && filter.brand?.name !== '' ? `${shopby.brand[0].name} Categories` : "All Categories"}
+                  children={selectedBrand.length > 0 && filter.brand?.name !== '' ? `${selectedBrand[0].name} Categories` : "All Categories"}
                   variant='text'
                   addedClass='font-semibold text-xl uppercase tracking-widest'
                 />
@@ -284,7 +277,7 @@ export default function Productpage() {
               </div>
               ))
             )}
-            {product.list?.length > 0 ? (<div className={clsx(isRow ? 'flex-row' : 'flex-col','w-full flex flex-wrap gap-4 md:p-8 justify-center items-center md:justify-center')}>
+            {product.list?.length > 0 ? (<div className={clsx(isRow ? 'flex-row' : 'flex-col','w-full flex flex-wrap gap-4 md:p-8 justify-stretch items-normal md:justify-normal')}>
               {product.list.map((data:T_Product,idx: React.Key | null | undefined) =>{
                 const media = (data.media.length > 0 && data.media[0].url !== '') ? `${imgUrl}${data.media[0].url}` : AtsiImg;
                 const HTMLViewer = () => {

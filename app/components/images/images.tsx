@@ -22,7 +22,7 @@ export const LazyImages: React.FC<LazyImageProps> = ({ images, addedClass, alt, 
   }, []);
 
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
-
+  console.log(images)
   const renderImage = () => {
     if (loaded) {
       return (
@@ -44,9 +44,10 @@ export const LazyImages: React.FC<LazyImageProps> = ({ images, addedClass, alt, 
     } else {
       return (
         <Image
-          className={clsx('w-full object-contain', addedClass)}
-          src={(images === '' || images.length === 0) ? AtsiImg : images}
+          className={clsx('w-full object-fill', addedClass)}
+          src='assets/logo.png'
           loading='lazy'
+          height={230}
           alt={alt}
         />
       );

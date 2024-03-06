@@ -1,9 +1,10 @@
 'use client';
-import React, { useEffect, useState } from 'react'
-import { Rate,Avatar, Skeleton  } from 'antd';
+import React, { useEffect, useMemo, useState } from 'react'
+import { Rate,Avatar, Skeleton,Dropdown, Popover } from 'antd';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaWhatsapp } from "react-icons/fa";
+import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import { CustomButton, CustomLabel } from '@/components';
 import AtsiImg from '../../logo.png'
 import ReviewForm from '@/components/form/review';
@@ -14,6 +15,7 @@ import { Peso } from '@/helper/pesoSign';
 import { getNickName } from '@/helper/formatName';
 import { CustomSwiper } from '@/components/swiper';
 import Image from 'next/image';
+import { AiOutlineMore } from "react-icons/ai";
 
 
 export default function ProductDetails({ params }:{
@@ -27,6 +29,21 @@ export default function ProductDetails({ params }:{
   const productId = params.id;
   const [details,setDetails] = useState<T_Product | null>(null);
   const [imgList,setImgList] = useState([]);
+  const [arrow, setArrow] = useState('Show');
+
+  const mergedArrow = useMemo(() => {
+    if (arrow === 'Hide') {
+      return false;
+    }
+
+    if (arrow === 'Show') {
+      return true;
+    }
+
+    return {
+      pointAtCenter: true,
+    };
+  }, [arrow]);
   const fetch = async():Promise<void> =>{
     setLoading(true)
     const response = await FetchingDetails(productId)
@@ -42,7 +59,10 @@ export default function ProductDetails({ params }:{
   const handleReviewSubmit = async () => {
     await fetch(); 
   };
- 
+  const onEditFeed = async(data:any) =>{
+    const formData = new FormData()
+  }
+  
   return (
     <>
   {details ? 
@@ -166,10 +186,21 @@ export default function ProductDetails({ params }:{
             <div key={idx} className='shadow-border p-4 flex flex-col gap-2'>
               <div className='flex items-center gap-2'>
                <Avatar size={40}>{getNickName(data.createdByUser?.username)}</Avatar> 
-               <div>
-                  <div className='flex items-center gap-4'>
+               <div className='w-full'>
+                  <div className='flex items-center justify-between w-full gap-4'>
+                    <div className='flex flex-col md:flex-row gap-4'>
                     <Rate disabled value={data.rating} allowHalf />
                     <p className='text-sm md:text-base'>{new Date(data.createdAt).toLocaleString()}</p>
+                    </div>
+                    <div>
+                    <Popover placement="bottomRight" trigger="click" 
+                    content={<div className='w-20'>
+                      <p>Edit</p>
+                      <p>Delete</p>
+                    </div>} arrow={mergedArrow}>
+                    <AiOutlineMore size={24}/>
+                    </Popover>                      
+                    </div>
                   </div>
                   <CustomLabel
                     children={data.createdByUser?.username}
