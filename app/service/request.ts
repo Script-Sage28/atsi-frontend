@@ -11,6 +11,12 @@ export const BrandsRequest ={
 export const CategoriesRequest ={
     GET_ALL: async (params:any) => await axiosInstance.get(Endpoints.CATEGORIES, { params })
 }
+export const FeedbackDelete = {
+    DELETE_FEED: async (data:any) => await axiosInstance.delete(Endpoints.DELETE_FEEDBACK,{data})
+}
+export const FeedbackUpdate = {
+    UPDATE_FEED: async (data:any) => await axiosInstance.put(Endpoints.UPDATE_FEEDBACK+data.id,data)
+}
 export const GetProductDetails ={
     INFO: async (params:any) => await axiosInstance.get(Endpoints.PRODUCT_DETAILS+params)
 }

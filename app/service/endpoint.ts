@@ -7,7 +7,9 @@ const Endpoints ={
     PRODUCT_DETAILS: '/products/info/',
     REVIEW: '/products/product-review',
     UPDATE_USER: '/user/update/',
-    BLOGS:'/blogs/all'
+    BLOGS:'/blogs/all',
+    UPDATE_FEEDBACK:'/feedbacks/update/',
+    DELETE_FEEDBACK:'/feedbacks/delete'
 }
 
 export default Endpoints

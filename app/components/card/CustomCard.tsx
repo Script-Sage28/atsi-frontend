@@ -15,7 +15,7 @@ export default function CustomCard(props: Props) {
       layout
       initial={{ scale: 1 }}
       whileHover={{
-        scale: 1.1,
+        scale: 1.01,
       }}
       className={clsx(
         props.addedClass,

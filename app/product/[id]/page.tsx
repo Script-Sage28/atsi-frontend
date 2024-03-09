@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useMemo, useState } from 'react'
-import { Rate,Avatar, Skeleton,Dropdown, Popover } from 'antd';
+import { Rate,Avatar, Skeleton,Dropdown, Popover, Input, Form, Button } from 'antd';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaWhatsapp } from "react-icons/fa";
@@ -16,20 +16,30 @@ import { getNickName } from '@/helper/formatName';
 import { CustomSwiper } from '@/components/swiper';
 import Image from 'next/image';
 import { AiOutlineMore } from "react-icons/ai";
+import useStore from '@/zustand/store/store';
+import { selector } from '@/zustand/store/store.provider';
+import toast from 'react-hot-toast';
+import { FeedbackDelete, FeedbackUpdate } from '@/service/request';
 
 
 export default function ProductDetails({ params }:{
     params: { id: string };
 }) {
+  
   const [loading,setLoading] = useState<boolean>(false)
   const [show,setShow] = useState({
     ellipsis: false,
     form:false
   })
+  const { TextArea } = Input;
+  const user = useStore(selector('user'))
+  const [form] = Form.useForm();
   const productId = params.id;
   const [details,setDetails] = useState<T_Product | null>(null);
   const [imgList,setImgList] = useState([]);
-  const [arrow, setArrow] = useState('Show');
+  const [isEdit,setIsEdit] = useState<string>('')
+  const [isLoading,setIsLoading] = useState<boolean>(false)
+  const arrow:string = 'Show';
 
   const mergedArrow = useMemo(() => {
     if (arrow === 'Hide') {
@@ -55,18 +65,62 @@ export default function ProductDetails({ params }:{
   useEffect(() =>{
      fetch()
   },[])
+  const handleEdit = (data?:any) =>{
+    if(data){
+      setIsEdit(data.id)
+      form.setFieldsValue({
+        content: data.content,
+        rate: data.rating,
+      });
+    }else{
+      setIsEdit('')
+    }
 
+  }
   const handleReviewSubmit = async () => {
     await fetch(); 
   };
-  const onEditFeed = async(data:any) =>{
-    const formData = new FormData()
+  const onFinish = async(values:any) =>{
+    if (!user.info?.id) {
+      toast.error('You must login before taking this action!');
+      return; 
+    }
+    setIsLoading(true)
+    const details ={
+      id:isEdit,
+      content: values.content,
+      rating:values.rate,
+      updatedBy: user.info?.id
+    }
+
+    const res = await FeedbackUpdate.UPDATE_FEED(details)
+    if(res.data){
+      setIsLoading(false)
+      form.resetFields()
+      setIsEdit('')
+      await fetch();
+    }
+  }
+  const handleDelete = async(value:any) =>{
+    if (!user.info?.id) {
+      toast.error('You must login before taking this action!');
+      return; 
+    }
+    setIsLoading(true)
+    const formData = new FormData();
+    formData.append('ids[]',value.id)
+    formData.append('updatedBy',user.info?.id)
+    const res =await FeedbackDelete.DELETE_FEED(formData)
+    if(res.data){
+      await fetch();
+      setIsLoading(false)
+    }
   }
   
   return (
     <>
   {details ? 
-       (<div className='p-4'>
+       (<div className='p-4 bg-white text-black'>
       <Link href={'/product'}  className='flex items-center m-4'>
       <IoIosArrowBack size={30}/>
       <p>Go Back</p>
@@ -181,36 +235,64 @@ export default function ProductDetails({ params }:{
         </div>
         <div className='w-full md:w-1/2 flex flex-col gap-4'>
           {details.productReviews.length > 0 ? (details.productReviews?.map((data,idx) =>{
-            console.log(data)
-            return(
+           
+            return data?.isDeleted ? null : (
             <div key={idx} className='shadow-border p-4 flex flex-col gap-2'>
               <div className='flex items-center gap-2'>
                <Avatar size={40}>{getNickName(data.createdByUser?.username)}</Avatar> 
-               <div className='w-full'>
-                  <div className='flex items-center justify-between w-full gap-4'>
-                    <div className='flex flex-col md:flex-row gap-4'>
-                    <Rate disabled value={data.rating} allowHalf />
-                    <p className='text-sm md:text-base'>{new Date(data.createdAt).toLocaleString()}</p>
+                {isEdit !== data.id ? <div className='w-full'>
+                    <div className='flex items-center justify-between w-full gap-4'>
+                      <div className='flex flex-col md:flex-row gap-4'>
+                      <Rate disabled value={data.rating} allowHalf />
+                      <p className='text-sm md:text-base'>{new Date(data.createdAt).toLocaleString()}</p>
+                      </div>
+                      <div>
+                      <Popover className='cursor-pointer p-0' placement="bottomRight" trigger="click" 
+                      content={<div className='w-max'>
+                        <p onClick={() =>handleEdit(data)} className='cursor-pointer hover:bg-sky-600 p-2 px-4 rounded-lg hover:text-white'>Edit</p>
+                        <Button onClick={() =>handleDelete(data)}className='cursor-pointer hover:bg-red-600 rounded-lg border-0'><p className='hover:text-white text-nowrap'>{isLoading ? 'Deleting...' : 'Delete'}</p></Button>
+                      </div>} arrow={mergedArrow}>
+                      <AiOutlineMore size={24}/>
+                      </Popover>                      
+                      </div>
                     </div>
-                    <div>
-                    <Popover placement="bottomRight" trigger="click" 
-                    content={<div className='w-20'>
-                      <p>Edit</p>
-                      <p>Delete</p>
-                    </div>} arrow={mergedArrow}>
-                    <AiOutlineMore size={24}/>
-                    </Popover>                      
-                    </div>
-                  </div>
-                  <CustomLabel
-                    children={data.createdByUser?.username}
-                    variant='text'
-                  />
-               </div>
-              </div>
-              <div>
-                <CustomParagraph text={data.content}/>
-              </div>
+                    <CustomLabel
+                      children={data.createdByUser?.username}
+                      variant='text'
+                      addedClass='text-sm'
+                    />
+                <div>
+                  <CustomParagraph text={data.content}/>
+                </div>
+                </div> 
+                : (isEdit === data.id && <div className='w-full'>
+                     <div className='w-full flex justify-end items-end'>
+                      <CustomButton
+                        children='Cancel'
+                        onClick={()  => handleEdit()}
+                        addedClass='bg-gray-800 text-white'
+                      />
+                     </div>
+                    <Form 
+                     onFinish={onFinish}
+                     form={form}
+                     className='flex flex-col w-full gap-4'>
+                          <Form.Item label="Rating" name="rate" rules={[{ required: true }]}>
+                            <Rate value={data.rating} />
+                          </Form.Item>
+                          <Form.Item label="Review" name="content" rules={[{ required: true }]}>
+                          <TextArea rows={4} value={data.content} className='bg-gray-200' placeholder='Write your comments here' />
+                          </Form.Item>
+                          <Form.Item>
+                            <div className='w-fll flex justify-end items-end'>
+                            <Button loading={isLoading} className='bg-sky-600 text-white'  type="primary" htmlType="submit">Save</Button>
+                            </div>
+                          </Form.Item>
+                    </Form>
+
+                </div>)}
+                </div>
+
             </div>
           )})) : (<p>No Customer review yet</p>)}
         </div>

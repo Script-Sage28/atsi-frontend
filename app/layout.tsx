@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <link rel="icon" type="image/png" href={`/logo.png `}/>
-      <body>
+      <body className='bg-white text-black'>
         <ConfigProvider theme={appTheme}>
         <Toaster />
           <CustomHeader />

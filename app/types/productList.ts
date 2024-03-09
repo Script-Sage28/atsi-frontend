@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 
 export interface  T_Blogs{
   id: string;
@@ -11,6 +12,7 @@ export interface  T_Blogs{
   isDeleted: boolean;
   createdByUser: any;
   updatedByUser: any;
+  loading:boolean;
 }
 
 export interface T_Brand {
@@ -46,6 +48,38 @@ export interface T_Categories {
         type: string;
     }
     Brands: T_Brand;
+}
+export interface T_Feedback{
+  id: string;
+  content: string;
+  productsId: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string | null;
+  updatedBy: string | null;
+  isDeleted: boolean;
+  rating: number;
+  createdByUser: {
+    id: string;
+    username: string;
+    email: string;
+    password: string;
+    status: string;
+    createdAt: string;
+    updatedAt: null | string;
+    type: string;
+  };
+  updatedByUser: null | {
+    id: string;
+    username: string;
+    email: string;
+    password: string;
+    status: string;
+    createdAt: Date;
+    updatedAt: null | string;
+    type: string;
+  };
+  product: T_Product; 
 }
 export interface T_Product {
     id: string;
@@ -125,6 +159,7 @@ export interface T_Product {
       createdAt: Date; 
       updatedAt: string | null;
       rating:number | undefined;
+      isDeleted: boolean;
       createdByUser:{
         id: string;
         username: string;
@@ -142,3 +177,5 @@ export interface T_ProductList {
     latest: T_Product[];
     allProducts: T_Product[];
 }
+
+

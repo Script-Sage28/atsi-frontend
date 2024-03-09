@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { Avatar, Button, List, Skeleton } from 'antd';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BsFire } from 'react-icons/bs';
@@ -14,7 +15,13 @@ import { T_Blogs, type T_ProductList } from './types/productList';
 import { loadProducts, selector } from './zustand/store/store.provider';
 import Noimg from '../public/assets/noimg.png'
 import useStore from '@/zustand/store/store';
+import { Swiper, SwiperSlide,type SwiperRef } from 'swiper/react';
+import { Pagination, Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
+import './globals.css';
 
 export default function Home() {
   const products = useStore(selector('product'));
@@ -24,9 +31,35 @@ export default function Home() {
     onSale: products.list?.filter((val: { isSaleProduct: boolean; }) => val.isSaleProduct).slice(0,5),
     latest: getProductsWithinLast5Days(products.list).slice(0,5)
   }
+  const swiperRef = useRef<SwiperRef>(null);         
+  const [initLoading, setInitLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [productList,setProductsList] = useState(initialProductList);
-  const [blogs,setBlogs] = useState([])
+  const [blogs,setBlogs] = useState<T_Blogs[]>([]);
+  const [list, setList] = useState<T_Blogs[]>([]);
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
+  const countPerPage = 1;
+
+  const onLoadMore = () => {
+    setLoading(true);
+    const nextItems = blogs.slice(list.length, list.length + countPerPage);
+    setList([...list, ...nextItems]);
+    setLoading(false);
+  };
+
+  const loadMore =
+  !initLoading && !loading ? (
+    <div
+      style={{
+        textAlign: 'center',
+        marginTop: 12,
+        height: 32,
+        lineHeight: '32px',
+      }}
+    >
+      <Button onClick={onLoadMore}>Load more</Button>
+    </div>
+  ) : null;
 
   useEffect(() =>{
     const fetchProducts = async ():Promise<void> =>{
@@ -41,10 +74,14 @@ export default function Home() {
         const res = await AllBlogs.FETCH({
 
         })
-        setBlogs(res.data.data.filter((item: { isDeleted: boolean; }) => !item.isDeleted))
+        const list = res.data.data.filter((item: { isDeleted: boolean; }) => !item.isDeleted)
+        const blogs = list?.map((item:any) => ({...item,loading:false}))
+        setBlogs(blogs)
+        setList(blogs.slice(0, countPerPage));
+        setInitLoading(false);
         loadProducts(response.data.data)
-        const all = response.data.data?.filter((item: { isDeleted: boolean; }) => !item.isDeleted).slice(0, 5);
-        const sale = response.data.data?.filter((val: { isSaleProduct: boolean,isDeleted:boolean }) => val.isSaleProduct).slice(0,5);
+        const all = response.data.data?.filter((item: { isDeleted: boolean; }) => !item.isDeleted).slice(0, 7);
+        const sale = response.data.data?.filter((val: { isSaleProduct: boolean,isDeleted:boolean }) => val.isSaleProduct).slice(0,7);
         setProductsList(prev =>({
           ...prev,
           allProducts: all,
@@ -57,10 +94,11 @@ export default function Home() {
     }
     void fetchProducts()
   },[])
+  console.log(list)
   return (
     <>
       {/* Landing Page */}
-      <div className="container h-fit-to-screen-without-header md:p-52 max-w-full flex flex-row items-center">
+      <div className="container bg-[#f5f5f5] h-fit-to-screen-without-header md:p-52 max-w-full flex flex-row items-center">
         <div className="flex-grow">
           <div className="sm:w-full flex flex-col sm:gap-4 md:gap-10 pb-8 pl-4 md:pl-0 md:w-3/4">
             <div>
@@ -106,9 +144,9 @@ export default function Home() {
         </div>
       </div>
       {/* Products Section */}
-      <div id="products" className="w-full flex flex-col gap-8 p-8 md:px-40 md:py-8">
+      <div id="products" className="w-full bg-white flex flex-col gap-4 p-8 md:px-40 md:py-8">
         {/* Sales Products */}
-        {productList.onSale?.length > 0 && <div className="w-full h-auto flex flex-col gap-10">
+        {productList.onSale?.length > 0 && <div className="w-full h-auto flex flex-col gap-4">
           <div className="flex flex-row items-start justify-between">
             <CustomLabel
               children="Sales Products"
@@ -123,9 +161,29 @@ export default function Home() {
           </div>
 
           <div className="flex flex-wrap md:flex-wrap justify-start items-center gap-5">
+          <Swiper
+              ref={swiperRef}
+              slidesPerView={1}
+              spaceBetween={10}
+              navigation={true}
+              breakpoints={{
+                640: {
+                  slidesPerView: 2,
+                },
+                768: {
+                  slidesPerView: 4,
+                },
+                1024: {
+                  slidesPerView: 5,
+                },
+              }}
+              modules={[Pagination, Navigation]}
+              className=''
+            >
             {productList.onSale?.length > 0 && productList.onSale.map((product, idx) => {
               return (
-              <CustomCard addedClass='flex md:grow lg:grow w-[250px] sm:max-w-[190px] md:max-w-[250px] md:w-[150px] h-[350px]' key={idx}>
+              <SwiperSlide>
+              <CustomCard addedClass='flex md:grow lg:grow w-[250px] sm:max-w-[190px] md:max-w-[250px] md:w-[180px] h-[300px]' key={idx}>
                 <Link className='relative w-full overflow-hidden'
                  key={idx} href={`/product/${product.id}`} passHref>
                 <div className="bg-red-700 absolute -left-[75px] -top-[7px] -rotate-45 p-3 w-[200px] z-40 text-center">
@@ -139,12 +197,12 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="w-full flex flex-col justify-start items-start">
-                  <div className="flex-grow w-full min-h-[230px] flex justify-center items-center py-5">
+                  <div className="flex-grow w-full min-h-[200px] flex justify-center items-center py-5">
                     <Image
                       src={(product.media.length > 0 && product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
                       alt={product.name}
                       width={130}
-                      height={230}
+                      height={200}
                     />
                   </div>
 
@@ -159,7 +217,7 @@ export default function Home() {
                       <CustomLabel
                         children={product?.category.name}
                         variant="text"
-                        addedClass="font-semibold text-gray-400"
+                        addedClass="font-semibold text-gray-400 line-clamp-1"
                       />
                      {((product?.discount) != null) && <CustomLabel
                         children={`${product?.discount}% Off`} 
@@ -180,7 +238,9 @@ export default function Home() {
                 </div>
                 </Link>
               </CustomCard>
+              </SwiperSlide>
             )})}
+          </Swiper>
           </div>
         </div>}
 
@@ -199,10 +259,29 @@ export default function Home() {
               addedClass="text-base"
             />
           </div>
-
           <div className="flex flex-wrap md:flex-nowrap gap-4 w-full justify-start items-center">
+          <Swiper
+              ref={swiperRef}
+              slidesPerView={1}
+              spaceBetween={10}
+              navigation={true}
+              breakpoints={{
+                640: {
+                  slidesPerView: 2,
+                },
+                768: {
+                  slidesPerView: 4,
+                },
+                1024: {
+                  slidesPerView: 5,
+                },
+              }}
+              modules={[Pagination, Navigation]}
+              className=''
+            >
             {productList.latest?.length > 0 && productList.latest.map((product, idx) => (
-              <CustomCard addedClass='flex grow sm:max-w-[150px] md:max-w-[250px] basis-[150px] md:w-[150px] h-[350px]' key={idx}>
+              <SwiperSlide>
+              <CustomCard addedClass='flex md:grow lg:grow w-[250px] sm:max-w-[190px] md:max-w-[250px] md:w-[180px] h-[300px]' key={idx}>
               <Link className='relative w-full overflow-hidden'
                key={idx} href={`/product/${product.id}`} passHref>
                 <div className="bg-green-700 absolute  -left-[70px] -top-[10px] -rotate-45 p-3 w-[200px] z-40 text-center">
@@ -216,12 +295,12 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="w-full flex-grow flex flex-col justify-start items-start">
-                  <div className="flex-grow w-full min-h-[230px]  flex justify-center items-center py-5">
+                  <div className="flex-grow w-full min-h-[200px]  flex justify-center items-center">
                     <Image
                       src={(product.media.length > 0 && product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
                       alt={product.name}
                       width={130}
-                      height={230}
+                      height={200}
                     />
                   
                   </div>
@@ -236,7 +315,7 @@ export default function Home() {
                       <CustomLabel
                         children={product?.category.name}
                         variant="text"
-                        addedClass="font-semibold text-gray-400"
+                        addedClass="font-semibold text-gray-400 line-clamp-1"
                       />
                     {((product?.discount) != null) && <CustomLabel
                         children={`${product?.discount}% Off`} 
@@ -256,20 +335,29 @@ export default function Home() {
                 </div>
                 </Link>
               </CustomCard>
+              </SwiperSlide>
             ))}
+            </Swiper>
           </div>
         </div>}
       </div>
-      <div id='blogs' className='flex justify-top flex-col gap-4 items-center p-8'>
+      <div id='blogs' className='flex bg-white justify-top flex-col gap-4 items-center p-8'>
         <h3 className='text-[#0029FF] font-semi-bold text-md'>Blogs</h3>
-        <div className='h-max w-full flex flex-wrap item-center  gap-4 justify-center'>
-          {blogs?.map((data:T_Blogs,idx) =>{
-            return(
-            <div key={idx} className='bg-[#435EEA] shadow-custom w-[400px] md:w-[887px] lg:w-[1087px] h-[450px] rounded-md relative md:pt-16'>
+        <div>
+        <List
+          className="demo-loadmore-list"
+          loading={initLoading}
+          itemLayout="horizontal"
+          loadMore={loadMore}
+          dataSource={list}
+          renderItem={(item) => (
+            <List.Item>
+              <Skeleton avatar title={false} loading={item.loading} active>
+              <div className='bg-[#435EEA] shadow-custom w-[400px] md:w-[887px] lg:w-[1087px] h-[450px] rounded-md relative md:pt-16'>
                 <div className='flex md:grid justify-center items-center md:absolute  md:-right-8 top-12 w-full  md:w-[323.26px] h-32 md:h-[310px] rounded-lg md:bg-white md:shadow-custom1'>
                 <Image
-                  src={imgUrl + data.imageUrl}
-                  alt={data?.title}
+                  src={imgUrl + item.imageUrl}
+                  alt={item?.title}
                   className='object-fill w-40 md:w-full mt-4 md:mt-0 h-full rounded-lg'
                   width={130}
                   height={230}
@@ -277,11 +365,11 @@ export default function Home() {
                 </div>
                 <div className='md:w-[481px] h-80 p-4 leading-7'>
                   <div className='md:px-8'>
-                    <p className='text-[#C0C0C0]'>{new Date(data.createdAt).toLocaleDateString()}</p>
-                    <p className='text-white font-bold text-2xl'>{data.title}</p>
+                    <p className='text-[#C0C0C0]'>{new Date(item.createdAt).toLocaleDateString()}</p>
+                    <p className='text-white font-bold text-2xl'>{item.title}</p>
                   </div>
                   <div className='md:p-8'>
-                    <div className='text-white text-md font-semibold line-clamp-4' dangerouslySetInnerHTML={{ __html: data.content }} />
+                    <div className='text-white text-md font-semibold line-clamp-4' dangerouslySetInnerHTML={{ __html: item.content }} />
                   </div>
                   <div className='flex justify-center items-center absolute bottom-12 md:bottom-28 w-full md:w-[450px]'>
                   <CustomButton
@@ -291,16 +379,11 @@ export default function Home() {
                     />
                   </div>
                 </div>
-              </div>
-            )
-          })}
-        </div>
-        <div className='w-full flex justify-center items-center'>
-        <CustomButton
-          children={<Link href={'/product'}>Load more</Link>}
-          buttonType="link"
-          addedClass="text-base"
-        />          
+            </div>
+              </Skeleton>
+            </List.Item>
+          )}
+        />
         </div>
       </div>
     </>

@@ -18,6 +18,7 @@ interface FormProps{
 
 export default function ReviewForm({isOpen,productId,setLoading,isLoading,setShow,onReviewSubmit}: FormProps) {
   const user = useStore(selector('user'))
+  const { TextArea } = Input;
 
   const handleFormSubmit = async (values: any) => {
     console.log('Received values of form: ', values);
@@ -64,7 +65,7 @@ export default function ReviewForm({isOpen,productId,setLoading,isLoading,setSho
     </Form.Item>
 
     <Form.Item label="Review" name="content" rules={[{ required: true }]}>
-      <Input className='bg-gray-200' placeholder='Write your comments here' />
+      <TextArea rows={4} className='bg-gray-200' placeholder='Write your comments here' />
     </Form.Item>
 
     <Form.Item label=" ">
