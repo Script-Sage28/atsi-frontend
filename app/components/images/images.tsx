@@ -43,7 +43,7 @@ export const LazyImages: React.FC<LazyImageProps> = ({ images, addedClass, alt, 
     } else {
       return (
         <Image
-          className={clsx('w-full object-fill h-full', addedClass)}
+          className={clsx('w-[240px] object-fill h-[140px]', addedClass)}
           src='assets/logo.png'
           loading='lazy'
           alt={alt}

@@ -1,13 +1,13 @@
 'use client';
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react'
-import { Breadcrumb, Button, Input, List, Space } from 'antd';
+import { Breadcrumb, Button, Checkbox, Input, List, Space } from 'antd';
 import { debounce } from 'lodash';
 import Link from 'next/link'
 import { FaListUl } from 'react-icons/fa6';
 import { TiThSmall } from 'react-icons/ti';
 import { CustomLabel,LazyImages } from '@/components';
 import { T_Brand, T_Categories, T_Product } from '@/types/productList';
-import { BrandsRequest, CategoriesRequest, ProductsRequest } from '@/service/request';
+import { BrandsRequest, CategoriesRequest } from '@/service/request';
 import { Peso } from '@/helper/pesoSign';
 import { FilterSort } from '@/helper/filterSort';
 import { Skeleton,Select } from 'antd';
@@ -15,40 +15,8 @@ import { Filter } from '@/types/filter';
 import clsx from 'clsx';
 import useStore from '@/zustand/store/store';
 import { loadBrandCategory, loadProducts, selector } from '@/zustand/store/store.provider';
-import AtsiImg from '../logo.png'
-
-const Sorting = [
-    {
-      id: 0,
-      name: 'Sort By',
-      url: '/#about',
-      value:''
-    },
-    {
-      id: 1,
-      name: 'Lowest price',
-      url: '/#about',
-      value:'lowest'
-    },
-    {
-      id: 2,
-      name: 'Highest price',
-      url: '/#Home',
-      value:'highest'
-    },
-    {
-      id: 3,
-      name: 'A-Z',
-      url: '/#Home',
-      value:'asc'
-    },
-    {
-      id: 4,
-      name: 'Z-A',
-      url: '/#Home',
-      value:'desc'
-    }
-  ];
+import CustomNextImage from '@/components/image/CustomNextImage';
+import ATSI from '../logo.png'
 
   
 export default function Productpage() {
@@ -63,8 +31,10 @@ export default function Productpage() {
   const [isRow,setIsRow] = useState<boolean>(true)
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<T_Product[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [category,setCategory] = useState<T_Categories[]>([])
+  const [selectedCategories, setSelectedCategories] = useState('');
+  const [selectedBrands, setSelectedBrands] = useState('');
+  const [productName,setProductName] = useState('')
   const [sortOrder, setSortOrder] = useState<string>('A-Z');
   const [filter,setFiltered] = useState<Filter>({
     category: {name:'',id:''},
@@ -152,71 +122,37 @@ export default function Productpage() {
     </div>
   ) : null;
   
-  const handleBrandClick = (value: string | undefined, options: { value: string; label: string; } | { value: string; label: string; }[]) => {
-    if (value === undefined) {
-      // Clear selection
-      setFiltered((prevFilter) => ({
-        ...prevFilter,
-        brand:{name:'',id:''},
-      }));
-    } else {
-      // Option is selected
-      const selectedOption = Array.isArray(options) ? options[0] : options;
-      setFiltered((prevFilter) => ({
-        ...prevFilter,
-        brand: {
-          id: selectedOption.value,
-          name: selectedOption.label
-        },
-      }));
-    }
-  };
-  const handleCategory = (name:string,id:string) =>{
-    setFiltered(prevFilter => ({
-      ...prevFilter,
-      category: {id:prevFilter.category?.id === id ? '' : id,name:prevFilter.category?.name === name ? '' : name}
-    }));
-  };
-  const handleSorting = (data: {value:string}) =>{
-    setFiltered(prevFilter => ({
-      ...prevFilter,
-      sort: data.value as '' | 'asc' | 'desc' | 'lowest' | 'highest' | undefined
-    }));
-  };
   const onSetFilter = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFiltered((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    const { value } = e.target;
+    setProductName(value)
   }, []);
 
-  const handleClearSort = () =>{
-    setFiltered(prevFilter => ({
-      ...prevFilter,
-      sort: '',
-    }));
-  };
 
-
+  useEffect(() =>{
+    if(selectedBrands){
+      const cat = shopby.brand?.filter((data: { id: string; }) => data.id === selectedBrands)
+      setSelectedBrand(cat)
+      setCategory(cat[0].Categories)
+    }else{
+      setSelectedBrand([])
+      setCategory(shopby.category)
+    }
+  },[selectedBrands])
   const handleSortChange = (value: string) => {
       setSortOrder(value);
   };
   const handleBrandChange = (brandName: string) => {
-    const updatedBrands = selectedBrands.includes(brandName)
-          ? selectedBrands.filter(category => category !== brandName)
-          : [...selectedBrands, brandName];
-          setSelectedBrands(updatedBrands);
-    };
-  const handleCategoryChange = (categoryName: string) => {
-      const updatedCategories = selectedCategories.includes(categoryName)
-          ? selectedCategories.filter(category => category !== categoryName)
-          : [...selectedCategories, categoryName];
-      setSelectedCategories(updatedCategories);
+    setSelectedBrands(brandName);
   };
+  const handleCategoryChange = (categoryName: string) => {
+      setSelectedCategories(categoryName === selectedCategories ? '' : categoryName);
+  }; 
   const filteredAndSortedProducts = product.list?.filter((product:T_Product) => {
-      const isInSelectedCategories = selectedCategories.length === 0 || selectedCategories.includes(product.category.id);
-      return isInSelectedCategories;
+      const isInSelectedCategories = selectedCategories === '' || selectedCategories?.includes(product.categoryId);
+      const inBrand = !selectedBrands || selectedBrands?.includes(product.brandId)
+      const nameMatches = !productName || product.name?.toLowerCase().includes(productName.toLowerCase());
+
+      return isInSelectedCategories && inBrand && nameMatches;
   }).sort((a: { name: string; price: number; }, b: { name: string; price: number; }) => {
       if (sortOrder === 'A-Z') {
           return a.name.localeCompare(b.name);
@@ -227,12 +163,13 @@ export default function Productpage() {
       } else if (sortOrder === 'Lowest Price') {
           return a.price - b.price;
       }
-  });
+  })
   useEffect(() =>{
-    const list = filteredAndSortedProducts?.map((item:any) => ({...item,loading:false}))
-    setList(list)
- },[selectedCategories,selectedBrands,sortOrder,product.list])
-  console.log(list)
+      const list = filteredAndSortedProducts?.map((item:any) => ({...item,loading:false}))
+      setList(list)
+  },[selectedCategories,selectedBrands,sortOrder,product.list,productName])
+
+  console.log(productName)
   return (
     <>
     <div className='w-full bg-white text-black pl-4 md:pl-10 mb-10'>
@@ -256,18 +193,14 @@ export default function Productpage() {
               </div>
               <div className='w-full md:w-80 h-full p-4 rounded-lg md:shadow-border'>
                 <CustomLabel
-                  children={selectedBrand.length > 0 && filter.brand?.name !== '' ? `${selectedBrand[0].name} Categories` : "All Categories"}
+                  children={selectedBrand.length > 0 ? `${selectedBrand[0].name} Categories` : "All Categories"}
                   variant='text'
                   addedClass='font-semibold text-xl uppercase tracking-widest'
                 />
                 <div className='w-full h-max'>
                   <ul className='list-none flex flex-wrap flex-row md:flex-col pt-4 justify-start gap-4'>
-                  {shopby.category.map((data: T_Categories) => (
-                      <li className='truncate flex items-start gap-2 cursor-pointer'
-                      onClick={() =>{handleCategory(data.name,data.id)}}
-                      key={data.id}>
-                      <p className={clsx('m-0',filter.category?.name === data.name ? 'font-bold text-red-400 text-lg' : 'font-normal')}>{data.name}</p>
-                      </li>
+                  {category?.map((item:T_Categories,idx:number) =>(
+                  <Checkbox name={item.name} checked={selectedCategories?.includes(item.id)} key={idx} onChange={() => handleCategoryChange(item.id)}>{item.name}</Checkbox>
                   ))}
                   </ul> 
                 </div>
@@ -291,6 +224,7 @@ export default function Productpage() {
                 style={{ width: '100%',height:'50px' }}
                 size='middle'
                 allowClear
+                placeholder='Shopby Brands'
                 onChange={handleBrandChange}
                 options={(shopby.brand.map((data:T_Brand) => ({
                   value: data.id,
@@ -373,7 +307,7 @@ export default function Productpage() {
                     <List.Item>
                       <div key={idx} className={clsx('w-full shadow-border rounded-t-lg hover:shadow-shine bg-gray-200 h-[370px] cursor-pointer')}>
                           <Skeleton style={{padding:8,height:'200px'}} loading={loading} avatar active>
-                          <div className='w-full min-h-[140px] flex justify-center items-center relative'>
+                          <div className='w-full min-w-full min-h-[140px] flex justify-center items-center relative'>
                           <LazyImages
                             size='large'
                             images={data.media}
