@@ -305,7 +305,7 @@ export default function Productpage() {
                   dataSource={list}
                   renderItem={(data:any,idx:number) => (
                     <List.Item>
-                      <div key={idx} className={clsx('w-full shadow-border rounded-t-lg hover:shadow-shine bg-gray-200 h-[370px] cursor-pointer')}>
+                      <div key={idx} className={clsx('w-full shadow-border rounded-t-lg hover:shadow-shine bg-gray-200 h-max pb-4 cursor-pointer')}>
                           <Skeleton style={{padding:8,height:'200px'}} loading={loading} avatar active>
                           <div className='w-full min-w-full min-h-[140px] flex justify-center items-center relative'>
                           <LazyImages
