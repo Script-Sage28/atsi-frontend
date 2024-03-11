@@ -286,10 +286,10 @@ export default function Productpage() {
                     gutter: 16,
                     xs: 2,
                     sm: 2,
-                    md: 5,
-                    lg: 5,
+                    md: 3,
+                    lg: 4,
                     xl: 5,
-                    xxl: 3,
+                    xxl: 5,
                   }}
                   loading={initLoading}
                   itemLayout="vertical"
