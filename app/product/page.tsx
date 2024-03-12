@@ -226,7 +226,7 @@ export default function Productpage() {
                 allowClear
                 placeholder='Shopby Brands'
                 onChange={handleBrandChange}
-                options={(shopby.brand.map((data:T_Brand) => ({
+                options={(shopby.brand?.map((data:T_Brand) => ({
                   value: data.id,
                   label: data.name,
                 })) as { value: string; label: string; }[])}

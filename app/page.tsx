@@ -9,7 +9,7 @@ import { WiStars } from 'react-icons/wi';
 import { CustomButton, CustomCard, CustomLabel } from './components';
 import { getProductsWithinLast5Days } from './helper/latestProducts';
 import { Peso } from './helper/pesoSign';
-import { AllBlogs, ProductsRequest } from './service/request';
+import { AllBlogs, BrandsRequest, ProductsRequest } from './service/request';
 // eslint-disable-next-line camelcase
 import { T_Blogs, type T_ProductList } from './types/productList';
 import { loadProducts, selector } from './zustand/store/store.provider';
@@ -31,9 +31,13 @@ export default function Home() {
     onSale: products.list?.filter((val: { isSaleProduct: boolean; }) => val.isSaleProduct).slice(0,5),
     latest: getProductsWithinLast5Days(products.list).slice(0,5)
   }
+  const [loaded, setLoaded] = useState<boolean>(true);
+
   const swiperRef = useRef<SwiperRef>(null);         
   const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [brands,setBrands] = useState([])
+  const [productsAll,setProductsAll] = useState([])
   const [productList,setProductsList] = useState(initialProductList);
   const [blogs,setBlogs] = useState<T_Blogs[]>([]);
   const [list, setList] = useState<T_Blogs[]>([]);
@@ -46,6 +50,12 @@ export default function Home() {
     setList([...list, ...nextItems]);
     setLoading(false);
   };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoaded(false);
+    }, 3000);
+    return () => { clearTimeout(timer); };
+  }, []);
 
   const loadMore =
   !initLoading && !loading ? (
@@ -71,15 +81,17 @@ export default function Home() {
           name: '',
           status: '',
         });
-        const res = await AllBlogs.FETCH({
-
-        })
+        const res = await AllBlogs.FETCH({})
+        const res1 = await BrandsRequest.GET_ALL({})
+        const re = await ProductsRequest.GET_ALL({isDeleted:false})
+        setProductsAll(re.data.data)
+        setBrands(res1.data.data)
         const list = res.data.data.filter((item: { isDeleted: boolean; }) => !item.isDeleted)
         const blogs = list?.map((item:any) => ({...item,loading:false}))
         setBlogs(blogs)
         setList(blogs.slice(0, countPerPage));
-        setInitLoading(false);
         loadProducts(response.data.data)
+        setInitLoading(false)
         const all = response.data.data?.filter((item: { isDeleted: boolean; }) => !item.isDeleted).slice(0, 7);
         const sale = response.data.data?.filter((val: { isSaleProduct: boolean,isDeleted:boolean }) => val.isSaleProduct).slice(0,7);
         setProductsList(prev =>({
@@ -94,11 +106,20 @@ export default function Home() {
     }
     void fetchProducts()
   },[])
-  console.log(list)
   return (
     <>
       {/* Landing Page */}
-      <div className="container bg-[#f5f5f5] h-fit-to-screen-without-header md:p-52 max-w-full flex flex-row items-center">
+      <div className='w-full '>
+      <Swiper
+        ref={swiperRef}
+        slidesPerView={1}
+        spaceBetween={10}
+        navigation={true}
+        modules={[Pagination, Navigation]}
+        className=''
+      >
+        <SwiperSlide>
+        <div className="container bg-[#f5f5f5] h-fit-to-screen-without-header h-[700px] md:p-52 max-w-full flex flex-row items-center">
         <div className="flex-grow">
           <div className="sm:w-full flex flex-col sm:gap-4 md:gap-10 pb-8 pl-4 md:pl-0 md:w-3/4">
             <div>
@@ -130,161 +151,69 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {/* <div className="flex-grow items-center justify-center flex">
-          <Image
-            src="/assets/landing_image.png"
-            width={450}
-            height={450}
-            alt="camera"
-          />
-        </div> */}
-
         <div className="absolute -bottom-2 md:bottom-5 left-1/2 animate-bounce">
           <FaChevronDown size={30} />
         </div>
+        </div>
+        </SwiperSlide>
+        <SwiperSlide>
+        <div className="container bg-[#f5f5f5] h-[700px] bg-cover bg-center md:p-52 max-w-full flex flex-row items-center" style={{backgroundImage:`url('https://firebasestorage.googleapis.com/v0/b/kyte-7c484.appspot.com/o/lpUVJzyzApTrvZ%2F661ec4d5-5716-4057-a5bd-a7e4f848e9c3.jpg?alt=media&token=bfbb6672-ecff-475f-95c7-0386fac1c955')`,aspectRatio:1}}>
+        </div>
+        </SwiperSlide>
+      </Swiper>
       </div>
+
       {/* Products Section */}
-      <div id="products" className="w-full bg-white flex flex-col gap-4 p-8 md:px-40 md:py-8">
+      <div id="products" className="w-full bg-white flex flex-col gap-4 p-8 md:px-24 md:py-8">
         {/* Sales Products */}
-        {productList.onSale?.length > 0 && <div className="w-full h-auto flex flex-col gap-4">
-          <div className="flex flex-row items-start justify-between">
-            <CustomLabel
-              children="Sales Products"
-              variant="title"
-              titleLevel={4}
-            />
-            <CustomButton
-              children={<Link href={'/product'}>View All</Link>}
-              buttonType="link"
-              addedClass="text-base"
-            />
-          </div>
-
-          <div className="flex flex-wrap md:flex-wrap justify-start items-center gap-5">
-          <Swiper
-              ref={swiperRef}
-              slidesPerView={1}
-              spaceBetween={10}
-              navigation={true}
-              breakpoints={{
-                640: {
-                  slidesPerView: 2,
-                },
-                768: {
-                  slidesPerView: 4,
-                },
-                1024: {
-                  slidesPerView: 5,
-                },
-              }}
-              modules={[Pagination, Navigation]}
-              className=''
-            >
-            {productList.onSale?.length > 0 && productList.onSale.map((product, idx) => {
-              return (
-              <SwiperSlide>
-              <CustomCard addedClass='flex md:grow lg:grow w-[250px] sm:max-w-[190px] md:max-w-[250px] md:w-[180px] h-[300px]' key={idx}>
-                <Link className='relative w-full overflow-hidden'
-                 key={idx} href={`/product/${product.id}`} passHref>
-                <div className="bg-red-700 absolute -left-[75px] -top-[7px] -rotate-45 p-3 w-[200px] z-40 text-center">
-                  <div className="break-normal text-center flex flex-col items-center justify-center">
-                    <BsFire color="white" size={20} />
-                    <CustomLabel
-                      children="Hot Deals"
-                      variant="text"
-                      addedClass="text-sm text-white font-semibold"
-                    />
-                  </div>
+        {brands?.map((item:any,idx:number) =>{
+          const brandId = item.id;
+          const all = productsAll?.filter((data:any) => data.brand.id === brandId).slice(0,7)
+          console.log(all)
+          return(
+            <>
+            {all.length === 0 ? null : (
+              <div key={idx}>
+                <div>
+                <p className='text-2xl'>{item.name}</p>
                 </div>
-                <div className="w-full flex flex-col justify-start items-start">
-                  <div className="flex-grow w-full min-h-[200px] flex justify-center items-center py-5">
-                    <Image
-                      src={(product.media.length > 0 && product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
-                      alt={product.name}
-                      width={130}
-                      height={200}
-                    />
-                  </div>
-
-                  <div className="w-full px-5 pb-2">
-                    <CustomLabel
-                      children={product?.name}
-                      variant="title"
-                      titleLevel={5}
-                      addedClass='line-clamp-1'
-                    />
-                    <div className="flex flex-col">
-                      <CustomLabel
-                        children={product?.category.name}
-                        variant="text"
-                        addedClass="font-semibold text-gray-400 line-clamp-1"
-                      />
-                     {((product?.discount) != null) && <CustomLabel
-                        children={`${product?.discount}% Off`} 
-                        variant="text"
-                        addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
-                    />}
-
-                    <CustomLabel
-                        children={((product?.discountedPrice) != null) ? (<div className='flex gap-4'>
-                        <p className='m-0'>{Peso(product?.discountedPrice)}</p>
-                        <p className='m-0 line-through text-gray-600'>{Peso(product?.price)}</p>
-                      </div>) : Peso(product?.price)} 
-                        variant="text"
-                        addedClass="text-lg font-semibold text-[#ff4e4e]"
-                    />
-                    </div>
-                  </div>
-                </div>
-                </Link>
-              </CustomCard>
-              </SwiperSlide>
-            )})}
-          </Swiper>
-          </div>
-        </div>}
-
-        {/* New Products */}
-        {productList.latest?.length > 0 && <div className="flex flex-col gap-10">
-          <div className="flex flex-row items-start justify-between">
-            <CustomLabel
-              children="Latest Products"
-              variant="title"
-              titleLevel={4}
-            />
-
-            <CustomButton
-              children={<Link href={'/product'}>View All</Link>}
-              buttonType="link"
-              addedClass="text-base"
-            />
-          </div>
-          <div className="flex flex-wrap md:flex-nowrap gap-4 w-full justify-start items-center">
-          <Swiper
-              ref={swiperRef}
-              slidesPerView={1}
-              spaceBetween={10}
-              navigation={true}
-              breakpoints={{
-                640: {
-                  slidesPerView: 2,
-                },
-                768: {
-                  slidesPerView: 4,
-                },
-                1024: {
-                  slidesPerView: 5,
-                },
-              }}
-              modules={[Pagination, Navigation]}
-              className=''
-            >
-            {productList.latest?.length > 0 && productList.latest.map((product, idx) => (
-              <SwiperSlide>
-              <CustomCard addedClass='flex md:grow lg:grow w-[250px] sm:max-w-[190px] md:max-w-[250px] md:w-[180px] h-[300px]' key={idx}>
-              <Link className='relative w-full overflow-hidden'
-               key={idx} href={`/product/${product.id}`} passHref>
-                <div className="bg-green-700 absolute  -left-[70px] -top-[10px] -rotate-45 p-3 w-[200px] z-40 text-center">
+                <Swiper
+                ref={swiperRef}
+                slidesPerView={1}
+                spaceBetween={0}
+                navigation={true}
+                breakpoints={{
+                  640: {
+                    slidesPerView: 2,
+                  },
+                  768: {
+                    slidesPerView: 4,
+                  },
+                  1024: {
+                    slidesPerView: 5,
+                  },
+                }}
+                modules={[Pagination, Navigation]}
+                className=''
+              >
+                {all?.map((product:any, idx) => {
+                
+                return (
+                    <SwiperSlide>
+                    <CustomCard addedClass='flex w-[250px] sm:max-w-[190px] md:max-w-[250px] md:w-[180px] h-[300px] overflow-visible' key={idx}>
+                      <Link className='relative w-full overflow-hidden'
+                      key={idx} href={`/product/${product.id}`} passHref>
+                        {product.isSaleProduct && <div className="bg-red-700 absolute -left-[75px] -top-[7px] -rotate-45 p-3 w-[200px] z-40 text-center">
+                        <div className="break-normal text-center flex flex-col items-center justify-center">
+                          <BsFire color="white" size={20} />
+                          <CustomLabel
+                            children="Hot Deals"
+                            variant="text"
+                            addedClass="text-sm text-white font-semibold"
+                          />
+                        </div>
+                      </div>}
+                        {product.isNewRelease && <div className="bg-green-700 absolute  -left-[70px] -top-[10px] -rotate-45 p-3 w-[200px] z-40 text-center">
                   <div className="break-normal text-center flex flex-col items-center justify-center">
                     <WiStars color="white" size={30} />
                     <CustomLabel
@@ -293,53 +222,58 @@ export default function Home() {
                       addedClass="text-sm text-white font-semibold"
                     />
                   </div>
-                </div>
-                <div className="w-full flex-grow flex flex-col justify-start items-start">
-                  <div className="flex-grow w-full min-h-[200px]  flex justify-center items-center">
-                    <Image
-                      src={(product.media.length > 0 && product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
-                      alt={product.name}
-                      width={130}
-                      height={200}
-                    />
-                  
-                  </div>
-                  <div className="w-full px-5 pb-2">
-                    <CustomLabel
-                      children={product?.name}
-                      variant="title"
-                      titleLevel={5}
-                      addedClass='line-clamp-1'
-                    />
-                    <div className="flex flex-col">
-                      <CustomLabel
-                        children={product?.category.name}
-                        variant="text"
-                        addedClass="font-semibold text-gray-400 line-clamp-1"
-                      />
-                    {((product?.discount) != null) && <CustomLabel
-                        children={`${product?.discount}% Off`} 
-                        variant="text"
-                        addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
-                    />}
-                    <CustomLabel
-                        children={((product?.discountedPrice) != null) ? (<div className='flex gap-4'>
-                        <p className='m-0'>{Peso(product?.discountedPrice)}</p>
-                        <p className='m-0 line-through text-gray-600'>{Peso(product?.price)}</p>
-                      </div>) : Peso(product?.price)} 
-                        variant="text"
-                        addedClass="text-lg font-semibold text-[#ff4e4e]"
-                    />
-                    </div>
-                  </div>
-                </div>
-                </Link>
-              </CustomCard>
-              </SwiperSlide>
-            ))}
-            </Swiper>
-          </div>
-        </div>}
+                </div>}
+                      <div className="w-full flex flex-col justify-start items-start">
+                        <div className=" w-full min-h-[200px] flex justify-center items-center py-5">
+                        {loaded ? <Skeleton.Image active /> :                   
+                          <Image
+                            src={(product.media.length > 0 && product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
+                            alt={product.name}
+                            width={130}
+                            height={200}
+                          />}
+
+                        </div>
+                        <div className="w-full px-5 pb-2">
+                          <CustomLabel
+                            children={product?.name}
+                            variant="title"
+                            titleLevel={5}
+                            addedClass='line-clamp-1'
+                          />
+                          <div className="flex flex-col">
+                            <CustomLabel
+                              children={product?.category.name}
+                              variant="text"
+                              addedClass="font-semibold text-gray-400 line-clamp-1"
+                            />
+                          {((product?.discount) != null) && <CustomLabel
+                              children={`${product?.discount}% Off`} 
+                              variant="text"
+                              addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
+                          />}
+
+                          <CustomLabel
+                              children={((product?.discountedPrice) != null) ? (<div className='flex gap-4'>
+                              <p className='m-0'>{Peso(product?.discountedPrice)}</p>
+                              <p className='m-0 line-through text-gray-600'>{Peso(product?.price)}</p>
+                            </div>) : Peso(product?.price)} 
+                              variant="text"
+                              addedClass="text-lg font-semibold text-[#ff4e4e]"
+                          />
+                          </div>
+                        </div>
+                      </div>
+                      </Link>
+                    </CustomCard>
+                    </SwiperSlide>
+                  )})}
+                </Swiper>
+              </div>
+            )}
+            </>
+          )
+        })}
       </div>
       <div id='blogs' className='flex bg-white justify-top flex-col gap-4 items-center p-8'>
         <h3 className='text-[#0029FF] font-semi-bold text-md'>Blogs</h3>

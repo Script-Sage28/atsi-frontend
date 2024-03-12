@@ -52,7 +52,6 @@ body {
   align-items: center;
   border: '2px solid black';
   z-index: -10;
-  overflow: visible;
   padding: 10px 5px;
 }
 .swiper-button-next,
