@@ -39,43 +39,82 @@ body {
 }
 
 
-.swiper {
+#products .swiper {
   width: 100%;
   height: 100%;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  position: relative !important;
+  padding: 15px 40px !important;
+
 }
 
-.swiper-slide {
+#products .swiper-slide {
   text-align: center;
   font-size: 18px;
   display: flex;
+  width: 218px !important;
+  height: 330px !important;
+  overflow: visible;
+}
+#blogs .swiper{
+  width: 100%;
+  height: 100%;
+  display: flex;
   justify-content: center;
   align-items: center;
-  border: '2px solid black';
-  z-index: -10;
-  padding: 10px 5px;
 }
-.swiper-button-next,
-.swiper-button-prev {
+#blogs .swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  display: flex;
+  z-index: -10;
+  width: 400px !important;
+  height: 450px !important;
+  overflow: visible;
+  flex-direction: column;
+}
+
+#products .swiper-button-next{
     background-color: white;
     background-color: rgba(110, 96, 96, 0.5);
-    right:10px;
     padding: 20px;
-    font-size: small;
+    font-size: medium;
     color: #000 !important;
     fill: black !important;
     stroke: black !important;
     border-radius: 5px;
+    background-color: white;
+    padding: 8px 16px;
+    border-radius: 100%;
+    border: 2px solid rgb(129, 128, 128);
+    position: absolute;
+    right: -0px !important;
 }
-.swiper-button-prev:after, .swiper-button-next:after {
-  font-family: swiper-icons;
-  font-size: medium;
+#products .swiper-button-prev {
+    background-color: white;
+    background-color: rgba(110, 96, 96, 0.5);
+    padding: 20px;
+    font-size: medium;
+    color: #000 !important;
+    fill: black !important;
+    stroke: black !important;
+    border-radius: 5px;
+    background-color: white;
+    padding: 8px 16px;
+    border-radius: 100%;
+    border: 2px solid rgb(129, 128, 128);
+    position: absolute;
+    left: 15px !important;
+}
+
+#products .swiper-button-prev:after,#products .swiper-button-next:after {
+  font-size: large;
   text-transform: none !important;
   letter-spacing: 0;
   font-variant: initial;
   line-height: 1;
-}
-.swiper {
-  width: 100%;
 }
 
 body{

@@ -1,12 +1,11 @@
 'use client';
 import React, { useEffect, useMemo, useState } from 'react'
-import { Rate,Avatar, Skeleton,Dropdown, Popover, Input, Form, Button } from 'antd';
+import { Rate,Avatar, Skeleton, Popover, Input, Form, Button } from 'antd';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaWhatsapp } from "react-icons/fa";
-import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import { CustomButton, CustomLabel } from '@/components';
-import AtsiImg from '../../logo.png'
+import AtsiImg from '../../../logo.png'
 import ReviewForm from '@/components/form/review';
 import CustomParagraph from '@/components/paragraph/paragraph';
 import { FetchingDetails } from '@/helper/getDetails';
@@ -121,7 +120,7 @@ export default function ProductDetails({ params }:{
     <>
   {details ? 
        (<div className='p-4 bg-white text-black'>
-      <Link href={'/product'}  className='flex items-center m-4'>
+      <Link href={'/'}  className='flex items-center m-4'>
       <IoIosArrowBack size={30}/>
       <p>Go Back</p>
       </Link >

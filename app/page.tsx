@@ -1,75 +1,42 @@
 'use client';
-import { Avatar, Button, List, Skeleton } from 'antd';
+import { Input, Modal, Skeleton } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BsFire } from 'react-icons/bs';
-import { FaChevronDown } from 'react-icons/fa';
-import { WiStars } from 'react-icons/wi';
+import { FaChevronDown,FaCalendarAlt } from 'react-icons/fa';
+import { BiSolidHot } from "react-icons/bi";
 import { CustomButton, CustomCard, CustomLabel } from './components';
-import { getProductsWithinLast5Days } from './helper/latestProducts';
 import { Peso } from './helper/pesoSign';
 import { AllBlogs, BrandsRequest, ProductsRequest } from './service/request';
 // eslint-disable-next-line camelcase
-import { T_Blogs, type T_ProductList } from './types/productList';
+import { T_Blogs} from './types/productList';
 import { loadProducts, selector } from './zustand/store/store.provider';
 import Noimg from '../public/assets/noimg.png'
 import useStore from '@/zustand/store/store';
 import { Swiper, SwiperSlide,type SwiperRef } from 'swiper/react';
-import { Pagination, Navigation } from 'swiper/modules';
+import { Pagination, Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-
-import './globals.css';
+import './globals.css'
 
 export default function Home() {
   const products = useStore(selector('product'));
-  // eslint-disable-next-line camelcase
-  const initialProductList: T_ProductList = {
-    allProducts: products.list?.slice(0,5),
-    onSale: products.list?.filter((val: { isSaleProduct: boolean; }) => val.isSaleProduct).slice(0,5),
-    latest: getProductsWithinLast5Days(products.list).slice(0,5)
-  }
   const [loaded, setLoaded] = useState<boolean>(true);
-
-  const swiperRef = useRef<SwiperRef>(null);         
-  const [initLoading, setInitLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const swiperRef = useRef<SwiperRef>(null);
   const [brands,setBrands] = useState([])
   const [productsAll,setProductsAll] = useState([])
-  const [productList,setProductsList] = useState(initialProductList);
+  const [selectedBlogs,setSelectedBlogs] = useState<T_Blogs | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [blogs,setBlogs] = useState<T_Blogs[]>([]);
-  const [list, setList] = useState<T_Blogs[]>([]);
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
-  const countPerPage = 1;
 
-  const onLoadMore = () => {
-    setLoading(true);
-    const nextItems = blogs.slice(list.length, list.length + countPerPage);
-    setList([...list, ...nextItems]);
-    setLoading(false);
-  };
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoaded(false);
     }, 3000);
     return () => { clearTimeout(timer); };
-  }, []);
-
-  const loadMore =
-  !initLoading && !loading ? (
-    <div
-      style={{
-        textAlign: 'center',
-        marginTop: 12,
-        height: 32,
-        lineHeight: '32px',
-      }}
-    >
-      <Button onClick={onLoadMore}>Load more</Button>
-    </div>
-  ) : null;
+  }, [])
 
   useEffect(() =>{
     const fetchProducts = async ():Promise<void> =>{
@@ -89,23 +56,24 @@ export default function Home() {
         const list = res.data.data.filter((item: { isDeleted: boolean; }) => !item.isDeleted)
         const blogs = list?.map((item:any) => ({...item,loading:false}))
         setBlogs(blogs)
-        setList(blogs.slice(0, countPerPage));
         loadProducts(response.data.data)
-        setInitLoading(false)
-        const all = response.data.data?.filter((item: { isDeleted: boolean; }) => !item.isDeleted).slice(0, 7);
-        const sale = response.data.data?.filter((val: { isSaleProduct: boolean,isDeleted:boolean }) => val.isSaleProduct).slice(0,7);
-        setProductsList(prev =>({
-          ...prev,
-          allProducts: all,
-          onSale: sale,
-          latest:response.data.data?.filter((item: { isNewRelease: boolean; }) => item.isNewRelease).slice(0,5)
-        }));        
+      
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     }
     void fetchProducts()
   },[])
+
+  const showModal = (data:any) => {
+    setIsModalOpen(true);
+    setSelectedBlogs(data)
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  console.log(selectedBlogs)
   return (
     <>
       {/* Landing Page */}
@@ -114,9 +82,11 @@ export default function Home() {
         ref={swiperRef}
         slidesPerView={1}
         spaceBetween={10}
-        navigation={true}
-        modules={[Pagination, Navigation]}
-        className=''
+        modules={[Autoplay, Navigation]}
+        autoplay={{
+          delay: 2500,
+          disableOnInteraction: false,
+        }}
       >
         <SwiperSlide>
         <div className="container bg-[#f5f5f5] h-fit-to-screen-without-header h-[700px] md:p-52 max-w-full flex flex-row items-center">
@@ -162,25 +132,26 @@ export default function Home() {
         </SwiperSlide>
       </Swiper>
       </div>
-
       {/* Products Section */}
       <div id="products" className="w-full bg-white flex flex-col gap-4 p-8 md:px-24 md:py-8">
         {/* Sales Products */}
         {brands?.map((item:any,idx:number) =>{
           const brandId = item.id;
           const all = productsAll?.filter((data:any) => data.brand.id === brandId).slice(0,7)
-          console.log(all)
           return(
             <>
             {all.length === 0 ? null : (
               <div key={idx}>
-                <div>
+                <div className='pl-12 pr-4 font-bold flex justify-between items-center mb-2'>
                 <p className='text-2xl'>{item.name}</p>
+                <Link href={`/product/${brandId}`}>
+                View All
+                </Link>
                 </div>
                 <Swiper
                 ref={swiperRef}
                 slidesPerView={1}
-                spaceBetween={0}
+                spaceBetween={30}
                 navigation={true}
                 breakpoints={{
                   640: {
@@ -194,63 +165,48 @@ export default function Home() {
                   },
                 }}
                 modules={[Pagination, Navigation]}
-                className=''
               >
-                {all?.map((product:any, idx) => {
-                
+                {all?.map((product:any, idx) => {             
                 return (
                     <SwiperSlide>
-                    <CustomCard addedClass='flex w-[250px] sm:max-w-[190px] md:max-w-[250px] md:w-[180px] h-[300px] overflow-visible' key={idx}>
+                    <CustomCard addedClass='flex w-full h-[330px] overflow-visible' key={idx}>
                       <Link className='relative w-full overflow-hidden'
                       key={idx} href={`/product/${product.id}`} passHref>
-                        {product.isSaleProduct && <div className="bg-red-700 absolute -left-[75px] -top-[7px] -rotate-45 p-3 w-[200px] z-40 text-center">
-                        <div className="break-normal text-center flex flex-col items-center justify-center">
-                          <BsFire color="white" size={20} />
-                          <CustomLabel
-                            children="Hot Deals"
-                            variant="text"
-                            addedClass="text-sm text-white font-semibold"
-                          />
-                        </div>
-                      </div>}
-                        {product.isNewRelease && <div className="bg-green-700 absolute  -left-[70px] -top-[10px] -rotate-45 p-3 w-[200px] z-40 text-center">
-                  <div className="break-normal text-center flex flex-col items-center justify-center">
-                    <WiStars color="white" size={30} />
-                    <CustomLabel
-                      children="New Release"
-                      variant="text"
-                      addedClass="text-sm text-white font-semibold"
-                    />
-                  </div>
-                </div>}
+                        {product.isSaleProduct ? <div className="absolute w-[200px] z-40 left-4 top-4">
+                        <BiSolidHot size={28} className='text-red-600' />
+                      </div> : product.isNewRelease ? <div className="absolute w-[200px] z-40 left-4 top-4">
+                        <img className='w-[28px] text-green-600' src={'/assets/icons8-new-100.png'} alt="" />
+                      </div> : null}
                       <div className="w-full flex flex-col justify-start items-start">
-                        <div className=" w-full min-h-[200px] flex justify-center items-center py-5">
+                        <div className=" w-full min-h-[200px] flex justify-center items-center">
                         {loaded ? <Skeleton.Image active /> :                   
                           <Image
                             src={(product.media.length > 0 && product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
                             alt={product.name}
-                            width={130}
+                            className='rounded-lg'
+                            width={170}
                             height={200}
                           />}
 
                         </div>
-                        <div className="w-full px-5 pb-2">
+                        <div className="w-full px-4">
                           <CustomLabel
                             children={product?.name}
                             variant="title"
                             titleLevel={5}
-                            addedClass='line-clamp-1'
+                            addedClass='line-clamp-1 text-md text-left'
                           />
+                          <p className='text-[12px] text-left'>Stock: {product?.stock}</p>
                           <div className="flex flex-col">
                             <CustomLabel
                               children={product?.category.name}
                               variant="text"
-                              addedClass="font-semibold text-gray-400 line-clamp-1"
+                              addedClass="font-semibold text-gray-400 line-clamp-1 text-left"
                             />
                           {((product?.discount) != null) && <CustomLabel
                               children={`${product?.discount}% Off`} 
                               variant="text"
-                              addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
+                              addedClass="sm:text-base md:text-md text-gray-500 font-semibold text-left"
                           />}
 
                           <CustomLabel
@@ -259,7 +215,7 @@ export default function Home() {
                               <p className='m-0 line-through text-gray-600'>{Peso(product?.price)}</p>
                             </div>) : Peso(product?.price)} 
                               variant="text"
-                              addedClass="text-lg font-semibold text-[#ff4e4e]"
+                              addedClass="text-lg font-semibold text-[#ff4e4e] text-left"
                           />
                           </div>
                         </div>
@@ -275,49 +231,82 @@ export default function Home() {
           )
         })}
       </div>
-      <div id='blogs' className='flex bg-white justify-top flex-col gap-4 items-center p-8'>
-        <h3 className='text-[#0029FF] font-semi-bold text-md'>Blogs</h3>
-        <div>
-        <List
-          className="demo-loadmore-list"
-          loading={initLoading}
-          itemLayout="horizontal"
-          loadMore={loadMore}
-          dataSource={list}
-          renderItem={(item) => (
-            <List.Item>
-              <Skeleton avatar title={false} loading={item.loading} active>
-              <div className='bg-[#435EEA] shadow-custom w-[400px] md:w-[887px] lg:w-[1087px] h-[450px] rounded-md relative md:pt-16'>
-                <div className='flex md:grid justify-center items-center md:absolute  md:-right-8 top-12 w-full  md:w-[323.26px] h-32 md:h-[310px] rounded-lg md:bg-white md:shadow-custom1'>
-                <Image
-                  src={imgUrl + item.imageUrl}
-                  alt={item?.title}
-                  className='object-fill w-40 md:w-full mt-4 md:mt-0 h-full rounded-lg'
-                  width={130}
-                  height={230}
-                />
-                </div>
-                <div className='md:w-[481px] h-80 p-4 leading-7'>
-                  <div className='md:px-8'>
-                    <p className='text-[#C0C0C0]'>{new Date(item.createdAt).toLocaleDateString()}</p>
-                    <p className='text-white font-bold text-2xl'>{item.title}</p>
+      <div className='w-full h-[274px] bg-yellow-500 bg-opacity-100 py-12 flex justify-center item-center'>
+        <div className='w-[80%]'>
+          <p className='text-white m-0 text-[48px]'>Subscribe</p>
+          <p className='text-white mb-2 -mt-2'>Just subscribe to us to get more new updates</p>
+          <div className='flex flex-nowrap gap-12'>
+            <Input size='large' className='rounded-none' />
+            <CustomButton
+              children='Subscribe'
+              size='large'
+              addedClass='bg-gray-200 text-black'
+            />
+          </div>
+        </div>
+      </div>
+      <div id='blogs' className='flex bg-white justify-top flex-col gap-4 items-center p-8 md:px-28'>
+        <div className='flex flex-col justify-center items-center mb-4'>
+          <h3 className='font-bold tracking-wider'>BLOG</h3>
+          <p className='text-lg font-bold'>Stay in the loop with the latest about ATSI's products</p>
+        </div>
+        <div className='blog flex w-full'>
+        <Swiper
+          ref={swiperRef}
+          slidesPerView={1}
+          spaceBetween={20}
+          navigation={true}
+          breakpoints={{
+            640: {
+              slidesPerView: 1,
+            },
+            768: {
+              slidesPerView: 3,
+            },
+            1024: {
+              slidesPerView: 3,
+            },
+          }}
+          modules={[Pagination, Navigation]}
+          className='w-full flex gap-8'
+        >
+          {blogs?.map((item:any, idx) => {             
+          return (
+              <SwiperSlide>
+                <div key={idx} className='shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]'>
+                  <div className='h-[160px]'>
+                    <Image src={imgUrl+item.imageUrl} className='aspect-square object-fill w-full h-full' alt="No pics" width={350} height={150} />
                   </div>
-                  <div className='md:p-8'>
-                    <div className='text-white text-md font-semibold line-clamp-4' dangerouslySetInnerHTML={{ __html: item.content }} />
+                  <div className='w-full text-left ml-4 mt-4'>
+                    <p className='line-clamp-1 text-[20px] font-semibold'>{item.title}</p>
+                    <p className='flex items-center text-[16px] gap-2'><FaCalendarAlt size={20} />{new Date(item.createdAt).toLocaleDateString(undefined,{ year: 'numeric', month: 'long', day: 'numeric' })}</p>
                   </div>
-                  <div className='flex justify-center items-center absolute bottom-12 md:bottom-28 w-full md:w-[450px]'>
+                  <div className='text-left p-4'>
+                  <div className='line-clamp-4 h-28 text-normal text-[16px]' dangerouslySetInnerHTML={{ __html: item.content }} />
                   <CustomButton
-                      children={<Link href={'/product'}>Read More</Link>}
-                      buttonType="link"
-                      addedClass="text-md bg-white text-[#435EEA] font-bold hover:bg-white w-52 h-12"
-                    />
+                    children='Read more >>'
+                    addedClass='bg-transparent text-orange-400 border-none shadow-none mt-4'
+                    onClick={() => showModal(item)}
+                  />
                   </div>
                 </div>
-            </div>
-              </Skeleton>
-            </List.Item>
-          )}
-        />
+              </SwiperSlide>
+            )})}
+        </Swiper>
+        <Modal title='' open={isModalOpen} footer={null} onCancel={handleCancel}>
+        {selectedBlogs && <div className=''>
+          <div className='h-[160px]'>
+            <Image src={imgUrl+selectedBlogs.imageUrl} className='aspect-square object-fill w-full h-full' alt="No pics" width={350} height={150} />
+          </div>
+          <div className='w-full text-left ml-4 mt-4'>
+            <p className='line-clamp-1 text-[20px] font-semibold'>{selectedBlogs.title}</p>
+            <p className='flex items-center text-[16px] gap-2'><FaCalendarAlt size={20} />{new Date(selectedBlogs.createdAt).toLocaleDateString(undefined,{ year: 'numeric', month: 'long', day: 'numeric' })}</p>
+          </div>
+          <div className='text-left p-4'>
+          <div className='line-clamp-4 h-28 text-normal text-[16px]' dangerouslySetInnerHTML={{ __html: selectedBlogs.content }} />
+          </div>
+        </div>}
+        </Modal>
         </div>
       </div>
     </>

@@ -1,6 +1,6 @@
 'use client';
-import React, { useState, useEffect, useCallback, ChangeEvent } from 'react'
-import { Breadcrumb, Button, Checkbox, Input, List, Space } from 'antd';
+import React, { useState, useEffect, useCallback, ChangeEvent, useRef } from 'react'
+import { Button,Input, List} from 'antd';
 import { debounce } from 'lodash';
 import Link from 'next/link'
 import { FaListUl } from 'react-icons/fa6';
@@ -9,23 +9,28 @@ import { CustomLabel,LazyImages } from '@/components';
 import { T_Brand, T_Categories, T_Product } from '@/types/productList';
 import { BrandsRequest, CategoriesRequest } from '@/service/request';
 import { Peso } from '@/helper/pesoSign';
-import { FilterSort } from '@/helper/filterSort';
 import { Skeleton,Select } from 'antd';
-import { Filter } from '@/types/filter';
 import clsx from 'clsx';
 import useStore from '@/zustand/store/store';
-import { loadBrandCategory, loadProducts, selector } from '@/zustand/store/store.provider';
-import CustomNextImage from '@/components/image/CustomNextImage';
-import ATSI from '../logo.png'
+import { loadBrandCategory, selector } from '@/zustand/store/store.provider';
+import { Swiper, SwiperSlide,type SwiperRef } from 'swiper/react';
+import { Navigation, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import '../../globals.css'
 
   
-export default function Productpage() {
+export default function Productpage({ params }:{
+  params: { brand: string };
+}) {
   const useDebounce = (func: any) => debounce(func, 1000);
-  const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
   const product = useStore(selector('product'))
   const shopby = useStore(selector('brand_category'))
   const { Search } = Input;
   const countPerPage = 10;
+  const swiperRef = useRef<SwiperRef>(null);
+  const brandParams = params.brand;
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedBrand, setSelectedBrand] = useState<T_Brand[]>([]);
   const [isRow,setIsRow] = useState<boolean>(true)
@@ -33,72 +38,14 @@ export default function Productpage() {
   const [list, setList] = useState<T_Product[]>([]);
   const [category,setCategory] = useState<T_Categories[]>([])
   const [selectedCategories, setSelectedCategories] = useState('');
-  const [selectedBrands, setSelectedBrands] = useState('');
+  const [selectedBrands, setSelectedBrands] = useState(brandParams || '');
   const [productName,setProductName] = useState('')
   const [sortOrder, setSortOrder] = useState<string>('A-Z');
-  const [filter,setFiltered] = useState<Filter>({
-    category: {name:'',id:''},
-    sort: '',
-    brand:{name:'',id:''},
-    name:'',
-    status:'',
-    price:''
-  })
+
 
   useEffect(() =>{
-    const fetchProducts = async ():Promise<void> =>{
-      try {
-        if(filter.brand?.name !== ''){
-          const brandList = await BrandsRequest.GET_ALL({
-            name: filter.brand?.name,
-            status: '', 
-          })
-          const results = brandList.data.data;
-          const data = {
-            brand: shopby.brand,
-            category: results[0].Categories
-          }
-          setSelectedBrand(shopby.brand?.filter((item:T_Brand) => item.id === filter.brand?.id))
-          loadBrandCategory(data)
-        }else{
-          const brandList = await BrandsRequest.GET_ALL({
-            name: '',
-            status: '', 
-          })
-          const catList = await CategoriesRequest.GET_ALL({
-            name: '',
-            status: '', 
-          })
-          const results = brandList.data.data;
-          const data = {
-            brand: results,
-            category: catList.data.data
-          }
-          loadBrandCategory(data)
-        }
-
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-    void fetchProducts()
-  },[filter.brand])
-
-  useEffect(() =>{
-    const fetchProducts = async():Promise<void> =>{
-      try {
-        setInitLoading(true)
-        setLoading(true)
-        const response = await FilterSort(filter);
-        loadProducts(response)
-        setLoading(false)
-        setInitLoading(false)
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-   void fetchProducts()
-  },[filter.sort,filter.category,filter.brand,filter.name])
+   
+  },[])
 
 
   const onLoadMore = () => {
@@ -127,12 +74,28 @@ export default function Productpage() {
     setProductName(value)
   }, []);
 
-
+  useEffect(() =>{
+    async function Fetch(){
+      const res = await BrandsRequest.GET_ALL({})
+      const res1 = await CategoriesRequest.GET_ALL({})
+      const payload = {
+        brand:res.data.data,
+        category:res1.data.data
+      }
+      loadBrandCategory(payload)
+      setInitLoading(false)
+    }
+    Fetch()
+  },[])
   useEffect(() =>{
     if(selectedBrands){
       const cat = shopby.brand?.filter((data: { id: string; }) => data.id === selectedBrands)
-      setSelectedBrand(cat)
-      setCategory(cat[0].Categories)
+      console.log(cat)
+      if(cat.length > 0){
+        console.log(cat)
+        setSelectedBrand(cat)
+        setCategory(cat[0].Categories)
+      }
     }else{
       setSelectedBrand([])
       setCategory(shopby.category)
@@ -169,20 +132,59 @@ export default function Productpage() {
       setList(list)
   },[selectedCategories,selectedBrands,sortOrder,product.list,productName])
 
-  console.log(productName)
+  console.log(selectedBrands)
   return (
     <>
-    <div className='w-full bg-white text-black pl-4 md:pl-10 mb-10'>
-        <div className='mb-4'>
-        <Breadcrumb
-            items={[{title: 'Home'},{title: <a href="">Products</a>}]}
-        />
-        <CustomLabel
-            children="Products List" 
-            variant="text"
-            addedClass="sm:text-base md:text-2xl font-bold mb-8"
-        />
+    <div className='w-full bg-white text-black mb-10'>
+    <Swiper
+        ref={swiperRef}
+        slidesPerView={1}
+        spaceBetween={10}
+        modules={[Autoplay, Navigation]}
+        autoplay={{
+          delay: 2500,
+          disableOnInteraction: false,
+        }}
+      >
+        <SwiperSlide>
+        <div className="container bg-[#f5f5f5] h-fit-to-screen-without-header h-[700px] md:p-52 max-w-full flex flex-row items-center">
+        <div className="flex-grow">
+          <div className="sm:w-full flex flex-col sm:gap-4 md:gap-10 pb-8 pl-4 md:pl-0 md:w-3/4">
+            <div>
+            <CustomLabel
+              children="AuxyTech Technology Solutions Inc."
+              variant="title"
+              titleLevel={1}
+              addedClass="title"
+            />
+            </div>
+
+            <div>
+              <CustomLabel
+                children="We provide trusted security solutions: CCTV, PABX, Access Control, FDAS, PA System, Data Cabinets, Fiber Optics, AV Cables, and more, ensuring your safety and security."
+                variant="text"
+                addedClass="sm:text-base md:text-2xl"
+              />
+            </div>
+          </div>
         </div>
+        </div>
+        </SwiperSlide>
+        <SwiperSlide>
+        <div className="container bg-[#f5f5f5] h-[700px] bg-cover bg-center md:p-52 max-w-full flex flex-row items-center" style={{backgroundImage:`url('https://firebasestorage.googleapis.com/v0/b/kyte-7c484.appspot.com/o/lpUVJzyzApTrvZ%2F661ec4d5-5716-4057-a5bd-a7e4f848e9c3.jpg?alt=media&token=bfbb6672-ecff-475f-95c7-0386fac1c955')`,aspectRatio:1}}>
+        </div>
+        </SwiperSlide>
+    </Swiper>
+    <div className='my-4 px-8'>
+      <div className='w-full mb-2 h-max'>
+      <Search
+          placeholder="Search Products..."
+          className='bg-white rounded-md h-[50px]'
+          name='name'
+          size='large'
+          onChange={useDebounce(onSetFilter)}
+        />
+      </div>
         <div className='w-full flex flex-col md:flex-row gap-2'>
             {/* Filtering */}
             <div className='flex h-max flex-col gap-4'>
@@ -198,9 +200,11 @@ export default function Productpage() {
                   addedClass='font-semibold text-xl uppercase tracking-widest'
                 />
                 <div className='w-full h-max'>
-                  <ul className='list-none flex flex-wrap flex-row md:flex-col pt-4 justify-start gap-4'>
+                  <ul className='list-none flex flex-wrap pt-4 justify-start gap-4'>
                   {category?.map((item:T_Categories,idx:number) =>(
-                  <Checkbox name={item.name} checked={selectedCategories?.includes(item.id)} key={idx} onChange={() => handleCategoryChange(item.id)}>{item.name}</Checkbox>
+                    <>
+                    <li key={idx} onClick={() => handleCategoryChange(item.id)} className={clsx('px-4 py-1 w-max rounded-sm cursor-pointer',selectedCategories === item.id && 'bg-orange-400 text-white border-2 border-orange-500')}>{item.name}</li>
+                  </>
                   ))}
                   </ul> 
                 </div>
@@ -209,15 +213,6 @@ export default function Productpage() {
 
             {/* List */}
             <div className='w-full'>
-            <div className='w-full md:w-11/12 md:w-1/2 pl-2 md:pl-8 mb-2 h-max'>
-              <Search
-                  placeholder="Search Products..."
-                  className='bg-white rounded-md h-[50px]'
-                  name='name'
-                  size='large'
-                  onChange={useDebounce(onSetFilter)}
-                />
-              </div>
             <div className='w-full flex gap-4 md:gap-12 items-start flex-wrap px-2 md:pr-12 md:pl-8 mb-4'>
               <div className='flex-1'>
               <Select
@@ -225,6 +220,7 @@ export default function Productpage() {
                 size='middle'
                 allowClear
                 placeholder='Shopby Brands'
+                value={selectedBrands || brandParams}
                 onChange={handleBrandChange}
                 options={(shopby.brand?.map((data:T_Brand) => ({
                   value: data.id,
@@ -291,7 +287,6 @@ export default function Productpage() {
                     xl: 5,
                     xxl: 5,
                   }}
-                  loading={initLoading}
                   itemLayout="vertical"
                   pagination={{
                     onChange: (page) => {
@@ -316,7 +311,7 @@ export default function Productpage() {
                           />
                             {data.status !== 'Available' && <div className='absolute px-4 py-2 bg-black text-white w-max'><p>{data.status === 'Out_of_Stock' ? data.status.replace(/_/g, ' ') : data.status}</p></div>}
                           </div>
-                          <Link href={`/product/${data.id}`} as={`/product/${data.id}`} 
+                          <Link href={`/product/${selectedBrands}/${data.id}`} as={`/product/${selectedBrands}/${data.id}`} 
                           className='h-3/5 p-4 hover:bg-white flex flex-col gap-2'>
                           <CustomLabel
                               children={data.name} 
@@ -355,7 +350,7 @@ export default function Productpage() {
                   dataSource={list}
                   renderItem={(data:any,idx:number) => (
                     <List.Item>
-                      <Link href={`/product/${data.id}`} as={`/product/${data.id}`} key={idx} 
+                      <Link href={`/product/${selectedBrands}/${data.id}`} as={`/product/${selectedBrands}/${data.id}`} key={idx} 
                       className={clsx('w-[500px] md:w-full h-max shadow-border flex flex-col md:flex-row rounded-t-lg hover:shadow-shine bg-gray-200 cursor-pointer')}>
                         <Skeleton style={{padding:8,height:'200px'}} loading={loading} avatar active>
                         <div className='w-full max-w-[350px] min-h-[250px] flex justify-center items-center relative py-4'>
@@ -406,7 +401,7 @@ export default function Productpage() {
             </div>
 
         </div>
-    
+    </div>
     </div>
     </>
   )

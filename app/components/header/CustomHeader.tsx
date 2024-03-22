@@ -80,7 +80,7 @@ export default function CustomHeader() {
     {
       id: 4,
       name: 'Products',
-      url: '/product',
+      url: '/#products',
     },
     {
       id: 5,
