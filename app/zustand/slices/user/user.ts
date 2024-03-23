@@ -10,7 +10,7 @@ interface UserState {
 
 export interface UserSlice {
   user: UserState | null;
-  login: (payload: any) => void;
+  login: (payload: any) =>  void;
   saveUserInfo: (payload: any) => void;
   logout: () => void;
 }
@@ -45,7 +45,17 @@ const createUserSlice: StateCreator<UserSlice> = (set) => ({
         }
       }
     } catch (error) {
+      set((state: UserSlice) => ({
+        ...state,
+        user: {
+          ...state.user,
+          loading: false,
+          info: null, 
+          responseMsg: '',
+        },
+      }));
       console.log(error);
+      return error
     }
   },
   saveUserInfo: async (payload: any) => {

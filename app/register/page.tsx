@@ -1,18 +1,20 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 'use client';
-import React from 'react'
+import React, { useState } from 'react'
 import { LockOutlined,EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { RegisterAccount } from '@/service/request';
 import { CustomLabel } from '@/components';
+import { RegisterAccount } from '@/service/request';
 
 
 export default function Register() {
   const router = useRouter();
+  const [isLoading,setIsLoading] = useState(false)
     const onFinish = async(values: any) => {
-        console.log('Received values of form: ', values);
+        setIsLoading(true)
         const formData = new FormData();
         formData.append('email',values.email)
         formData.append('password',values.password)
@@ -23,13 +25,15 @@ export default function Register() {
       
           if (response.status === 200) {
             toast.success('Successfully registered!');
+            setIsLoading(false)
             router.push(`/login`);
           } else {
-            // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+            setIsLoading(false)
             toast.error(response.data.message || 'Registration failed');
           }
         } catch (error: any) {
           console.error('Error during registration:', error.message);
+          setIsLoading(false)
           toast.error('An error occurred during registration.');
         }
     };
@@ -85,7 +89,7 @@ export default function Register() {
       </Form.Item>
 
       <Form.Item className='flex flex-col justify-center items-center'>
-        <Button type="default" htmlType="submit" className="bg-sky-500 my-4 px-8 text-white font-semibold">
+        <Button type="default" htmlType="submit" loading={isLoading} className="bg-sky-500 my-4 px-8 text-white font-semibold">
           CREATE
         </Button>
         <div>

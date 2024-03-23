@@ -1,29 +1,41 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/no-confusing-void-expression */
 'use client';
-import React from 'react'
+import React, { useState } from 'react'
 import { LockOutlined,EyeInvisibleOutlined, EyeTwoTone, UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { CustomLabel } from '@/components';
-import useStore from '@/zustand/store/store';
-import { login, saveUserInfo, selector } from '@/zustand/store/store.provider';
+import { LoginAccount } from '@/service/request';
+import { saveUserInfo } from '@/zustand/store/store.provider';
 
 
 export default function Login() {
   const router = useRouter();
-  const user = useStore(selector('user'))
+  const [isLoading,setIsLoading] = useState(false)
   const onFinish = async(values: any) => {
       const formData = new FormData();
       formData.append('password',values.password)
       formData.append('username',values.username)
       try {
-        // eslint-disable-next-line @typescript-eslint/await-thenable
-        const res = await login(formData)
-        saveUserInfo(res)
-        router.push('/')
+        setIsLoading(true)
+        const response = await LoginAccount.LOGIN(formData);
+        if (response.status === 200) {
+          if (!('message' in response.data)) {
+            console.log(response.data.data);
+            saveUserInfo(response.data.data);
+            toast.success('Login successfully');
+            setIsLoading(false)
+            router.push('/')
+          } else {
+            console.error('Login failed:', response.data.message);
+            setIsLoading(false)
+            toast.error(response.data.message);
+          }
+        }
+
       } catch (error: any) {
         console.error('Error during Login:', error.message);
         toast.error('An error occurred during login.');
@@ -71,7 +83,7 @@ export default function Login() {
       </Form.Item>
 
       <Form.Item className='flex flex-col justify-center items-center'>
-        <Button type="default" htmlType="submit" loading={user.loading} className="bg-sky-500 my-4 px-8 text-white font-semibold">
+        <Button type="default" htmlType="submit" loading={isLoading}  className="bg-sky-500 my-4 px-8 text-white font-semibold">
           Log in
         </Button>
         <div>

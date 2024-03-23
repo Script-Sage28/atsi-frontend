@@ -1,10 +1,10 @@
 'use client';
-import React, { useEffect, useMemo, useState } from 'react'
-import { Rate,Avatar, Skeleton, Popover, Input, Form, Button } from 'antd';
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { Rate,Avatar, Skeleton, Popover, Input, Form, Button, Tag } from 'antd';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaWhatsapp } from "react-icons/fa";
-import { CustomButton, CustomLabel } from '@/components';
+import { CustomButton, CustomCard, CustomLabel } from '@/components';
 import AtsiImg from '../../../logo.png'
 import ReviewForm from '@/components/form/review';
 import CustomParagraph from '@/components/paragraph/paragraph';
@@ -14,15 +14,24 @@ import { Peso } from '@/helper/pesoSign';
 import { getNickName } from '@/helper/formatName';
 import { CustomSwiper } from '@/components/swiper';
 import Image from 'next/image';
+import Noimg from '../../../../public/assets/noimg.png'
 import { AiOutlineMore } from "react-icons/ai";
 import useStore from '@/zustand/store/store';
 import { selector } from '@/zustand/store/store.provider';
 import toast from 'react-hot-toast';
-import { FeedbackDelete, FeedbackUpdate } from '@/service/request';
+import { FeedbackDelete, FeedbackUpdate, ProductsRequest } from '@/service/request';
+import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/free-mode';
+import 'swiper/css/navigation';
+import 'swiper/css/thumbs';
+import './styles.css';
+import { FreeMode, Navigation, Pagination, Thumbs } from 'swiper/modules';
+import { BiSolidHot } from 'react-icons/bi';
 
 
 export default function ProductDetails({ params }:{
-    params: { id: string };
+    params: { id: string,brand:string };
 }) {
   
   const [loading,setLoading] = useState<boolean>(false)
@@ -30,12 +39,15 @@ export default function ProductDetails({ params }:{
     ellipsis: false,
     form:false
   })
+  const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
   const { TextArea } = Input;
+  const swiperRef = useRef<SwiperRef>(null);
   const user = useStore(selector('user'))
   const [form] = Form.useForm();
   const productId = params.id;
+  const brandId = params.brand;
   const [details,setDetails] = useState<T_Product | null>(null);
-  const [imgList,setImgList] = useState([]);
+  const [suggest,setSuggest] = useState<T_Product[]>([])
   const [isEdit,setIsEdit] = useState<string>('')
   const [isLoading,setIsLoading] = useState<boolean>(false)
   const arrow:string = 'Show';
@@ -56,8 +68,10 @@ export default function ProductDetails({ params }:{
   const fetch = async():Promise<void> =>{
     setLoading(true)
     const response = await FetchingDetails(productId)
-    console.log(response)
-    setImgList(response.img)
+    const res = await ProductsRequest.GET_ALL({brandId:brandId})
+    const list = res.data.data?.slice(0,7)
+    console.log(res)
+    setSuggest(list)
     setDetails(response.results)
     setLoading(false)
   }
@@ -115,42 +129,87 @@ export default function ProductDetails({ params }:{
       setIsLoading(false)
     }
   }
-  
+  console.log(details)
   return (
     <>
   {details ? 
-       (<div className='p-4 bg-white text-black'>
+       (<div className='px-4 md:px-24 py-8 bg-white text-black pb-32'>
       <Link href={'/'}  className='flex items-center m-4'>
       <IoIosArrowBack size={30}/>
       <p>Go Back</p>
       </Link >
-       <div className='flex flex-col md:flex-row justify-center items-top gap-4'>
-            <div className='w-full md:w-1/2 h-full m-4 justify-center items-center flex'>
-              {imgList.length > 0 ? <CustomSwiper
-                images={imgList}
-                imgHeight={320}
-                imgWidth={350}
-                slideNum={1}
-                addedClass='w-[350px] h-[350px]'
-              /> : 
-              <Image
-              src={AtsiImg}
-              width={200}
-              alt='atsi'
-              height={200}
-            />}
+       <div className='flex flex-col justify-center items-top gap-4'>
+            <div id='details' className='w-full h-full flex flex-col m-4 justify-center items-center'>
+                <Swiper
+                spaceBetween={10}
+                navigation={true}
+                modules={[FreeMode, Navigation, Thumbs]}
+                >
+                {details?.media?.map((item:any,idx:number) =>(
+                  <SwiperSlide key={idx}>
+                    <Image src={imgUrl + item.url} width={400} height={400} alt={''} />
+                  </SwiperSlide>                 
+                ))}
+                </Swiper>
+                <Swiper
+                  ref={swiperRef}
+                  spaceBetween={10}
+                  slidesPerView={4}
+                  freeMode={true}
+                  watchSlidesProgress={true}
+                  modules={[FreeMode, Navigation, Thumbs]}
+                  className="mySwiper"
+                >
+                {details?.media?.map((item:any,idx:number) =>(
+                  <SwiperSlide key={idx}>
+                    <Image src={imgUrl + item.url} width={100} height={100} alt={''} />
+                  </SwiperSlide>                 
+                ))}                  
+                </Swiper>
             </div>
-            <div className='flex flex-col shadow-border p-8 w-full md:w-1/2 md:w-96 h-full overflow-auto rounded-md'>
+
+            <div className='flex flex-col w-full h-full overflow-auto rounded-md'>
+            <div className='flex flex gap-4 w-full'>
+                  {details.lazadaLink && <CustomButton
+                    buttonType='link'
+                    // eslint-disable-next-line @next/next/no-img-element
+                    icon={<img className='w-6' src='../../assets/lazada.png'  />}
+                    onClick={() => { window.open(`${details.lazadaLink}`, '_blank')}}
+                    children=''
+                    addedClass={'flex items-center p-2 justify-center shadow-border w-full h-8'}
+                  />}
+                  {details.shoppeeLink && <CustomButton
+                    buttonType='link'
+                    // eslint-disable-next-line @next/next/no-img-element
+                    icon={<img className='w-8' src='../../assets/shopee-logo-0.png'  />}
+                    children=''
+                    onClick={() => { window.open(`${details.shoppeeLink}`, '_blank')}}
+                    addedClass={'flex items-center p-2 justify-center shadow-border w-full h-8'}
+                  />}
+                  <CustomButton
+                    buttonType='link'
+                    // eslint-disable-next-line @next/next/no-img-element
+                    icon={<FaWhatsapp />}
+                    children=''
+                    onClick={() => { window.open(`https://api.whatsapp.com/send/?phone=%2B639179639906&text&type=phone_number&app_absent=0`, '_blank')}}
+                    addedClass={'flex items-center bg-green-400 justify-center p-2 shadow-border w-full'}
+                  />
+                </div>
               <div className='flex flex-col gap-2'>
                 <CustomLabel
                   children={details.name}
                   variant='text'
-                  addedClass='font-bold text-lg'
+                  addedClass='font-bold text-[32px]'
+                />
+                <CustomLabel
+                  children={`Stock: ${details.stock}`}
+                  variant='text'
+                  addedClass='font-semibold text-[16px]'
                 />
                     {(details?.discount && details?.discount !== 0) && <CustomLabel
                         children={`DISCOUNTED PRICE`} 
                         variant="text"
-                        addedClass="sm:text-base md:text-md text-gray-500 font-semibold"
+                        addedClass="text-[30px] text-gray-500 font-semibold"
                     />}
                     <CustomLabel
                         children={(details?.discountedPrice && details?.discountedPrice !== 0) ? (<div className='flex gap-4'>
@@ -160,33 +219,7 @@ export default function ProductDetails({ params }:{
                         variant="text"
                         addedClass="text-lg font-semibold text-[#ff4e4e]"
                     />
-                <div className='flex flex-col gap-4 items-center w-full'>
-                  {details.lazadaLink && <CustomButton
-                    buttonType='link'
-                    // eslint-disable-next-line @next/next/no-img-element
-                    icon={<img className='w-6' src='../assets/lazada.png'  />}
-                    onClick={() => { window.open(`${details.lazadaLink}`, '_blank')}}
-                    children='Order in Lazada now!'
-                    addedClass={'flex items-center p-2 justify-center shadow-border w-full border-gray-200 text-gray-600 border-2'}
-                  />}
-                  {details.shoppeeLink && <CustomButton
-                    buttonType='link'
-                    // eslint-disable-next-line @next/next/no-img-element
-                    icon={<img className='w-8' src='../assets/shopee-logo-0.png'  />}
-                    children='Order in Shopee now!'
-                    onClick={() => { window.open(`${details.shoppeeLink}`, '_blank')}}
-                    addedClass={'flex items-center px-2 py-4 justify-center shadow-border w-full  border-gray-200 text-gray-600 border-2'}
-                  />}
-                  <CustomButton
-                    buttonType='link'
-                    // eslint-disable-next-line @next/next/no-img-element
-                    icon={<FaWhatsapp />}
-                    children='Message on WhatsApp'
-                    onClick={() => { window.open(`https://api.whatsapp.com/send/?phone=%2B639179639906&text&type=phone_number&app_absent=0`, '_blank')}}
-                    addedClass={'flex items-center bg-green-400 justify-center px-2 py-4 shadow-border w-full border-gray-200 text-gray-600 border-2'}
-                  />
-                </div>
-                <hr />
+                    <Tag children={details.category.name} className='w-max' color="#108ee9"  />
                 <div>
                   <CustomParagraph
                     isEllipsis={show.ellipsis}
@@ -208,23 +241,24 @@ export default function ProductDetails({ params }:{
             </div>
         </div>
       {/* Comments/Rating */}
-      <div className='flex flex-col justify-center items-center py-4'>
-        <div className='w-full flex flex-col gap-4 mb-4 md:w-1/2'>
+      <div className='flex flex-col'>
+        <div className='w-full flex flex-col'>
           <CustomLabel
-            children='CUSTOMER REVIEWS'
+            children='Product Reviews'
             variant='text'
+            addedClass='text-[28px]'
           />
-          <div className='flex justify-end items-end sm:mx-4'>
+          {/* <div className='flex justify-end items-end sm:mx-4'>
             <CustomButton
               children={show.form ? 'Cancel Review' : 'Write Review'}
               buttonType='default'
               onClick={() =>{ setShow({...show,form:!show.form}) }}
             />
-          </div>
+          </div> */}
         </div>
-        <div className='w-full md:w-1/2'>
+        <div className='w-full'>
           <ReviewForm
-            isOpen={show.form}
+            isOpen={true}
             productId={details.id}
             setLoading={setLoading}
             isLoading={loading}
@@ -232,9 +266,8 @@ export default function ProductDetails({ params }:{
             onReviewSubmit={handleReviewSubmit} 
           />
         </div>
-        <div className='w-full md:w-1/2 flex flex-col gap-4'>
+        <div className='w-full h-[400px] overflow-y-auto flex flex-col gap-4'>
           {details.productReviews.length > 0 ? (details.productReviews?.map((data,idx) =>{
-           
             return data?.isDeleted ? null : (
             <div key={idx} className='shadow-border p-4 flex flex-col gap-2'>
               <div className='flex items-center gap-2'>
@@ -246,13 +279,13 @@ export default function ProductDetails({ params }:{
                       <p className='text-sm md:text-base'>{new Date(data.createdAt).toLocaleString()}</p>
                       </div>
                       <div>
-                      <Popover className='cursor-pointer p-0' placement="bottomRight" trigger="click" 
+                      {data.createdByUser?.username === user.info?.username && <Popover className='cursor-pointer p-0' placement="bottomRight" trigger="click" 
                       content={<div className='w-max'>
                         <p onClick={() =>handleEdit(data)} className='cursor-pointer hover:bg-sky-600 p-2 px-4 rounded-lg hover:text-white'>Edit</p>
                         <Button onClick={() =>handleDelete(data)}className='cursor-pointer hover:bg-red-600 rounded-lg border-0'><p className='hover:text-white text-nowrap'>{isLoading ? 'Deleting...' : 'Delete'}</p></Button>
                       </div>} arrow={mergedArrow}>
                       <AiOutlineMore size={24}/>
-                      </Popover>                      
+                      </Popover> }                     
                       </div>
                     </div>
                     <CustomLabel
@@ -293,9 +326,89 @@ export default function ProductDetails({ params }:{
                 </div>
 
             </div>
-          )})) : (<p>No Customer review yet</p>)}
+          )})) : (<p className='w-full h-[400px] flex justify-center items-center bg-gray-200 rounded-md'><p>No Customer review yet</p></p>)}
         </div>
-      </div>        
+      </div> 
+      <div className='mt-4'>
+        <p className='text-[36px] mb-8'>Related Products</p>
+        <Swiper
+          ref={swiperRef}
+          slidesPerView={1}
+          spaceBetween={30}
+          navigation={true}
+          breakpoints={{
+            640: {
+              slidesPerView: 1,
+            },
+            768: {
+              slidesPerView: 4,
+            },
+            1024: {
+              slidesPerView: 5,
+            },
+          }}
+          modules={[Pagination, Navigation]}
+        >
+          {suggest?.map((product:any, idx) => {             
+          return (
+              <SwiperSlide>
+              <CustomCard addedClass='flex w-full h-[330px] overflow-visible' key={idx}>
+                <Link className='relative w-full overflow-hidden'
+                key={idx} href={`/product/${brandId}/${product.id}`} passHref>
+                  {product.isSaleProduct ? <div className="absolute w-[200px] z-40 left-4 top-4">
+                  <BiSolidHot size={28} className='text-red-600' />
+                </div> : product.isNewRelease ? <div className="absolute w-[200px] z-40 left-4 top-4">
+                  <img className='w-[28px] text-green-600' src={'/assets/icons8-new-100.png'} alt="" />
+                </div> : null}
+                <div className="w-full flex flex-col justify-start items-start">
+                  <div className=" w-full min-h-[200px] flex justify-center items-center">
+                  {loading ? <Skeleton.Image active /> :                   
+                    <Image
+                      src={(product.media.length > 0 && product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
+                      alt={product.name}
+                      className='rounded-lg'
+                      width={170}
+                      height={200}
+                    />}
+
+                  </div>
+                  <div className="w-full px-4">
+                    <CustomLabel
+                      children={product?.name}
+                      variant="title"
+                      titleLevel={5}
+                      addedClass='line-clamp-1 text-md text-left'
+                    />
+                    <p className='text-[12px] text-left'>Stock: {product?.stock}</p>
+                    <div className="flex flex-col">
+                      <CustomLabel
+                        children={product?.category.name}
+                        variant="text"
+                        addedClass="font-semibold text-gray-400 line-clamp-1 text-left"
+                      />
+                    {((product?.discount) != null) && <CustomLabel
+                        children={`${product?.discount}% Off`} 
+                        variant="text"
+                        addedClass="sm:text-base md:text-md text-gray-500 font-semibold text-left"
+                    />}
+
+                    <CustomLabel
+                        children={((product?.discountedPrice) != null) ? (<div className='flex gap-4'>
+                        <p className='m-0'>{Peso(product?.discountedPrice)}</p>
+                        <p className='m-0 line-through text-gray-600'>{Peso(product?.price)}</p>
+                      </div>) : Peso(product?.price)} 
+                        variant="text"
+                        addedClass="text-lg font-semibold text-[#ff4e4e] text-left"
+                    />
+                    </div>
+                  </div>
+                </div>
+                </Link>
+              </CustomCard>
+              </SwiperSlide>
+            )})}
+        </Swiper>      
+      </div>       
     </div>) : 
     <Skeleton style={{padding:32,height:'500px'}} paragraph={{rows:8}} loading={loading} active />}
     </>

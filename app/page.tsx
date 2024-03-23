@@ -89,7 +89,7 @@ export default function Home() {
         }}
       >
         <SwiperSlide>
-        <div className="container bg-[#f5f5f5] h-fit-to-screen-without-header h-[700px] md:p-52 max-w-full flex flex-row items-center">
+        <div className="container bg-[#f5f5f5] h-[700px] md:p-52 max-w-full flex flex-row items-center">
         <div className="flex-grow">
           <div className="sm:w-full flex flex-col sm:gap-4 md:gap-10 pb-8 pl-4 md:pl-0 md:w-3/4">
             <div>
@@ -155,7 +155,7 @@ export default function Home() {
                 navigation={true}
                 breakpoints={{
                   640: {
-                    slidesPerView: 2,
+                    slidesPerView: 1,
                   },
                   768: {
                     slidesPerView: 4,
@@ -171,7 +171,7 @@ export default function Home() {
                     <SwiperSlide>
                     <CustomCard addedClass='flex w-full h-[330px] overflow-visible' key={idx}>
                       <Link className='relative w-full overflow-hidden'
-                      key={idx} href={`/product/${product.id}`} passHref>
+                      key={idx} href={`/product/${brandId}/${product.id}`} passHref>
                         {product.isSaleProduct ? <div className="absolute w-[200px] z-40 left-4 top-4">
                         <BiSolidHot size={28} className='text-red-600' />
                       </div> : product.isNewRelease ? <div className="absolute w-[200px] z-40 left-4 top-4">
@@ -231,7 +231,7 @@ export default function Home() {
           )
         })}
       </div>
-      <div className='w-full h-[274px] bg-yellow-500 bg-opacity-100 py-12 flex justify-center item-center'>
+      {/* <div className='w-full h-[274px] bg-yellow-500 bg-opacity-100 py-12 flex justify-center item-center'>
         <div className='w-[80%]'>
           <p className='text-white m-0 text-[48px]'>Subscribe</p>
           <p className='text-white mb-2 -mt-2'>Just subscribe to us to get more new updates</p>
@@ -244,7 +244,7 @@ export default function Home() {
             />
           </div>
         </div>
-      </div>
+      </div> */}
       <div id='blogs' className='flex bg-white justify-top flex-col gap-4 items-center p-8 md:px-28'>
         <div className='flex flex-col justify-center items-center mb-4'>
           <h3 className='font-bold tracking-wider'>BLOG</h3>

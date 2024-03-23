@@ -18,6 +18,7 @@ interface FormProps{
 
 export default function ReviewForm({isOpen,productId,setLoading,isLoading,setShow,onReviewSubmit}: FormProps) {
   const user = useStore(selector('user'))
+  const [form] = Form.useForm()
   const { TextArea } = Input;
 
   const handleFormSubmit = async (values: any) => {
@@ -40,6 +41,7 @@ export default function ReviewForm({isOpen,productId,setLoading,isLoading,setSho
       setLoading(false)
       setShow()
       onReviewSubmit();
+      form.resetFields()
     } catch (error: any) {
       console.error('Error during Login:', error.message);
       setLoading(false)
@@ -51,28 +53,31 @@ export default function ReviewForm({isOpen,productId,setLoading,isLoading,setSho
   return (
     <Form
     name="wrap"
+    form={form}
     labelCol={{ flex: '110px' }}
     labelAlign="left"
     wrapperCol={{ flex: 1 }}
     colon={false}
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     onFinish={onFinish}
-    className={clsx('transition duration-600 ease-in-out',isOpen ? 'w-full p-4 translate-y-6' : 'hidden -translate-y-24')}
+    className={clsx('transition duration-600 ease-in-out',isOpen ? 'w-full' : 'hidden')}
   >
 
-    <Form.Item label="Rating" name="rate" rules={[{ required: true }]}>
+    <Form.Item label="Rating" name="rate" className='mb-0' rules={[{ required: true }]}>
        <Rate />
     </Form.Item>
-
-    <Form.Item label="Review" name="content" rules={[{ required: true }]}>
-      <TextArea rows={4} className='bg-gray-200' placeholder='Write your comments here' />
+    <div className='flex flex-nowrap gap-4 items-center w-full'>
+    <Form.Item name="content" rules={[{ required: true }]} className='w-full'>
+      <TextArea autoSize className='bg-gray-200 flex-1' placeholder='Write your comments here' />
     </Form.Item>
 
-    <Form.Item label=" ">
-      <Button type="default" disabled={isLoading} className='bg-sky-400 text-white' htmlType="submit">
+    <Form.Item>
+      <Button size='large' type="default" disabled={isLoading} className='bg-sky-400 text-white' htmlType="submit">
         {isLoading ? 'Submitting' : 'Submit Review'}
       </Button>
     </Form.Item>
+    </div>
+
   </Form>
   )
 }
