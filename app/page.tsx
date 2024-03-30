@@ -294,7 +294,7 @@ export default function Home() {
             )})}
         </Swiper>
         <Modal title='' open={isModalOpen} footer={null} onCancel={handleCancel}>
-        {selectedBlogs && <div className=''>
+        {selectedBlogs && <div className='h-max'>
           <div className='h-[160px]'>
             <Image src={imgUrl+selectedBlogs.imageUrl} className='aspect-square object-fill w-full h-full' alt="No pics" width={350} height={150} />
           </div>
@@ -303,7 +303,7 @@ export default function Home() {
             <p className='flex items-center text-[16px] gap-2'><FaCalendarAlt size={20} />{new Date(selectedBlogs.createdAt).toLocaleDateString(undefined,{ year: 'numeric', month: 'long', day: 'numeric' })}</p>
           </div>
           <div className='text-left p-4'>
-          <div className='line-clamp-4 h-28 text-normal text-[16px]' dangerouslySetInnerHTML={{ __html: selectedBlogs.content }} />
+          <div className=' h-max text-normal text-[16px]' dangerouslySetInnerHTML={{ __html: selectedBlogs.content }} />
           </div>
         </div>}
         </Modal>

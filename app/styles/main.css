@@ -8,9 +8,6 @@
   --text-color: #2400ff;
 }
 
-* {
-  font-family: Oxygen;
-}
 
 @layer base {
   h1 {

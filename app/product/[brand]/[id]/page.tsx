@@ -42,6 +42,7 @@ export default function ProductDetails({ params }:{
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
   const { TextArea } = Input;
   const swiperRef = useRef<SwiperRef>(null);
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const user = useStore(selector('user'))
   const [form] = Form.useForm();
   const productId = params.id;
@@ -134,7 +135,7 @@ export default function ProductDetails({ params }:{
     <>
   {details ? 
        (<div className='px-4 md:px-24 py-8 bg-white text-black pb-32'>
-      <Link href={'/'}  className='flex items-center m-4'>
+      <Link href={`/product/${brandId}`}  className='flex items-center m-4'>
       <IoIosArrowBack size={30}/>
       <p>Go Back</p>
       </Link >
@@ -143,22 +144,23 @@ export default function ProductDetails({ params }:{
                 <Swiper
                 spaceBetween={10}
                 navigation={true}
+                thumbs={{ swiper: thumbsSwiper }}
                 modules={[FreeMode, Navigation, Thumbs]}
                 >
                 {details?.media?.map((item:any,idx:number) =>(
                   <SwiperSlide key={idx}>
-                    <Image src={imgUrl + item.url} width={400} height={400} alt={''} />
+                    <Image src={imgUrl + item.url} width={400} height={450}  alt={''} />
                   </SwiperSlide>                 
                 ))}
                 </Swiper>
                 <Swiper
-                  ref={swiperRef}
+                  onSwiper={(swiper:any | null) => setThumbsSwiper(swiper)}
                   spaceBetween={10}
                   slidesPerView={4}
                   freeMode={true}
                   watchSlidesProgress={true}
                   modules={[FreeMode, Navigation, Thumbs]}
-                  className="mySwiper"
+                 className='mySwiper'
                 >
                 {details?.media?.map((item:any,idx:number) =>(
                   <SwiperSlide key={idx}>
@@ -168,31 +170,27 @@ export default function ProductDetails({ params }:{
                 </Swiper>
             </div>
 
-            <div className='flex flex-col w-full h-full overflow-auto rounded-md'>
+            <div className='flex flex-col w-full h-full rounded-md'>
             <div className='flex flex gap-4 w-full'>
-                  {details.lazadaLink && <CustomButton
-                    buttonType='link'
-                    // eslint-disable-next-line @next/next/no-img-element
-                    icon={<img className='w-6' src='../../assets/lazada.png'  />}
+                  {details.lazadaLink && <div className='w-[58px] h-[58px] cursor-pointer text-shadow bg-gray-100 drop-shadow-md rounded-sm overflow-hidden'
                     onClick={() => { window.open(`${details.lazadaLink}`, '_blank')}}
-                    children=''
-                    addedClass={'flex items-center p-2 justify-center shadow-border w-full h-8'}
-                  />}
-                  {details.shoppeeLink && <CustomButton
-                    buttonType='link'
-                    // eslint-disable-next-line @next/next/no-img-element
-                    icon={<img className='w-8' src='../../assets/shopee-logo-0.png'  />}
-                    children=''
-                    onClick={() => { window.open(`${details.shoppeeLink}`, '_blank')}}
-                    addedClass={'flex items-center p-2 justify-center shadow-border w-full h-8'}
-                  />}
+                  >
+                    <img className='text-white  aspect-square object-contain' 
+                    src='../../assets/lazada.png'  />
+                  </div>}
+                  {details.shoppeeLink && <div className='w-[58px] h-[58px] cursor-pointer text-shadow bg-gray-100 drop-shadow-md rounded-full p-1 overflow-hidden'
+                  onClick={() => { window.open(`${details.shoppeeLink}`, '_blank')}}
+                  >
+                    <img className='text-white  aspect-square object-contain' 
+                    src='../../assets/shopee-logo-0.png'  />
+                  </div>}
                   <CustomButton
                     buttonType='link'
                     // eslint-disable-next-line @next/next/no-img-element
-                    icon={<FaWhatsapp />}
+                    icon={<FaWhatsapp size={50} className='text-white bg-green-400 rounded-full shadow-border p-2'/> }
                     children=''
                     onClick={() => { window.open(`https://api.whatsapp.com/send/?phone=%2B639179639906&text&type=phone_number&app_absent=0`, '_blank')}}
-                    addedClass={'flex items-center bg-green-400 justify-center p-2 shadow-border w-full'}
+                    addedClass={'h-full text-white'}
                   />
                 </div>
               <div className='flex flex-col gap-2'>
@@ -248,13 +246,6 @@ export default function ProductDetails({ params }:{
             variant='text'
             addedClass='text-[28px]'
           />
-          {/* <div className='flex justify-end items-end sm:mx-4'>
-            <CustomButton
-              children={show.form ? 'Cancel Review' : 'Write Review'}
-              buttonType='default'
-              onClick={() =>{ setShow({...show,form:!show.form}) }}
-            />
-          </div> */}
         </div>
         <div className='w-full'>
           <ReviewForm
@@ -329,7 +320,7 @@ export default function ProductDetails({ params }:{
           )})) : (<p className='w-full h-[400px] flex justify-center items-center bg-gray-200 rounded-md'><p>No Customer review yet</p></p>)}
         </div>
       </div> 
-      <div className='mt-4'>
+      <div id='related' className='mt-4'>
         <p className='text-[36px] mb-8'>Related Products</p>
         <Swiper
           ref={swiperRef}
@@ -360,8 +351,8 @@ export default function ProductDetails({ params }:{
                 </div> : product.isNewRelease ? <div className="absolute w-[200px] z-40 left-4 top-4">
                   <img className='w-[28px] text-green-600' src={'/assets/icons8-new-100.png'} alt="" />
                 </div> : null}
-                <div className="w-full flex flex-col justify-start items-start">
-                  <div className=" w-full min-h-[200px] flex justify-center items-center">
+                <div className="w-full flex flex-col justify-center items-center">
+                  <div className=" w-full min-h-[200px] max-w-[200px] flex justify-center items-center">
                   {loading ? <Skeleton.Image active /> :                   
                     <Image
                       src={(product.media.length > 0 && product.media[0].url !== '') ? `${imgUrl}${product.media[0].url}` : Noimg}
