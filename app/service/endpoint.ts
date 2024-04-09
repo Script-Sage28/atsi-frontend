@@ -9,7 +9,8 @@ const Endpoints ={
     UPDATE_USER: '/user/update/',
     BLOGS:'/blogs/all',
     UPDATE_FEEDBACK:'/feedbacks/update/',
-    DELETE_FEEDBACK:'/feedbacks/delete'
+    DELETE_FEEDBACK:'/feedbacks/delete',
+    ABOUTSUS:'/about-us/active'
 }
 
 export default Endpoints

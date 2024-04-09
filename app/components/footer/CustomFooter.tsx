@@ -1,12 +1,20 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { BiLogoGmail } from 'react-icons/bi';
 import { BsWhatsapp } from 'react-icons/bs';
 import { FaMapMarkerAlt, FaFacebookSquare, FaInstagram } from 'react-icons/fa';
 import { CustomLabel } from '@/components';
+import { AboutUsList } from '@/service/request';
+import useStore from '@/zustand/store/store';
+import { Abouts, selector } from '@/zustand/store/store.provider';
 
 export default function CustomFooter() {
+  // eslint-disable-next-line no-undef
+  const [fetchInterval, setFetchInterval] = useState<NodeJS.Timeout | null>(null);
+   const about = useStore(selector('user'))
   const links = [
     {
       id: 0,
@@ -52,6 +60,21 @@ export default function CustomFooter() {
       icon: <BsWhatsapp size={20} color="green" />,
     },
   ];
+  async function Fetch() {
+    const res = await AboutUsList.GET_ALL()
+    Abouts(res.data.data)
+  }
+  useEffect(() =>{
+    void Fetch();
+    const intervalId = setInterval(Fetch, 5000);
+    setFetchInterval(intervalId);
+
+    return () => {
+      if (fetchInterval !== null) {
+        clearInterval(fetchInterval);
+      }
+    };
+  },[])
   return (
     <div id='about' className="bg-[#ECECEC] relative p-8 md:p-24">
       <div className="absolute p-1 bg-[#FFDD55] top-0 right-0 left-0 w-full"></div>
@@ -71,7 +94,7 @@ export default function CustomFooter() {
           ))}
         </div>
 
-        <div className="flex-1 flex-col flex space-y-5">
+        {about.aboutsUs && <div className="flex-1 flex-col flex space-y-5">
           <CustomLabel
             children="About Us"
             variant="text"
@@ -79,9 +102,9 @@ export default function CustomFooter() {
           />
           <div className="w-3/4">
             <CustomLabel
-              children="We are a team of passionate people whose goal is to provide relevant ICT products. We are passionate to have a win-win cooperation with partners and end-user in solving their project requirements by providing products and sharing technical know-how."
+              children={about.aboutsUs.content}
               variant="text"
-              addedClass="text-base"
+              addedClass="text-base line-clamp-6"
             />
 
             <div className="mt-5">
@@ -92,7 +115,7 @@ export default function CustomFooter() {
               />
             </div>
           </div>
-        </div>
+        </div>}
 
         <div className="grow-0 flex-col flex space-y-5">
           <CustomLabel

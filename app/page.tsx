@@ -21,7 +21,6 @@ import 'swiper/css/navigation';
 import './globals.css'
 
 export default function Home() {
-  const products = useStore(selector('product'));
   const [loaded, setLoaded] = useState<boolean>(true);
   const swiperRef = useRef<SwiperRef>(null);
   const [brands,setBrands] = useState([])
@@ -29,6 +28,7 @@ export default function Home() {
   const [selectedBlogs,setSelectedBlogs] = useState<T_Blogs | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [blogs,setBlogs] = useState<T_Blogs[]>([]);
+  const [isLoading,setIsLoading] = useState(false)
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
 
   useEffect(() => {
@@ -41,6 +41,7 @@ export default function Home() {
   useEffect(() =>{
     const fetchProducts = async ():Promise<void> =>{
       try {
+        setIsLoading(true)
         const response = await ProductsRequest.GET_ALL({
           price: '',
           brandId: '',
@@ -57,7 +58,7 @@ export default function Home() {
         const blogs = list?.map((item:any) => ({...item,loading:false}))
         setBlogs(blogs)
         loadProducts(response.data.data)
-      
+        setIsLoading(false)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -135,7 +136,38 @@ export default function Home() {
       {/* Products Section */}
       <div id="products" className="w-full bg-white flex flex-col gap-4 p-8 md:px-24 md:py-8">
         {/* Sales Products */}
-        {brands?.map((item:any,idx:number) =>{
+        {isLoading ? (<div className='flex gap-2 flex-wrap overflow-x-hidden'>
+        <Swiper
+                ref={swiperRef}
+                slidesPerView={1}
+                spaceBetween={30}
+                navigation={true}
+                breakpoints={{
+                  640: {
+                    slidesPerView: 1,
+                  },
+                  768: {
+                    slidesPerView: 4,
+                  },
+                  1024: {
+                    slidesPerView: 5,
+                  },
+                }}
+                modules={[Pagination, Navigation]}
+              >
+          {Array.from({ length: 5 }).map((_, index) => (
+            <SwiperSlide key={index}>
+              <CustomCard addedClass='flex w-full h-[330px] overflow-hidden p-4'>
+                <Skeleton.Image active />
+                <div className="w-full px-4">
+                  <Skeleton active />
+                </div>
+              </CustomCard>
+            </SwiperSlide>
+        
+          ))}
+          </Swiper>
+        </div>) : brands?.map((item:any,idx:number) =>{
           const brandId = item.id;
           const all = productsAll?.filter((data:any) => data.brand.id === brandId).slice(0,7)
           return(

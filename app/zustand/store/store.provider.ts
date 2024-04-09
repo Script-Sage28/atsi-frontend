@@ -9,7 +9,8 @@ export const {
     logout,
     loadProducts,
     reviewProducts,
-    loadBrandCategory
+    loadBrandCategory,
+    Abouts
 } = storeProvider;
 
 export { selector, storeProvider }

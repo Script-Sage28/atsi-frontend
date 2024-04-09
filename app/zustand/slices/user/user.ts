@@ -4,8 +4,9 @@ import { LoginAccount } from '@/service/request';
 
 interface UserState {
   loading: boolean;
-  info: object | null;
-  responseMsg: string | undefined;
+  info?: object | null;
+  aboutsUs?:any[]
+  responseMsg?: string | undefined;
 }
 
 export interface UserSlice {
@@ -13,12 +14,14 @@ export interface UserSlice {
   login: (payload: any) =>  void;
   saveUserInfo: (payload: any) => void;
   logout: () => void;
+  Abouts:(payload:any) => void;
 }
 
 const initialState: UserState = {
   loading: false,
   info: null,
   responseMsg: '',
+  aboutsUs:[]
 };
 
 const createUserSlice: StateCreator<UserSlice> = (set) => ({
@@ -100,6 +103,17 @@ const createUserSlice: StateCreator<UserSlice> = (set) => ({
       console.error('Logout error:', error);
     }
   },
+  Abouts:async(payload) =>{
+    set((state) => ({
+      ...state,
+      user: {
+        ...state.user,
+        aboutsUs: payload,
+        loading: false,
+        responseMsg: '',
+      },
+    }));
+  }
 });
 
 export default createUserSlice;

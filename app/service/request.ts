@@ -1,7 +1,9 @@
 import axiosInstance from './axios';
 import Endpoints from './endpoint';
 
-
+export const AboutUsList ={
+    GET_ALL: async () => await axiosInstance.get(Endpoints.ABOUTSUS)
+}
 export const AllBlogs ={
     FETCH: async(params:any) => await axiosInstance.get(Endpoints.BLOGS, { params })
 }
@@ -35,3 +37,4 @@ export const RegisterAccount = {
 export const UserUpdate = {
     UPDATE_USER: async (data:any) => await axiosInstance.put(Endpoints.UPDATE_USER+data.id,data)
 }
+
