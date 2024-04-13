@@ -1,5 +1,37 @@
 /* eslint-disable no-use-before-define */
-
+interface LandingPageImage {
+  id: string;
+  landingPageContentId: string;
+  url: string;
+  createdAt: string;
+  createdBy: string;
+  updatedBy: null | string;
+  updatedAt: null | string;
+  isDeleted: boolean;
+  createdByUser: {
+    id: string;
+    username: string;
+    email: string;
+    password: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+    type: string;
+    isDeleted: boolean;
+  };
+  updatedByUser: null;
+}
+interface CreatedByUser {
+  id: string;
+  username: string;
+  email: string;
+  password: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  type: string;
+  isDeleted: boolean;
+}
 export interface  T_Blogs{
   id: string;
   title: string;
@@ -80,6 +112,20 @@ export interface T_Feedback{
     type: string;
   };
   product: T_Product; 
+}
+export interface T_LandingPage{
+  id: string;
+  content: string;
+  title: string;
+  createdBy: string;
+  createdAt: string;
+  updatedBy: null | string;
+  updatedAt: string;
+  isDeleted: boolean;
+  status: string;
+  createdByUser: CreatedByUser;
+  updatedByUser: null;
+  landingPageImages: LandingPageImage[];
 }
 export interface T_Product {
     id: string;

@@ -6,8 +6,8 @@ import Link from 'next/link'
 import { FaListUl } from 'react-icons/fa6';
 import { TiThSmall } from 'react-icons/ti';
 import { CustomLabel,LazyImages } from '@/components';
-import { T_Brand, T_Categories, T_Product } from '@/types/productList';
-import { BrandsRequest, CategoriesRequest } from '@/service/request';
+import { T_Brand, T_Categories, T_LandingPage, T_Product } from '@/types/productList';
+import { BrandsRequest, CategoriesRequest, LandingPageList } from '@/service/request';
 import { Peso } from '@/helper/pesoSign';
 import { Skeleton,Select } from 'antd';
 import clsx from 'clsx';
@@ -37,16 +37,12 @@ export default function Productpage({ params }:{
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<T_Product[]>([]);
   const [category,setCategory] = useState<T_Categories[]>([])
+  const [landingData,setLandingData] = useState<T_LandingPage | null>(null);
   const [selectedCategories, setSelectedCategories] = useState('');
   const [selectedBrands, setSelectedBrands] = useState(brandParams || '');
   const [productName,setProductName] = useState('')
   const [sortOrder, setSortOrder] = useState<string>('A-Z');
-
-
-  useEffect(() =>{
-   
-  },[])
-
+  const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
 
   const onLoadMore = () => {
     setLoading(true);
@@ -78,10 +74,12 @@ export default function Productpage({ params }:{
     async function Fetch(){
       const res = await BrandsRequest.GET_ALL({})
       const res1 = await CategoriesRequest.GET_ALL({})
+      const res2 = await LandingPageList.GET_ALL()
       const payload = {
         brand:res.data.data,
         category:res1.data.data
       }
+      setLandingData(res2.data.data)
       loadBrandCategory(payload)
       setInitLoading(false)
     }
@@ -132,7 +130,6 @@ export default function Productpage({ params }:{
       setList(list)
   },[selectedCategories,selectedBrands,sortOrder,product.list,productName])
 
-  console.log(selectedBrands)
   return (
     <>
     <div className='w-full bg-white text-black mb-10'>
@@ -146,34 +143,40 @@ export default function Productpage({ params }:{
           disableOnInteraction: false,
         }}
       >
-        <SwiperSlide>
-        <div className="container bg-[#f5f5f5] h-fit-to-screen-without-header h-[700px] md:p-52 max-w-full flex flex-row items-center">
-        <div className="flex-grow">
-          <div className="sm:w-full flex flex-col sm:gap-4 md:gap-10 pb-8 pl-4 md:pl-0 md:w-3/4">
-            <div>
-            <CustomLabel
-              children="AuxyTech Technology Solutions Inc."
-              variant="title"
-              titleLevel={1}
-              addedClass="title"
-            />
-            </div>
-
-            <div>
+      {landingData && landingData.landingPageImages?.length > 0 && landingData.landingPageImages?.map((item:any,idx:number) =>{
+        return idx === 0 ? (
+          <SwiperSlide>
+          <div className=" bg-[#f5f5f5] h-[700px] md:p-52 max-w-full flex flex-row items-center bg-cover bg-center'" style={{backgroundImage:`url(${imgUrl + item.url})`}}>
+          <div className="flex-grow">
+            <div className="sm:w-full flex flex-col sm:gap-4 md:gap-10 pb-8 pl-4 md:pl-0 md:w-3/4">
+              <div>
               <CustomLabel
-                children="We provide trusted security solutions: CCTV, PABX, Access Control, FDAS, PA System, Data Cabinets, Fiber Optics, AV Cables, and more, ensuring your safety and security."
-                variant="text"
-                addedClass="sm:text-base md:text-2xl"
+                children={landingData.title}
+                variant="title"
+                titleLevel={1}
+                addedClass="title"
               />
+              </div>
+              <div>
+                <CustomLabel
+                  children={landingData.content}
+                  variant="text"
+                  addedClass="sm:text-base md:text-2xl"
+                />
+              </div>
             </div>
           </div>
-        </div>
-        </div>
-        </SwiperSlide>
-        <SwiperSlide>
-        <div className="container bg-[#f5f5f5] h-[700px] bg-cover bg-center md:p-52 max-w-full flex flex-row items-center" style={{backgroundImage:`url('https://firebasestorage.googleapis.com/v0/b/kyte-7c484.appspot.com/o/lpUVJzyzApTrvZ%2F661ec4d5-5716-4057-a5bd-a7e4f848e9c3.jpg?alt=media&token=bfbb6672-ecff-475f-95c7-0386fac1c955')`,aspectRatio:1}}>
-        </div>
-        </SwiperSlide>
+          </div>
+          </SwiperSlide>
+        ) : (
+          <SwiperSlide>
+          <div className=" bg-[#f5f5f5] h-[700px] bg-cover bg-center md:p-52 max-w-full flex flex-row items-centerbg-cover bg-center'" style={{backgroundImage:`url(${imgUrl + item.url})`}}>
+          </div>
+          </SwiperSlide>
+        )
+      })}
+
+
     </Swiper>
     <div className='my-4 px-8'>
       <div className='w-full mb-2 h-max'>

@@ -22,6 +22,9 @@ export const FeedbackUpdate = {
 export const GetProductDetails ={
     INFO: async (params:any) => await axiosInstance.get(Endpoints.PRODUCT_DETAILS+params)
 }
+export const LandingPageList ={
+    GET_ALL: async () => await axiosInstance.get(Endpoints.LANDINGPAGE)
+}
 export const LoginAccount = {
     LOGIN: async (data: any) => await axiosInstance.post(Endpoints.LOGIN, data)
 }

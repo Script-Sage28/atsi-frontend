@@ -7,9 +7,9 @@ import { FaChevronDown,FaCalendarAlt } from 'react-icons/fa';
 import { BiSolidHot } from "react-icons/bi";
 import { CustomButton, CustomCard, CustomLabel } from './components';
 import { Peso } from './helper/pesoSign';
-import { AllBlogs, BrandsRequest, ProductsRequest } from './service/request';
+import { AllBlogs, BrandsRequest, LandingPageList, ProductsRequest } from './service/request';
 // eslint-disable-next-line camelcase
-import { T_Blogs} from './types/productList';
+import { T_Blogs, T_LandingPage} from './types/productList';
 import { loadProducts, selector } from './zustand/store/store.provider';
 import Noimg from '../public/assets/noimg.png'
 import useStore from '@/zustand/store/store';
@@ -28,6 +28,7 @@ export default function Home() {
   const [selectedBlogs,setSelectedBlogs] = useState<T_Blogs | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [blogs,setBlogs] = useState<T_Blogs[]>([]);
+  const [landingData,setLandingData] = useState<T_LandingPage | null>(null);
   const [isLoading,setIsLoading] = useState(false)
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
 
@@ -51,8 +52,10 @@ export default function Home() {
         });
         const res = await AllBlogs.FETCH({})
         const res1 = await BrandsRequest.GET_ALL({})
+        const res2 = await LandingPageList.GET_ALL()
         const re = await ProductsRequest.GET_ALL({isDeleted:false})
         setProductsAll(re.data.data)
+        setLandingData(res2.data.data)
         setBrands(res1.data.data)
         const list = res.data.data.filter((item: { isDeleted: boolean; }) => !item.isDeleted)
         const blogs = list?.map((item:any) => ({...item,loading:false}))
@@ -74,7 +77,6 @@ export default function Home() {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  console.log(selectedBlogs)
   return (
     <>
       {/* Landing Page */}
@@ -89,48 +91,43 @@ export default function Home() {
           disableOnInteraction: false,
         }}
       >
-        <SwiperSlide>
-        <div className="container bg-[#f5f5f5] h-[700px] md:p-52 max-w-full flex flex-row items-center">
-        <div className="flex-grow">
-          <div className="sm:w-full flex flex-col sm:gap-4 md:gap-10 pb-8 pl-4 md:pl-0 md:w-3/4">
-            <div>
-            <CustomLabel
-              children="AuxyTech Technology Solutions Inc."
-              variant="title"
-              titleLevel={1}
-              addedClass="title"
-            />
-            </div>
-
-            <div>
+      {landingData && landingData.landingPageImages?.length > 0 && landingData.landingPageImages?.map((item:any,idx:number) =>{
+        return idx === 0 ? (
+          <SwiperSlide>
+          <div className=" bg-[#f5f5f5] h-[700px] md:p-52 max-w-full flex flex-row items-center bg-cover bg-center'" style={{backgroundImage:`url(${imgUrl + item.url})`}}>
+          <div className="flex-grow">
+            <div className="sm:w-full flex flex-col sm:gap-4 md:gap-10 pb-8 pl-4 md:pl-0 md:w-3/4">
+              <div>
               <CustomLabel
-                children="We provide trusted security solutions: CCTV, PABX, Access Control, FDAS, PA System, Data Cabinets, Fiber Optics, AV Cables, and more, ensuring your safety and security."
-                variant="text"
-                addedClass="sm:text-base md:text-2xl"
+                children={landingData.title}
+                variant="title"
+                titleLevel={1}
+                addedClass="title"
               />
-            </div>
-
-            <div className="my-8 md:my-0 flex flex-row gap-5">
-              <CustomButton
-                addedClass="bg-[#00A3FF] p-4 md:p-7 rounded-md md:rounded-xl flex items-center justify-center md:text-xl"
-                children={<Link href={`/#product`}>View Products</Link>}
-              />
-              <CustomButton
-                addedClass="bg-white text-[#00A3FF] border border-[#00A3FF] p-4 md:p-7 rounded-md md:rounded-xl flex items-center justify-center md:text-xl"
-                children={<Link href={`/product`}>Browse More</Link>}
-              />
+              </div>
+              <div>
+                <CustomLabel
+                  children={landingData.content}
+                  variant="text"
+                  addedClass="sm:text-base md:text-2xl"
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="absolute -bottom-2 md:bottom-5 left-1/2 animate-bounce">
-          <FaChevronDown size={30} />
-        </div>
-        </div>
-        </SwiperSlide>
-        <SwiperSlide>
-        <div className="container bg-[#f5f5f5] h-[700px] bg-cover bg-center md:p-52 max-w-full flex flex-row items-center" style={{backgroundImage:`url('https://firebasestorage.googleapis.com/v0/b/kyte-7c484.appspot.com/o/lpUVJzyzApTrvZ%2F661ec4d5-5716-4057-a5bd-a7e4f848e9c3.jpg?alt=media&token=bfbb6672-ecff-475f-95c7-0386fac1c955')`,aspectRatio:1}}>
-        </div>
-        </SwiperSlide>
+          <div className="absolute -bottom-2 md:bottom-5 left-1/2 animate-bounce">
+            <FaChevronDown size={30} />
+          </div>
+          </div>
+          </SwiperSlide>
+        ) : (
+          <SwiperSlide>
+          <div className=" bg-[#f5f5f5] h-[700px] bg-cover bg-center md:p-52 max-w-full flex flex-row items-centerbg-cover bg-center'" style={{backgroundImage:`url(${imgUrl + item.url})`}}>
+          </div>
+          </SwiperSlide>
+        )
+      })}
+
+
       </Swiper>
       </div>
       {/* Products Section */}
