@@ -49,6 +49,12 @@ body {
   padding: 15px 40px !important;
 
 }
+.fb-customerchat {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
 
 #products .swiper-slide {
   text-align: center;

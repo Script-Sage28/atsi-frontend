@@ -105,9 +105,9 @@ export default function Productpage({ params }:{
   const handleBrandChange = (brandName: string) => {
     setSelectedBrands(brandName);
   };
-  const handleCategoryChange = (categoryName: string) => {
+   const handleCategoryChange = (categoryName: string) => {
       setSelectedCategories(categoryName === selectedCategories ? '' : categoryName);
-  }; 
+  };
   const filteredAndSortedProducts = product.list?.filter((product:T_Product) => {
       const isInSelectedCategories = selectedCategories === '' || selectedCategories?.includes(product.categoryId);
       const inBrand = !selectedBrands || selectedBrands?.includes(product.brandId)

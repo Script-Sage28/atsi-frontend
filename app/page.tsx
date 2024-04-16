@@ -1,5 +1,5 @@
 'use client';
-import { Input, Modal, Skeleton } from 'antd';
+import { Input, InputNumber, Modal, Skeleton, Slider } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -7,9 +7,9 @@ import { FaChevronDown,FaCalendarAlt } from 'react-icons/fa';
 import { BiSolidHot } from "react-icons/bi";
 import { CustomButton, CustomCard, CustomLabel } from './components';
 import { Peso } from './helper/pesoSign';
-import { AllBlogs, BrandsRequest, LandingPageList, ProductsRequest } from './service/request';
+import { AllBlogs, BrandsRequest, CategoriesRequest, LandingPageList, ProductsRequest } from './service/request';
 // eslint-disable-next-line camelcase
-import { T_Blogs, T_LandingPage} from './types/productList';
+import { T_Blogs, T_Categories, T_LandingPage} from './types/productList';
 import { loadProducts, selector } from './zustand/store/store.provider';
 import Noimg from '../public/assets/noimg.png'
 import useStore from '@/zustand/store/store';
@@ -19,18 +19,26 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import './globals.css'
+import clsx from 'clsx';
+import { findHighestAndLowestPrices } from './helper/minMaxPrice';
 
 export default function Home() {
   const [loaded, setLoaded] = useState<boolean>(true);
   const swiperRef = useRef<SwiperRef>(null);
   const [brands,setBrands] = useState([])
+  const [categories,setCategories] = useState([])
   const [productsAll,setProductsAll] = useState([])
   const [selectedBlogs,setSelectedBlogs] = useState<T_Blogs | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [blogs,setBlogs] = useState<T_Blogs[]>([]);
   const [landingData,setLandingData] = useState<T_LandingPage | null>(null);
   const [isLoading,setIsLoading] = useState(false)
+  const [selectedCategories, setSelectedCategories] = useState('');
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
+  const { maxPrice, minPrice } = findHighestAndLowestPrices(productsAll);
+  const [priceRange,setPriceRange] = useState<number[]>([maxPrice, minPrice])
+  const [minInput, setMinInput] = useState<number | undefined>(0);
+  const [maxInput, setMaxInput] = useState<number | undefined>(0);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -38,6 +46,11 @@ export default function Home() {
     }, 3000);
     return () => { clearTimeout(timer); };
   }, [])
+  useEffect(() => {
+    setPriceRange([minPrice, maxPrice]);
+    setMinInput(minPrice);
+    setMaxInput(maxPrice);
+}, [minPrice, maxPrice]);
 
   useEffect(() =>{
     const fetchProducts = async ():Promise<void> =>{
@@ -52,11 +65,13 @@ export default function Home() {
         });
         const res = await AllBlogs.FETCH({})
         const res1 = await BrandsRequest.GET_ALL({})
+        const res3 = await CategoriesRequest.GET_ALL({})
         const res2 = await LandingPageList.GET_ALL()
         const re = await ProductsRequest.GET_ALL({isDeleted:false})
         setProductsAll(re.data.data)
         setLandingData(res2.data.data)
         setBrands(res1.data.data)
+        setCategories(res3.data.data)
         const list = res.data.data.filter((item: { isDeleted: boolean; }) => !item.isDeleted)
         const blogs = list?.map((item:any) => ({...item,loading:false}))
         setBlogs(blogs)
@@ -77,6 +92,35 @@ export default function Home() {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+  const handleCategoryChange = (categoryName: string) => {
+    setSelectedCategories(categoryName === selectedCategories ? '' : categoryName);
+};
+const handleSliderChange = (value: number[]) => {
+  console.log(value)
+  if (Array.isArray(value)) {
+      setPriceRange(value);
+      setMinInput(value[0]);
+      setMaxInput(value[1]);
+  }
+};
+
+const handleMinInputChange = (value: number | null) => {
+if (typeof value === 'number') {
+  setMinInput(value);
+  setPriceRange([value, priceRange[1]]);
+} else {
+  setMinInput(undefined);
+}
+};
+
+const handleMaxInputChange = (value: number | null) => {
+if (typeof value === 'number') {
+  setMaxInput(value);
+  setPriceRange([priceRange[0], value]);
+} else {
+  setMaxInput(undefined);
+}
+};
   return (
     <>
       {/* Landing Page */}
@@ -130,8 +174,44 @@ export default function Home() {
 
       </Swiper>
       </div>
+      <div className='flex gap-4'>
+        <div className='w-[400px] flex flex-col justify-top items-center pt-8 h-[700px]'>
+          <p className='font-bold text-[28px]'>Categories</p>
+          <ul className='list-none flex flex-col flex-wrap pt-4 justify-start gap-4'>
+          {categories?.map((item:T_Categories,idx:number) =>(
+            <>
+            <li key={idx} onClick={() => handleCategoryChange(item.id)} className={clsx('px-4 py-1 w-max rounded-sm cursor-pointer',selectedCategories === item.id && 'bg-orange-400 text-white border-2 border-orange-500')}>{item.name}</li>
+          </>
+          ))}
+          </ul> 
+          <div className='p-4 bg-white hover:shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] w-64'>
+         <p className='mb-2'>Price Range</p>
+         <div>
+         <div className='flex gap-2'>
+            <InputNumber
+                style={{ margin: '0 16px' }}
+                value={minInput}
+                placeholder='Min'
+                onChange={handleMinInputChange}
+            />
+            <InputNumber
+                style={{ margin: '0 16px' }}
+                value={maxInput}
+                placeholder='Max'
+                onChange={handleMaxInputChange}
+            />
+         </div>
+            <Slider range={{ draggableTrack: true }}
+                min={minPrice}
+                max={maxPrice}
+                value={priceRange}
+                onChangeComplete={handleSliderChange}
+            />
+         </div>
+         </div>
+        </div>
       {/* Products Section */}
-      <div id="products" className="w-full bg-white flex flex-col gap-4 p-8 md:px-24 md:py-8">
+      <div id="products" className="w-[65%] bg-white flex flex-col gap-4  md:py-8">
         {/* Sales Products */}
         {isLoading ? (<div className='flex gap-2 flex-wrap overflow-x-hidden'>
         <Swiper
@@ -166,7 +246,12 @@ export default function Home() {
           </Swiper>
         </div>) : brands?.map((item:any,idx:number) =>{
           const brandId = item.id;
-          const all = productsAll?.filter((data:any) => data.brand.id === brandId).slice(0,7)
+          const all = productsAll?.filter((data:any) => {
+            const t =data.brand.id === brandId;
+            const isInPriceRange = data.price >= priceRange[0] && data.price <= priceRange[1];
+            const isInSelectedCategories = selectedCategories === '' || selectedCategories?.includes(data.categoryId);
+            return t && isInPriceRange && isInSelectedCategories
+          }).slice(0,7)
           return(
             <>
             {all.length === 0 ? null : (
@@ -260,20 +345,7 @@ export default function Home() {
           )
         })}
       </div>
-      {/* <div className='w-full h-[274px] bg-yellow-500 bg-opacity-100 py-12 flex justify-center item-center'>
-        <div className='w-[80%]'>
-          <p className='text-white m-0 text-[48px]'>Subscribe</p>
-          <p className='text-white mb-2 -mt-2'>Just subscribe to us to get more new updates</p>
-          <div className='flex flex-nowrap gap-12'>
-            <Input size='large' className='rounded-none' />
-            <CustomButton
-              children='Subscribe'
-              size='large'
-              addedClass='bg-gray-200 text-black'
-            />
-          </div>
-        </div>
-      </div> */}
+      </div>
       <div id='blogs' className='flex bg-white justify-top flex-col gap-4 items-center p-8 md:px-28'>
         <div className='flex flex-col justify-center items-center mb-4'>
           <h3 className='font-bold tracking-wider'>BLOG</h3>
@@ -338,6 +410,7 @@ export default function Home() {
         </Modal>
         </div>
       </div>
+
     </>
   );
 }

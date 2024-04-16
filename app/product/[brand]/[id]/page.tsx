@@ -135,109 +135,111 @@ export default function ProductDetails({ params }:{
     <>
   {details ? 
        (<div className='px-4 md:px-24 py-8 bg-white text-black pb-32'>
-      <Link href={`/product/${brandId}`}  className='flex items-center m-4'>
+      <Link href={`/product/${brandId}`}  className='flex items-center m-0 md:m-4'>
       <IoIosArrowBack size={30}/>
       <p>Go Back</p>
       </Link >
-       <div className='flex flex-col justify-center items-top gap-4'>
-            <div id='details' className='w-full h-full flex flex-col m-4 justify-center items-center'>
-                <Swiper
+      <div className='flex flex-col md:flex-row lg:flex-row justify-center items-top gap-4'>
+          <div id='details' className='w-full md:w-1/2 h-full flex flex-col m-4 justify-center items-center'>
+              <Swiper
+              spaceBetween={10}
+              navigation={true}
+              thumbs={{ swiper: thumbsSwiper }}
+              modules={[FreeMode, Navigation, Thumbs]}
+              >
+              {details?.media?.map((item:any,idx:number) =>(
+                <SwiperSlide key={idx}>
+                  <div className='flex justify-center items-center'>
+                  <img src={imgUrl + item.url} className='h-[300px]'  alt={''} />
+                  </div>
+                </SwiperSlide>                 
+              ))}
+              </Swiper>
+              <Swiper
+                onSwiper={(swiper:any | null) => setThumbsSwiper(swiper)}
                 spaceBetween={10}
-                navigation={true}
-                thumbs={{ swiper: thumbsSwiper }}
+                slidesPerView={4}
+                freeMode={true}
+                watchSlidesProgress={true}
                 modules={[FreeMode, Navigation, Thumbs]}
-                >
-                {details?.media?.map((item:any,idx:number) =>(
-                  <SwiperSlide key={idx}>
-                    <Image src={imgUrl + item.url} width={400} height={450}  alt={''} />
-                  </SwiperSlide>                 
-                ))}
-                </Swiper>
-                <Swiper
-                  onSwiper={(swiper:any | null) => setThumbsSwiper(swiper)}
-                  spaceBetween={10}
-                  slidesPerView={4}
-                  freeMode={true}
-                  watchSlidesProgress={true}
-                  modules={[FreeMode, Navigation, Thumbs]}
-                 className='mySwiper'
-                >
-                {details?.media?.map((item:any,idx:number) =>(
-                  <SwiperSlide key={idx}>
-                    <Image src={imgUrl + item.url} width={100} height={100} alt={''} />
-                  </SwiperSlide>                 
-                ))}                  
-                </Swiper>
-            </div>
+                className='mySwiper'
+              >
+              {details?.media?.map((item:any,idx:number) =>(
+              <SwiperSlide key={idx}>
+                  <Image src={imgUrl + item.url} width={100} height={100} alt={''} />
+                </SwiperSlide>                 
+              ))}                  
+              </Swiper>
+          </div>
 
-            <div className='flex flex-col w-full h-full rounded-md'>
-            <div className='flex flex gap-4 w-full'>
-                  {details.lazadaLink && <div className='w-[58px] h-[58px] cursor-pointer text-shadow bg-gray-100 drop-shadow-md rounded-sm overflow-hidden'
-                    onClick={() => { window.open(`${details.lazadaLink}`, '_blank')}}
-                  >
-                    <img className='text-white  aspect-square object-contain' 
-                    src='../../assets/lazada.png'  />
-                  </div>}
-                  {details.shoppeeLink && <div className='w-[58px] h-[58px] cursor-pointer text-shadow bg-gray-100 drop-shadow-md rounded-full p-1 overflow-hidden'
-                  onClick={() => { window.open(`${details.shoppeeLink}`, '_blank')}}
-                  >
-                    <img className='text-white  aspect-square object-contain' 
-                    src='../../assets/shopee-logo-0.png'  />
-                  </div>}
-                  <CustomButton
-                    buttonType='link'
-                    // eslint-disable-next-line @next/next/no-img-element
-                    icon={<FaWhatsapp size={50} className='text-white bg-green-400 rounded-full shadow-border p-2'/> }
-                    children=''
-                    onClick={() => { window.open(`https://api.whatsapp.com/send/?phone=%2B639179639906&text&type=phone_number&app_absent=0`, '_blank')}}
-                    addedClass={'h-full text-white'}
-                  />
-                </div>
-              <div className='flex flex-col gap-2'>
-                <CustomLabel
-                  children={details.name}
-                  variant='text'
-                  addedClass='font-bold text-[32px]'
+          <div className='flex flex-col w-[500px] p-2 h-full rounded-md'>
+          <div className='flex flex gap-4 w-full'>
+                {details.lazadaLink && <div className='w-[58px] h-[58px] cursor-pointer text-shadow bg-gray-100 drop-shadow-md rounded-sm overflow-hidden'
+                  onClick={() => { window.open(`${details.lazadaLink}`, '_blank')}}
+                >
+                  <img className='text-white  aspect-square object-contain' 
+                  src='../../assets/lazada.png'  />
+                </div>}
+                {details.shoppeeLink && <div className='w-[58px] h-[58px] cursor-pointer text-shadow bg-gray-100 drop-shadow-md rounded-full p-1 overflow-hidden'
+                onClick={() => { window.open(`${details.shoppeeLink}`, '_blank')}}
+                >
+                  <img className='text-white  aspect-square object-contain' 
+                  src='../../assets/shopee-logo-0.png'  />
+                </div>}
+                <CustomButton
+                  buttonType='link'
+                  // eslint-disable-next-line @next/next/no-img-element
+                  icon={<FaWhatsapp size={50} className='text-white bg-green-400 rounded-full shadow-border p-2'/> }
+                  children=''
+                  onClick={() => { window.open(`https://api.whatsapp.com/send/?phone=%2B639179639906&text&type=phone_number&app_absent=0`, '_blank')}}
+                  addedClass={'h-full text-white'}
                 />
-                <CustomLabel
-                  children={`Stock: ${details.stock}`}
-                  variant='text'
-                  addedClass='font-semibold text-[16px]'
-                />
-                    {(details?.discount && details?.discount !== 0) && <CustomLabel
-                        children={`DISCOUNTED PRICE`} 
-                        variant="text"
-                        addedClass="text-[30px] text-gray-500 font-semibold"
-                    />}
-                    <CustomLabel
-                        children={(details?.discountedPrice && details?.discountedPrice !== 0) ? (<div className='flex gap-4'>
-                        <p className='m-0'>{Peso(details?.discountedPrice)}</p>
-                        <p className='m-0 line-through text-gray-600'>{Peso(details?.price)}</p>
-                      </div>) : Peso(details?.price)} 
-                        variant="text"
-                        addedClass="text-lg font-semibold text-[#ff4e4e]"
-                    />
-                    <Tag children={details.category.name} className='w-max' color="#108ee9"  />
-                <div>
-                  <CustomParagraph
-                    isEllipsis={show.ellipsis}
-                    text={details.description}
-                  />
-                {details.description.length > 100 && (
-                  <CustomButton
-                    children={show.ellipsis ? 'Hide' : 'See more'}
-                    onClick={() =>{ setShow({...show, ellipsis: !show.ellipsis}); }}
-                    buttonType='default'
-                    addedClass={'bg-transparent text-indigo-400 font-semibold border-0'}
-                  />
-                )}
-                </div>
               </div>
+            <div className='flex flex-col gap-2'>
+              <CustomLabel
+                children={details.name}
+                variant='text'
+                addedClass='font-bold text-[32px]'
+              />
+              <CustomLabel
+                children={`Stock: ${details.stock}`}
+                variant='text'
+                addedClass='font-semibold text-[16px]'
+              />
+                  {(details?.discount && details?.discount !== 0) && <CustomLabel
+                      children={`DISCOUNTED PRICE`} 
+                      variant="text"
+                      addedClass="text-[30px] text-gray-500 font-semibold"
+                  />}
+                  <CustomLabel
+                      children={(details?.discountedPrice && details?.discountedPrice !== 0) ? (<div className='flex gap-4'>
+                      <p className='m-0'>{Peso(details?.discountedPrice)}</p>
+                      <p className='m-0 line-through text-gray-600'>{Peso(details?.price)}</p>
+                    </div>) : Peso(details?.price)} 
+                      variant="text"
+                      addedClass="text-lg font-semibold text-[#ff4e4e]"
+                  />
+                  <Tag children={details.category.name} className='w-max' color="#108ee9"  />
               <div>
-    
+                <CustomParagraph
+                  isEllipsis={show.ellipsis}
+                  text={details.description}
+                />
+              {details.description.length > 100 && (
+                <CustomButton
+                  children={show.ellipsis ? 'Hide' : 'See more'}
+                  onClick={() =>{ setShow({...show, ellipsis: !show.ellipsis}); }}
+                  buttonType='default'
+                  addedClass={'bg-transparent text-indigo-400 font-semibold border-0'}
+                />
+              )}
               </div>
             </div>
-        </div>
+            <div>
+  
+            </div>
+          </div>
+      </div>
       {/* Comments/Rating */}
       <div className='flex flex-col'>
         <div className='w-full flex flex-col'>

@@ -1,23 +1,11 @@
 #details .swiper {
     width: 100%;
     height: 100%;
-  }
-  
-  #details .swiper-slide {
-    text-align: center;
-    font-size: 18px;
-    background: #fff;
-    
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  #details .swiper {
-    width: 100%;
-    height: 100%;
-    margin-left: auto;
-    margin-right: auto;
-  }
+
   
   #details .swiper-slide {
     background-size: cover;
@@ -26,14 +14,14 @@
   
   #details .mySwiper2 {
     height: 500px;
-    width: 100%;
+    width: 70%;
   }
   
   #details .mySwiper {
     height: 20%;
     box-sizing: border-box;
     padding: 10px 0;
-    width:65% !important ;
+    width:45% !important ;
   }
   #details .mySwiper img {
     display: block;

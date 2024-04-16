@@ -63,11 +63,6 @@ export default function CustomHeader() {
       url: '/#Home',
     },
     {
-      id: 1,
-      name: 'About',
-      url: '/#about',
-    },
-    {
       id: 2,
       name: 'Contact Us',
       url: '/#about',
