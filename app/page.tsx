@@ -22,6 +22,7 @@ import './globals.css'
 import clsx from 'clsx';
 import { findHighestAndLowestPrices } from './helper/minMaxPrice';
 import CustomNextImage from './components/image/CustomNextImage';
+import Facebook from './_document';
 
 export default function Home() {
   const [loaded, setLoaded] = useState<boolean>(true);
@@ -417,7 +418,7 @@ if (typeof value === 'number') {
         </Modal>
         </div>
       </div>
-
+   <Facebook />
     </>
   );
 }
