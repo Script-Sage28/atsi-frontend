@@ -51,7 +51,7 @@ function Facebook() {
             window.fbAsyncInit = function() {
               FB.init({
                 xfbml            : true,
-                version          : 'v13.0'
+                version          : 'v12.0'
               });
             };
       
