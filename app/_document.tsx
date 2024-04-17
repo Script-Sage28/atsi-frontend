@@ -42,22 +42,13 @@ function Facebook() {
         dangerouslySetInnerHTML={{
           __html: `
             var chatbox = document.getElementById('fb-customer-chat');
-            chatbox.setAttribute("page_id", "271939260034412");
+            chatbox.setAttribute("page_id", "702149526870091");
             chatbox.setAttribute("attribution", "biz_inbox");
-            chatbox.setAttribute('theme_color', '#01224F');
-            chatbox.setAttribute(
-              'logged_in_greeting',
-              'Good day! How may I help you?',
-            );
-            chatbox.setAttribute(
-              'logged_out_greeting',
-              'Good day! How may I help you?',
-            );
             
             window.fbAsyncInit = function() {
               FB.init({
                 xfbml            : true,
-                version          : 'v12.0'
+                version          : 'v13.0'
               });
             };
       
