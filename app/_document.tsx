@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/inline-script-id */
-import Script from 'next/script';
+// import Script from 'next/script';
 
 function Facebook() {
   return (
@@ -7,7 +7,7 @@ function Facebook() {
       <div id="fb-root"></div>
 
       <div id="fb-customer-chat" className="fb-customerchat"></div>
-      <Script
+      {/* <Script
         strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `
@@ -40,8 +40,8 @@ function Facebook() {
             }(document, 'script', 'facebook-jssdk'));
         `,
         }}
-      ></Script>
-      {/* <script
+      ></Script> */}
+      <script
         dangerouslySetInnerHTML={{
           __html: `
             var chatbox = document.getElementById('fb-customer-chat');
@@ -64,7 +64,7 @@ function Facebook() {
             }(document, 'script', 'facebook-jssdk'));
         `,
         }}
-      ></script> */}
+      ></script>
     </>
   );
 }

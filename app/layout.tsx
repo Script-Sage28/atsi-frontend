@@ -26,7 +26,7 @@ export default function RootLayout({
     <Fragment>
       <html lang="en">
         <Facebook />
-        <a href="https://auxytech.com/" referrerPolicy="origin"></a>
+        <link href="https://auxytech.com/" referrerPolicy="origin" />
         <link rel="icon" type="image/png" href={`/logo.png `} />
         <body className="bg-white text-black">
           <ConfigProvider theme={appTheme}>
