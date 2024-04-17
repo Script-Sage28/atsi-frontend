@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { ConfigProvider } from 'antd';
 import type { Metadata } from 'next';
 // import { Oxygen } from 'next/font/google';
@@ -23,17 +23,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <Fragment>
       <Facebook />
-      <link rel="icon" type="image/png" href={`/logo.png `} />
-      <body className="bg-white text-black">
-        <ConfigProvider theme={appTheme}>
-          <Toaster />
-          <CustomHeader />
-          {children}
-          <CustomFooter />
-        </ConfigProvider>
-      </body>
-    </html>
+      <html lang="en">
+        <link rel="icon" type="image/png" href={`/logo.png `} />
+        <body className="bg-white text-black">
+          <ConfigProvider theme={appTheme}>
+            <Toaster />
+            <CustomHeader />
+            {children}
+            <CustomFooter />
+          </ConfigProvider>
+        </body>
+      </html>
+    </Fragment>
   );
 }
