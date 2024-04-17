@@ -3,7 +3,7 @@ import Script from 'next/script';
 
 function Facebook() {
   return (
-    <div>
+    <>
       <div id="fb-root"></div>
 
       <div id="fb-customer-chat" className="fb-customerchat"></div>
@@ -13,6 +13,14 @@ function Facebook() {
             chatbox.setAttribute("page_id", "271939260034412");
             chatbox.setAttribute("attribution", "biz_inbox");
             chatbox.setAttribute('theme_color', '#01224F');
+            chatbox.setAttribute(
+              'logged_in_greeting',
+              'Good day! How may I help you?',
+            );
+            chatbox.setAttribute(
+              'logged_out_greeting',
+              'Good day! How may I help you?',
+            );
             
             window.fbAsyncInit = function() {
               FB.init({
@@ -30,7 +38,7 @@ function Facebook() {
             }(document, 'script', 'facebook-jssdk'));
         `}
       </Script>
-    </div>
+    </>
   );
 }
 
