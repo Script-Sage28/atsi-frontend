@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/inline-script-id */
-// import Script from 'next/script';
+import Script from 'next/script';
 
 function Facebook() {
   return (
@@ -7,8 +7,10 @@ function Facebook() {
       <div id="fb-root"></div>
 
       <div id="fb-customer-chat" className="fb-customerchat"></div>
-      {/* <Script strategy="lazyOnload">
-        {`
+      <Script
+        strategy="lazyOnload"
+        dangerouslySetInnerHTML={{
+          __html: `
             var chatbox = document.getElementById('fb-customer-chat');
             chatbox.setAttribute("page_id", "271939260034412");
             chatbox.setAttribute("attribution", "biz_inbox");
@@ -36,9 +38,10 @@ function Facebook() {
               js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
               fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
-        `}
-      </Script> */}
-      <script
+        `,
+        }}
+      ></Script>
+      {/* <script
         dangerouslySetInnerHTML={{
           __html: `
             var chatbox = document.getElementById('fb-customer-chat');
@@ -61,7 +64,7 @@ function Facebook() {
             }(document, 'script', 'facebook-jssdk'));
         `,
         }}
-      ></script>
+      ></script> */}
     </>
   );
 }
