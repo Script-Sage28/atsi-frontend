@@ -3,10 +3,10 @@ import { ConfigProvider } from 'antd';
 import type { Metadata } from 'next';
 // import { Oxygen } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
+import Facebook from './_document';
 import { CustomFooter, CustomHeader } from './components';
 import { appTheme } from '../theme/app-theme';
 import '@/styles/main.css';
-
 
 // const inter = Oxygen({
 //   subsets: ['latin'],
@@ -24,15 +24,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <link rel="icon" type="image/png" href={`/logo.png `}/>
-      <body className='bg-white text-black'>
+      <Facebook />
+      <link rel="icon" type="image/png" href={`/logo.png `} />
+      <body className="bg-white text-black">
         <ConfigProvider theme={appTheme}>
-        <Toaster />
+          <Toaster />
           <CustomHeader />
           {children}
           <CustomFooter />
         </ConfigProvider>
-  
       </body>
     </html>
   );
