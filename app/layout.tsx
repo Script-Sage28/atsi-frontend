@@ -24,8 +24,8 @@ export default function RootLayout({
 }) {
   return (
     <Fragment>
-      <Facebook />
       <html lang="en">
+        <Facebook />
         <link rel="icon" type="image/png" href={`/logo.png `} />
         <body className="bg-white text-black">
           <ConfigProvider theme={appTheme}>
