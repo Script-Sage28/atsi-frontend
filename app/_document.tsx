@@ -45,7 +45,7 @@ function Facebook() {
         dangerouslySetInnerHTML={{
           __html: `
             var chatbox = document.getElementById('fb-customer-chat');
-            chatbox.setAttribute("page_id", "271939260034412");
+            chatbox.setAttribute("page_id", "702149526870091");
             chatbox.setAttribute("attribution", "biz_inbox");
             
             window.fbAsyncInit = function() {
