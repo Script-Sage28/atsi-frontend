@@ -22,7 +22,5 @@ export const findHighestAndLowestPrices = (products:any) =>{
         minPrice = price;
       }
     }
-    console.log(products)
-    console.log(maxPrice, minPrice)
     return { maxPrice, minPrice };
   }

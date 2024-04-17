@@ -21,6 +21,7 @@ import 'swiper/css/navigation';
 import './globals.css'
 import clsx from 'clsx';
 import { findHighestAndLowestPrices } from './helper/minMaxPrice';
+import CustomNextImage from './components/image/CustomNextImage';
 
 export default function Home() {
   const [loaded, setLoaded] = useState<boolean>(true);
@@ -96,12 +97,9 @@ export default function Home() {
     setSelectedCategories(categoryName === selectedCategories ? '' : categoryName);
 };
 const handleSliderChange = (value: number[]) => {
-  console.log(value)
-  if (Array.isArray(value)) {
       setPriceRange(value);
       setMinInput(value[0]);
       setMaxInput(value[1]);
-  }
 };
 
 const handleMinInputChange = (value: number | null) => {
@@ -176,7 +174,14 @@ if (typeof value === 'number') {
       </div>
       <div className='flex gap-4'>
         <div className='w-[400px] flex flex-col justify-top items-center pt-8 h-[700px]'>
+          <div className='flex gap-8 items-center'>
           <p className='font-bold text-[28px]'>Categories</p>
+          <CustomButton
+            children='Reset filter'
+            addedClass='bg-sky-600 text-white'
+            onClick={() => setSelectedCategories('')}
+          />
+          </div>
           <ul className='list-none flex flex-col flex-wrap pt-4 justify-start gap-4'>
           {categories?.map((item:T_Categories,idx:number) =>(
             <>
@@ -184,7 +189,7 @@ if (typeof value === 'number') {
           </>
           ))}
           </ul> 
-          <div className='p-4 bg-white hover:shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] w-64'>
+          <div className='p-4 bg-white w-64'>
          <p className='mb-2'>Price Range</p>
          <div>
          <div className='flex gap-2'>
@@ -201,11 +206,13 @@ if (typeof value === 'number') {
                 onChange={handleMaxInputChange}
             />
          </div>
-            <Slider range={{ draggableTrack: true }}
-                min={minPrice}
+            <Slider 
+                range={{ draggableTrack: true }}
+                min={0}
                 max={maxPrice}
+                step={100}
                 value={priceRange}
-                onChangeComplete={handleSliderChange}
+                onChange={handleSliderChange}
             />
          </div>
          </div>
@@ -376,7 +383,7 @@ if (typeof value === 'number') {
               <SwiperSlide>
                 <div key={idx} className='shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]'>
                   <div className='h-[160px]'>
-                    <Image src={imgUrl+item.imageUrl} className='aspect-square object-fill w-full h-full' alt="No pics" width={350} height={150} />
+                    <Image src={imgUrl+item.imageUrl} className='object-fill w-full h-full' alt="No pics" width={350} height={150} />
                   </div>
                   <div className='w-full text-left ml-4 mt-4'>
                     <p className='line-clamp-1 text-[20px] font-semibold'>{item.title}</p>
@@ -396,8 +403,8 @@ if (typeof value === 'number') {
         </Swiper>
         <Modal title='' open={isModalOpen} footer={null} onCancel={handleCancel}>
         {selectedBlogs && <div className='h-max'>
-          <div className='h-[160px]'>
-            <Image src={imgUrl+selectedBlogs.imageUrl} className='aspect-square object-fill w-full h-full' alt="No pics" width={350} height={150} />
+          <div className=' mb-4'>
+            <Image src={imgUrl+selectedBlogs.imageUrl} className='object-fill' alt="No pics" width={400} height={250} />
           </div>
           <div className='w-full text-left ml-4 mt-4'>
             <p className='line-clamp-1 text-[20px] font-semibold'>{selectedBlogs.title}</p>

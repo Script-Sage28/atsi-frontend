@@ -163,7 +163,7 @@ export default function CustomHeader() {
   }
   return (
     <>
-    <Header className="header sticky h-24 text-[18px] lg:text-[24px] lg:h-28 z-50 top-0 p-2 md:p-8 bg-white w-full flex justify-between items-center">
+    <Header className="header sticky h-20 text-[14px] lg:text-[18px] lg:h-24 z-50 top-0 p-2 md:p-8 bg-white w-full flex justify-between items-center">
       <div className="flex-1 w-full flex justify-between items-center">
         {open && <MdOutlineClear size={40} className='md:hidden ease-in-out cursor-pointer' 
         onClick={handleOpenChange} />}
