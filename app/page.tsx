@@ -173,8 +173,8 @@ if (typeof value === 'number') {
 
       </Swiper>
       </div>
-      <div className='flex gap-4'>
-        <div className='w-[400px] flex flex-col justify-top items-center pt-8 h-[700px]'>
+      <div className='flex flex-col md:flex-row gap-4'>
+        <div className='w-full md:w-[400px] flex flex-col justify-top items-center pt-8 h-max'>
           <div className='flex gap-8 items-center'>
           <p className='font-bold text-[28px]'>Categories</p>
           <CustomButton

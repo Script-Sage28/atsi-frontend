@@ -4,15 +4,14 @@ import { Rate,Avatar, Skeleton, Popover, Input, Form, Button, Tag } from 'antd';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaWhatsapp } from "react-icons/fa";
+import { FaViber } from "react-icons/fa6";
 import { CustomButton, CustomCard, CustomLabel } from '@/components';
-import AtsiImg from '../../../logo.png'
 import ReviewForm from '@/components/form/review';
 import CustomParagraph from '@/components/paragraph/paragraph';
 import { FetchingDetails } from '@/helper/getDetails';
 import { T_Product } from '@/types/productList';
 import { Peso } from '@/helper/pesoSign';
 import { getNickName } from '@/helper/formatName';
-import { CustomSwiper } from '@/components/swiper';
 import Image from 'next/image';
 import Noimg from '../../../../public/assets/noimg.png'
 import { AiOutlineMore } from "react-icons/ai";
@@ -189,7 +188,7 @@ export default function ProductDetails({ params }:{
                 <CustomButton
                   buttonType='link'
                   // eslint-disable-next-line @next/next/no-img-element
-                  icon={<FaWhatsapp size={50} className='text-white bg-green-400 rounded-full shadow-border p-2'/> }
+                  icon={<FaViber size={50} className='text-white bg-sky-400 rounded-full shadow-border p-2'/> }
                   children=''
                   onClick={() => { window.open(`https://api.whatsapp.com/send/?phone=%2B639179639906&text&type=phone_number&app_absent=0`, '_blank')}}
                   addedClass={'h-full text-white'}
