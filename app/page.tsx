@@ -174,7 +174,7 @@ if (typeof value === 'number') {
       </Swiper>
       </div>
       <div className='flex flex-col md:flex-row gap-4'>
-        <div className='w-full md:w-[400px] flex flex-col justify-top items-center pt-8 h-max'>
+        <div className='w-full md:w-[400px] flex flex-col justify-top items-center pt-8 h-maxh-[700px]'>
           <div className='flex gap-8 items-center'>
           <p className='font-bold text-[28px]'>Categories</p>
           <CustomButton
@@ -418,7 +418,6 @@ if (typeof value === 'number') {
         </Modal>
         </div>
       </div>
-   <Facebook />
     </>
   );
 }
