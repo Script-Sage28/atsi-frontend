@@ -514,7 +514,7 @@ export default function Home() {
             open={isModalOpen}
             footer={null}
             onCancel={handleCancel}
-            className="max-w-3xl"
+            width={200}
           >
             {selectedBlogs && (
               <div className="h-max">
