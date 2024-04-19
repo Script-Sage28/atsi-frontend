@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Rate,Avatar, Skeleton, Popover, Input, Form, Button, Tag } from 'antd';
+import { Rate,Avatar, Skeleton, Popover, Input, Form, Button, Tag, Tabs } from 'antd';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaWhatsapp } from "react-icons/fa";
@@ -219,6 +219,21 @@ export default function ProductDetails({ params }:{
                       addedClass="text-lg font-semibold text-[#ff4e4e]"
                   />
                   <Tag children={details.category.name} className='w-max' color="#108ee9"  />
+
+            </div>
+            <div>
+  
+            </div>
+          </div>
+      </div>
+      <div>
+      <Tabs
+        defaultActiveKey="2"
+        items={[
+          {
+            label: 'Description',
+            key: '1',
+            children: <div>
               <div>
                 <CustomParagraph
                   isEllipsis={show.ellipsis}
@@ -233,12 +248,12 @@ export default function ProductDetails({ params }:{
                 />
               )}
               </div>
-            </div>
-            <div>
-  
-            </div>
-          </div>
-      </div>
+            </div>,
+          },
+          {
+            label: 'Review',
+            key: '2',
+            children: <div>
       {/* Comments/Rating */}
       <div className='flex flex-col'>
         <div className='w-full flex flex-col'>
@@ -321,6 +336,12 @@ export default function ProductDetails({ params }:{
           )})) : (<p className='w-full h-[400px] flex justify-center items-center bg-gray-200 rounded-md'><p>No Customer review yet</p></p>)}
         </div>
       </div> 
+            </div>,
+          },
+        ]}
+      />
+      </div>
+
       <div id='related' className='mt-4'>
         <p className='text-[36px] mb-8'>Related Products</p>
         <Swiper
