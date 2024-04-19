@@ -67,7 +67,7 @@ export default function Home() {
         });
         const res = await AllBlogs.FETCH({})
         const res1 = await BrandsRequest.GET_ALL({})
-        const res3 = await CategoriesRequest.GET_ALL({})
+        const res3 = await CategoriesRequest.GET_ALL({isDeleted:false,status:'Available'})
         const res2 = await LandingPageList.GET_ALL()
         const re = await ProductsRequest.GET_ALL({isDeleted:false})
         setProductsAll(re.data.data)
@@ -130,7 +130,7 @@ if (typeof value === 'number') {
         spaceBetween={10}
         modules={[Autoplay, Navigation]}
         autoplay={{
-          delay: 2500,
+          delay: 5000,
           disableOnInteraction: false,
         }}
       >
