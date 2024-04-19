@@ -524,7 +524,7 @@ export default function Home() {
                     className="object-fill w-full h-full"
                     alt="No pics"
                     width={300}
-                    height={250}
+                    height={200}
                   />
                 </div>
                 <div className="w-full text-left ml-4 mt-4">
