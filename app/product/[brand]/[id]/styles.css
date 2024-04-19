@@ -5,7 +5,16 @@
     justify-content: center;
     align-items: center;
   }
-
+  .ant-tabs-nav-list{
+    width: 100% !important;
+    text-align: center !important;
+  }
+  .ant-tabs-tab{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   
   #details .swiper-slide {
     background-size: cover;

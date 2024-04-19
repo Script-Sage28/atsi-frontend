@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Rate,Avatar, Skeleton, Popover, Input, Form, Button, Tag, Tabs } from 'antd';
+import { Rate,Avatar, Skeleton, Popover, Input, Form, Button, Tag, Tabs, TabsProps, theme } from 'antd';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaWhatsapp } from "react-icons/fa";
@@ -27,6 +27,8 @@ import 'swiper/css/thumbs';
 import './styles.css';
 import { FreeMode, Navigation, Pagination, Thumbs } from 'swiper/modules';
 import { BiSolidHot } from 'react-icons/bi';
+import StickyBox from 'react-sticky-box';
+import clsx from 'clsx';
 
 
 export default function ProductDetails({ params }:{
@@ -38,6 +40,9 @@ export default function ProductDetails({ params }:{
     ellipsis: false,
     form:false
   })
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
   const { TextArea } = Input;
   const swiperRef = useRef<SwiperRef>(null);
@@ -48,6 +53,7 @@ export default function ProductDetails({ params }:{
   const brandId = params.brand;
   const [details,setDetails] = useState<T_Product | null>(null);
   const [suggest,setSuggest] = useState<T_Product[]>([])
+  const [tabsValue,setTabsValue] = useState('0')
   const [isEdit,setIsEdit] = useState<string>('')
   const [isLoading,setIsLoading] = useState<boolean>(false)
   const arrow:string = 'Show';
@@ -129,7 +135,11 @@ export default function ProductDetails({ params }:{
       setIsLoading(false)
     }
   }
-  console.log(details)
+  const renderTabBar: TabsProps['renderTabBar'] = (props, DefaultTabBar) => (
+    <StickyBox offsetTop={64} offsetBottom={20} style={{ zIndex: 1}}>
+      <DefaultTabBar {...props} style={{ background: colorBgContainer }} />
+    </StickyBox>
+  );
   return (
     <>
   {details ? 
@@ -227,119 +237,117 @@ export default function ProductDetails({ params }:{
           </div>
       </div>
       <div>
-      <Tabs
-        defaultActiveKey="2"
-        items={[
-          {
-            label: 'Description',
-            key: '1',
-            children: <div>
-              <div>
-                <CustomParagraph
-                  isEllipsis={show.ellipsis}
-                  text={details.description}
-                />
-              {details.description.length > 100 && (
-                <CustomButton
-                  children={show.ellipsis ? 'Hide' : 'See more'}
-                  onClick={() =>{ setShow({...show, ellipsis: !show.ellipsis}); }}
-                  buttonType='default'
-                  addedClass={'bg-transparent text-indigo-400 font-semibold border-0'}
-                />
-              )}
-              </div>
-            </div>,
-          },
-          {
-            label: 'Review',
-            key: '2',
-            children: <div>
-      {/* Comments/Rating */}
-      <div className='flex flex-col'>
-        <div className='w-full flex flex-col'>
-          <CustomLabel
-            children='Product Reviews'
-            variant='text'
-            addedClass='text-[28px]'
-          />
+        <div className='w-full flex flex-nowrap'>
+          <p onClick={() => setTabsValue('0')} className={clsx(tabsValue === '0' && 'cursor-pointer border-b-2 border-sky-600 text-sky-600 font-bold', 'w-1/2 text-center p-4')}>
+            Description
+          </p>
+          <p onClick={() => setTabsValue('1')} className={clsx(tabsValue === '1' && 'cursor-pointer border-b-2 border-sky-600 text-sky-600 font-bold', 'w-1/2 text-center p-4')}>
+            Reviews        
+          </p>
         </div>
-        <div className='w-full'>
-          <ReviewForm
-            isOpen={true}
-            productId={details.id}
-            setLoading={setLoading}
-            isLoading={loading}
-            setShow={() =>{ setShow({...show,form:!show.form})}}
-            onReviewSubmit={handleReviewSubmit} 
-          />
-        </div>
-        <div className='w-full h-[400px] overflow-y-auto flex flex-col gap-4'>
-          {details.productReviews.length > 0 ? (details.productReviews?.map((data,idx) =>{
-            return data?.isDeleted ? null : (
-            <div key={idx} className='shadow-border p-4 flex flex-col gap-2'>
-              <div className='flex items-center gap-2'>
-               <Avatar size={40}>{getNickName(data.createdByUser?.username)}</Avatar> 
-                {isEdit !== data.id ? <div className='w-full'>
-                    <div className='flex items-center justify-between w-full gap-4'>
-                      <div className='flex flex-col md:flex-row gap-4'>
-                      <Rate disabled value={data.rating} allowHalf />
-                      <p className='text-sm md:text-base'>{new Date(data.createdAt).toLocaleString()}</p>
-                      </div>
-                      <div>
-                      {data.createdByUser?.username === user.info?.username && <Popover className='cursor-pointer p-0' placement="bottomRight" trigger="click" 
-                      content={<div className='w-max'>
-                        <p onClick={() =>handleEdit(data)} className='cursor-pointer hover:bg-sky-600 p-2 px-4 rounded-lg hover:text-white'>Edit</p>
-                        <Button onClick={() =>handleDelete(data)}className='cursor-pointer hover:bg-red-600 rounded-lg border-0'><p className='hover:text-white text-nowrap'>{isLoading ? 'Deleting...' : 'Delete'}</p></Button>
-                      </div>} arrow={mergedArrow}>
-                      <AiOutlineMore size={24}/>
-                      </Popover> }                     
-                      </div>
-                    </div>
-                    <CustomLabel
-                      children={data.createdByUser?.username}
-                      variant='text'
-                      addedClass='text-sm'
-                    />
-                <div>
-                  <CustomParagraph text={data.content}/>
-                </div>
-                </div> 
-                : (isEdit === data.id && <div className='w-full'>
-                     <div className='w-full flex justify-end items-end'>
-                      <CustomButton
-                        children='Cancel'
-                        onClick={()  => handleEdit()}
-                        addedClass='bg-gray-800 text-white'
-                      />
-                     </div>
-                    <Form 
-                     onFinish={onFinish}
-                     form={form}
-                     className='flex flex-col w-full gap-4'>
-                          <Form.Item label="Rating" name="rate" rules={[{ required: true }]}>
-                            <Rate value={data.rating} />
-                          </Form.Item>
-                          <Form.Item label="Review" name="content" rules={[{ required: true }]}>
-                          <TextArea rows={4} value={data.content} className='bg-gray-200' placeholder='Write your comments here' />
-                          </Form.Item>
-                          <Form.Item>
-                            <div className='w-fll flex justify-end items-end'>
-                            <Button loading={isLoading} className='bg-sky-600 text-white'  type="primary" htmlType="submit">Save</Button>
-                            </div>
-                          </Form.Item>
-                    </Form>
-
-                </div>)}
-                </div>
-
+        <div className='p-4'>
+          {tabsValue === '0' ? 
+          (<div className='w-full'>
+          <div>
+            <CustomParagraph
+              isEllipsis={show.ellipsis}
+              text={details.description}
+            />
+          {details.description.length > 100 && (
+            <CustomButton
+              children={show.ellipsis ? 'Hide' : 'See more'}
+              onClick={() =>{ setShow({...show, ellipsis: !show.ellipsis}); }}
+              buttonType='default'
+              addedClass={'bg-transparent text-indigo-400 font-semibold border-0'}
+            />
+          )}
+          </div>
+        </div>) : 
+          (<div className='w-full'>
+          {/* Comments/Rating */}
+          <div className='flex flex-col'>
+            <div className='w-full flex flex-col'>
+              <CustomLabel
+                children='Product Reviews'
+                variant='text'
+                addedClass='text-[28px]'
+              />
             </div>
-          )})) : (<p className='w-full h-[400px] flex justify-center items-center bg-gray-200 rounded-md'><p>No Customer review yet</p></p>)}
+            <div className='w-full'>
+              <ReviewForm
+                isOpen={true}
+                productId={details.id}
+                setLoading={setLoading}
+                isLoading={loading}
+                setShow={() =>{ setShow({...show,form:!show.form})}}
+                onReviewSubmit={handleReviewSubmit} 
+              />
+            </div>
+            <div className='w-full h-[400px] overflow-y-auto flex flex-col gap-4'>
+              {details.productReviews.length > 0 ? (details.productReviews?.map((data,idx) =>{
+                return data?.isDeleted ? null : (
+                <div key={idx} className='shadow-border p-4 flex flex-col gap-2'>
+                  <div className='flex items-center gap-2'>
+                   <Avatar size={40}>{getNickName(data.createdByUser?.username)}</Avatar> 
+                    {isEdit !== data.id ? <div className='w-full'>
+                        <div className='flex items-center justify-between w-full gap-4'>
+                          <div className='flex flex-col md:flex-row gap-4'>
+                          <Rate disabled value={data.rating} allowHalf />
+                          <p className='text-sm md:text-base'>{new Date(data.createdAt).toLocaleString()}</p>
+                          </div>
+                          <div>
+                          {data.createdByUser?.username === user.info?.username && <Popover className='cursor-pointer p-0' placement="bottomRight" trigger="click" 
+                          content={<div className='w-max'>
+                            <p onClick={() =>handleEdit(data)} className='cursor-pointer hover:bg-sky-600 p-2 px-4 rounded-lg hover:text-white'>Edit</p>
+                            <Button onClick={() =>handleDelete(data)}className='cursor-pointer hover:bg-red-600 rounded-lg border-0'><p className='hover:text-white text-nowrap'>{isLoading ? 'Deleting...' : 'Delete'}</p></Button>
+                          </div>} arrow={mergedArrow}>
+                          <AiOutlineMore size={24}/>
+                          </Popover> }                     
+                          </div>
+                        </div>
+                        <CustomLabel
+                          children={data.createdByUser?.username}
+                          variant='text'
+                          addedClass='text-sm'
+                        />
+                    <div>
+                      <CustomParagraph text={data.content}/>
+                    </div>
+                    </div> 
+                    : (isEdit === data.id && <div className='w-full'>
+                         <div className='w-full flex justify-end items-end'>
+                          <CustomButton
+                            children='Cancel'
+                            onClick={()  => handleEdit()}
+                            addedClass='bg-gray-800 text-white'
+                          />
+                         </div>
+                        <Form 
+                         onFinish={onFinish}
+                         form={form}
+                         className='flex flex-col w-full gap-4'>
+                              <Form.Item label="Rating" name="rate" rules={[{ required: true }]}>
+                                <Rate value={data.rating} />
+                              </Form.Item>
+                              <Form.Item label="Review" name="content" rules={[{ required: true }]}>
+                              <TextArea rows={4} value={data.content} className='bg-gray-200' placeholder='Write your comments here' />
+                              </Form.Item>
+                              <Form.Item>
+                                <div className='w-fll flex justify-end items-end'>
+                                <Button loading={isLoading} className='bg-sky-600 text-white'  type="primary" htmlType="submit">Save</Button>
+                                </div>
+                              </Form.Item>
+                        </Form>
+    
+                    </div>)}
+                    </div>
+    
+                </div>
+              )})) : (<p className='w-full h-[400px] flex justify-center items-center bg-gray-200 rounded-md'><p>No Customer review yet</p></p>)}
+            </div>
+          </div> 
+                </div>)}
         </div>
-      </div> 
-            </div>,
-          },
-        ]}
-      />
       </div>
 
       <div id='related' className='mt-4'>
