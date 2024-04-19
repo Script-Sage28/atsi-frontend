@@ -521,9 +521,9 @@ export default function Home() {
                 <div className=" mb-4">
                   <Image
                     src={imgUrl + selectedBlogs.imageUrl}
-                    className="object-fill min-w-max"
+                    className="object-fill w-full h-full"
                     alt="No pics"
-                    width={400}
+                    width={300}
                     height={250}
                   />
                 </div>
