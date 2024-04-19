@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback, ChangeEvent, useRef } from 'react'
-import { Button,Input, List} from 'antd';
+import { Button,Input, InputNumber, List, Slider} from 'antd';
 import { debounce } from 'lodash';
 import Link from 'next/link'
 import { FaListUl } from 'react-icons/fa6';
@@ -19,6 +19,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import '../../globals.css'
+import { findHighestAndLowestPrices } from '@/helper/minMaxPrice';
 
   
 export default function Productpage({ params }:{
@@ -28,7 +29,7 @@ export default function Productpage({ params }:{
   const product = useStore(selector('product'))
   const shopby = useStore(selector('brand_category'))
   const { Search } = Input;
-  const countPerPage = 10;
+  const countPerPage = 25;
   const swiperRef = useRef<SwiperRef>(null);
   const brandParams = params.brand;
   const [loading, setLoading] = useState<boolean>(false);
@@ -42,6 +43,10 @@ export default function Productpage({ params }:{
   const [selectedBrands, setSelectedBrands] = useState(brandParams || '');
   const [productName,setProductName] = useState('')
   const [sortOrder, setSortOrder] = useState<string>('A-Z');
+  const { maxPrice, minPrice } = findHighestAndLowestPrices(product.list);
+  const [priceRange,setPriceRange] = useState<number[]>([maxPrice, minPrice])
+  const [minInput, setMinInput] = useState<number | undefined>(0);
+  const [maxInput, setMaxInput] = useState<number | undefined>(0);
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
 
   const onLoadMore = () => {
@@ -85,6 +90,13 @@ export default function Productpage({ params }:{
     }
     Fetch()
   },[])
+
+  useEffect(() => {
+    setPriceRange([minPrice, maxPrice]);
+    setMinInput(minPrice);
+    setMaxInput(maxPrice);
+}, [minPrice, maxPrice]);
+
   useEffect(() =>{
     if(selectedBrands){
       const cat = shopby.brand?.filter((data: { id: string; }) => data.id === selectedBrands)
@@ -99,6 +111,35 @@ export default function Productpage({ params }:{
       setCategory(shopby.category)
     }
   },[selectedBrands])
+
+  useEffect(() =>{
+    const list = filteredAndSortedProducts?.map((item:any) => ({...item,loading:false}))
+    setList(list)
+},[selectedCategories,selectedBrands,sortOrder,product.list,productName,priceRange,minInput,maxInput])
+const handleSliderChange = (value: number[]) => {
+  setPriceRange(value);
+  setMinInput(value[0]);
+  setMaxInput(value[1]);
+  };
+
+  const handleMinInputChange = (value: number | null) => {
+  if (typeof value === 'number') {
+  setMinInput(value);
+  setPriceRange([value, priceRange[1]]);
+  } else {
+  setMinInput(undefined);
+  }
+  };
+
+  const handleMaxInputChange = (value: number | null) => {
+  if (typeof value === 'number') {
+  setMaxInput(value);
+  setPriceRange([priceRange[0], value]);
+  } else {
+  setMaxInput(undefined);
+  }
+};
+
   const handleSortChange = (value: string) => {
       setSortOrder(value);
   };
@@ -112,8 +153,9 @@ export default function Productpage({ params }:{
       const isInSelectedCategories = selectedCategories === '' || selectedCategories?.includes(product.categoryId);
       const inBrand = !selectedBrands || selectedBrands?.includes(product.brandId)
       const nameMatches = !productName || product.name?.toLowerCase().includes(productName.toLowerCase());
-
-      return isInSelectedCategories && inBrand && nameMatches;
+      const isInPriceRange = product.price >= Math.min(...priceRange) && product.price <= Math.max(...priceRange);
+      console.log(isInPriceRange)
+      return isInSelectedCategories && inBrand && nameMatches && isInPriceRange
   }).sort((a: { name: string; price: number; }, b: { name: string; price: number; }) => {
       if (sortOrder === 'A-Z') {
           return a.name.localeCompare(b.name);
@@ -125,10 +167,7 @@ export default function Productpage({ params }:{
           return a.price - b.price;
       }
   })
-  useEffect(() =>{
-      const list = filteredAndSortedProducts?.map((item:any) => ({...item,loading:false}))
-      setList(list)
-  },[selectedCategories,selectedBrands,sortOrder,product.list,productName])
+  console.log(priceRange)
 
   return (
     <>
@@ -178,11 +217,12 @@ export default function Productpage({ params }:{
 
 
     </Swiper>
-    <div className='my-4 px-8'>
-      <div className='w-full mb-2 h-max'>
+    <div className='my-4 px-8 mt-16'>
+      <div className='w-full justify-end items-end flex flex-col  mb-2 h-max mt-8'>
+        <p className='w-[80%] text-left text-[20px] mb-2'>Search products:</p>
       <Search
-          placeholder="Search Products..."
-          className='bg-white rounded-md h-[50px]'
+          placeholder="Enter product here..."
+          className='bg-white w-[80%] rounded-md h-[50px]'
           name='name'
           size='large'
           onChange={useDebounce(onSetFilter)}
@@ -207,22 +247,50 @@ export default function Productpage({ params }:{
                   {category?.map((item:T_Categories,idx:number) =>(
                     <>
                     <li key={idx} onClick={() => handleCategoryChange(item.id)} className={clsx('px-4 py-1 w-max rounded-sm cursor-pointer',selectedCategories === item.id && 'bg-orange-400 text-white border-2 border-orange-500')}>{item.name}</li>
-                  </>
+                    </>
                   ))}
                   </ul> 
                 </div>
+                <div className='p-4 bg-white w-64'>
+                  <p className='mb-2'>Price Range</p>
+                  <div>
+                  <div className='flex gap-2'>
+                      <InputNumber
+                          style={{ margin: '0 16px' }}
+                          value={minInput}
+                          placeholder='Min'
+                          onChange={handleMinInputChange}
+                      />
+                      <InputNumber
+                          style={{ margin: '0 16px' }}
+                          value={maxInput}
+                          placeholder='Max'
+                          onChange={handleMaxInputChange}
+                      />
+                  </div>
+                      <Slider 
+                          range={{ draggableTrack: true }}
+                          min={0}
+                          max={maxPrice}
+                          step={100}
+                          value={priceRange}
+                          onChange={handleSliderChange}
+                      />
+                  </div>
+                  </div>
               </div>
             </div>
 
             {/* List */}
             <div className='w-full'>
             <div className='w-full flex gap-4 md:gap-12 items-start flex-wrap px-2 md:pr-12 md:pl-8 mb-4'>
-              <div className='flex-1'>
+              <div className='flex-1 flex-col md:flex-row flex md:items-center gap-4'>
+                <label className='whitespace-nowrap h-full text-[20px]' htmlFor="">Shop by:</label>
               <Select
                 style={{ width: '100%',height:'50px' }}
                 size='middle'
                 allowClear
-                placeholder='Shopby Brands'
+                placeholder='Shop by Brands'
                 value={selectedBrands || brandParams}
                 onChange={handleBrandChange}
                 options={(shopby.brand?.map((data:T_Brand) => ({
@@ -234,7 +302,8 @@ export default function Productpage({ params }:{
               </div>
               <div className='w-full md:w-[450px] flex flex-nowrap gap-4 items-bottom'>
                 <div className='flex-1 flex'>
-               <Select
+
+                  <Select
                   style={{ width: '100%',height:'50px' }}
                   size='middle'
                   allowClear
@@ -295,7 +364,7 @@ export default function Productpage({ params }:{
                     onChange: (page) => {
                       console.log(page);
                     },
-                    pageSize: 10,
+                    pageSize: 25,
                     position:'bottom',
                     align:'center'
                   }}

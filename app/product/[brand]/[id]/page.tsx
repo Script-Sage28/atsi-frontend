@@ -208,17 +208,17 @@ export default function ProductDetails({ params }:{
               <CustomLabel
                 children={details.name}
                 variant='text'
-                addedClass='font-bold text-[32px]'
+                addedClass='font-bold text-[40px]'
               />
               <CustomLabel
                 children={`Stock: ${details.stock}`}
                 variant='text'
-                addedClass='font-semibold text-[16px]'
+                addedClass='font-semibold text-[20px]'
               />
                   {(details?.discount && details?.discount !== 0) && <CustomLabel
                       children={`DISCOUNTED PRICE`} 
                       variant="text"
-                      addedClass="text-[30px] text-gray-500 font-semibold"
+                      addedClass="text-[36px] text-gray-500 font-semibold"
                   />}
                   <CustomLabel
                       children={(details?.discountedPrice && details?.discountedPrice !== 0) ? (<div className='flex gap-4'>
@@ -226,9 +226,9 @@ export default function ProductDetails({ params }:{
                       <p className='m-0 line-through text-gray-600'>{Peso(details?.price)}</p>
                     </div>) : Peso(details?.price)} 
                       variant="text"
-                      addedClass="text-lg font-semibold text-[#ff4e4e]"
+                      addedClass="text-[24px] font-semibold text-[#ff4e4e]"
                   />
-                  <Tag children={details.category.name} className='w-max' color="#108ee9"  />
+                  <Tag children={details.category.name} className='w-max text-[14px]'  color="#108ee9"  />
 
             </div>
             <div>
