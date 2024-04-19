@@ -523,8 +523,8 @@ export default function Home() {
                     src={imgUrl + selectedBlogs.imageUrl}
                     className="object-fill w-full h-full"
                     alt="No pics"
-                    width={300}
-                    height={200}
+                    width={250}
+                    height={150}
                   />
                 </div>
                 <div className="w-full text-left ml-4 mt-4">
