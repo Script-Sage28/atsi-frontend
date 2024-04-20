@@ -521,10 +521,10 @@ export default function Home() {
                 <div className=" mb-4">
                   <Image
                     src={imgUrl + selectedBlogs.imageUrl}
-                    className="object-fill min-w-max"
+                    className="object-fill w-full h-full"
                     alt="No pics"
-                    width={400}
-                    height={250}
+                    width={250}
+                    height={150}
                   />
                 </div>
                 <div className="w-full text-left ml-4 mt-4">
