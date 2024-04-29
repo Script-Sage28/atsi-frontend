@@ -1,5 +1,5 @@
-/* eslint-disable camelcase */
 /* eslint-disable import/order */
+/* eslint-disable camelcase */
 'use client';
 import React, {
   useState,
@@ -221,8 +221,8 @@ export default function Productpage({ params }: { params: { brand: string } }) {
         }
       },
     )
-    ?.filter((product) =>
-      product.name.toLowerCase().includes(productName.toLowerCase()),
+    .filter((p: T_Product) =>
+      p.name.toLowerCase().includes(productName.toLowerCase()),
     );
   console.log(priceRange);
 
@@ -362,7 +362,6 @@ export default function Productpage({ params }: { params: { brand: string } }) {
             </div>
 
             {/* List */}
-<<<<<<< HEAD
             <div className="w-full">
               <div className="w-full flex gap-4 md:gap-12 items-start flex-wrap px-2 md:pr-12 md:pl-8 mb-4">
                 <div className="flex-1 flex-col md:flex-row flex md:items-center gap-4">
@@ -372,39 +371,6 @@ export default function Productpage({ params }: { params: { brand: string } }) {
                   >
                     Shop by:
                   </label>
-=======
-            <div className='w-full'>
-              <div className='w-full justify-end items-end flex flex-col  mb-2 h-max'>
-                <p className='w-full md:pl-8 text-left text-[20px] mb-2'>Search products:</p>
-              <Search
-                  placeholder="Enter product here..."
-                  className='md:pl-8 bg-white w-full rounded-md h-[50px]'
-                  name='name'
-                  size='large'
-                  onChange={useDebounce(onSetFilter)}
-                />
-              </div>
-            <div className='w-full h-24 flex gap-4 md:gap-12 items-end flex-wrap px-2 md:pr-12 md:pl-8 mb-4'>
-              <div className='flex-1 flex-col flex'>
-                <label className='whitespace-nowrap h-full text-[20px]' htmlFor="">Select a Brand:</label>
-                <Select
-                  style={{ width: '100%',height:'50px' }}
-                  size='middle'
-                  allowClear
-                  placeholder='Shop by Brands'
-                  value={selectedBrands || brandParams}
-                  onChange={handleBrandChange}
-                  options={(shopby.brand?.map((data:T_Brand) => ({
-                    value: data.id,
-                    label: data.name,
-                  })) as { value: string; label: string; }[])}
-                  optionLabelProp="label" 
-                />
-              </div>
-              <div className='w-full md:w-[450px] flex flex-nowrap gap-4 items-bottom'>
-                <div className='flex-1 flex'>
-
->>>>>>> 3c5f4fdc116167352ba7554458a2d4d1ff860f7b
                   <Select
                     style={{ width: '100%', height: '50px' }}
                     size="middle"
