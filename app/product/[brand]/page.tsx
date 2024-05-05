@@ -1,3 +1,9 @@
+/* eslint-disable no-shadow */
+/* eslint-disable no-octal-escape */
+/* eslint-disable array-callback-return */
+/* eslint-disable no-inline-styles/no-inline-styles */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable import/order */
 /* eslint-disable camelcase */
 'use client';
@@ -5,17 +11,16 @@ import React, {
   useState,
   useEffect,
   useCallback,
-  type ChangeEvent,
   useRef,
 } from 'react';
 import {
   Button,
-  Input,
   InputNumber,
   List,
   Slider,
   Skeleton,
   Select,
+  AutoComplete,
 } from 'antd';
 import clsx from 'clsx';
 import { debounce } from 'lodash';
@@ -44,12 +49,12 @@ import useStore from '@/zustand/store/store';
 import { loadBrandCategory, selector } from '@/zustand/store/store.provider';
 import '../../globals.css';
 import { findHighestAndLowestPrices } from '@/helper/minMaxPrice';
+import Image from 'next/image';
 
 export default function Productpage({ params }: { params: { brand: string } }) {
   const useDebounce = (func: any) => debounce(func, 1000);
   const product = useStore(selector('product'));
   const shopby = useStore(selector('brand_category'));
-  const { Search } = Input;
   const countPerPage = 25;
   const swiperRef = useRef<SwiperRef>(null);
   const brandParams = params.brand;
@@ -94,8 +99,29 @@ export default function Productpage({ params }: { params: { brand: string } }) {
       </div>
     ) : null;
 
-  const onSetFilter = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
+    const generateOptions = () => {
+      if (!productName || productName.trim() === '') {
+        return [];
+      }
+    
+      const filteredProducts = product.list.filter((item:any) =>
+        item.name.toLowerCase().includes(productName.toLowerCase())
+      );
+       console.log(filteredProducts)
+      return filteredProducts.map((item: any) => ({
+        value: item.name,
+        label: (
+          <Link href={`/product/${item.brand.id}/${item.id}`} as={`/product/${item.brand.id}/${item.id}`} style={{ display: 'flex', alignItems: 'center',gap:'4px' }}>
+            <Image width={50} height={50} src={`${imgUrl}${item.media[0].url}`} alt={item.name} />
+            <span>{item.name}</span>
+          </Link>
+        ),
+      }));
+    };
+
+    
+  const onSetFilter = useCallback((value:any) => {
+
     setProductName(value);
   }, []);
 
@@ -184,6 +210,12 @@ export default function Productpage({ params }: { params: { brand: string } }) {
   const handleBrandChange = (brandName: string) => {
     setSelectedBrands(brandName);
   };
+  const handleSelectProduct = (value:any) => {
+    const productInfo = product.list?.fint((val: any) => val.id === value);
+    console.log(productInfo)
+    // router.push(`/product/${productInfo.brand.id}/${productInfo.id}`);
+    setProductName(value);
+  };
   const handleCategoryChange = (categoryName: string) => {
     setSelectedCategories(
       categoryName === selectedCategories ? '' : categoryName,
@@ -196,13 +228,9 @@ export default function Productpage({ params }: { params: { brand: string } }) {
         selectedCategories?.includes(product.categoryId);
       const inBrand =
         !selectedBrands || selectedBrands?.includes(product.brandId);
-      // const nameMatches =
-      //   !productName ||
-      //   product.name?.toLowerCase().includes(productName.toLowerCase());
       const isInPriceRange =
         product.price >= Math.min(...priceRange) &&
         product.price <= Math.max(...priceRange);
-      console.log(isInPriceRange);
       return isInSelectedCategories && inBrand && isInPriceRange;
     })
     .sort(
@@ -221,10 +249,6 @@ export default function Productpage({ params }: { params: { brand: string } }) {
         }
       },
     )
-    .filter((p: T_Product) =>
-      p.name.toLowerCase().includes(productName.toLowerCase()),
-    );
-  console.log(priceRange);
 
   return (
     <>
@@ -280,18 +304,7 @@ export default function Productpage({ params }: { params: { brand: string } }) {
             })}
         </Swiper>
         <div className="my-4 px-8 mt-16">
-          <div className="w-full justify-end items-end flex flex-col  mb-2 h-max mt-8">
-            <p className="w-[80%] text-left text-[20px] mb-2">
-              Search products:
-            </p>
-            <Search
-              placeholder="Enter product here..."
-              className="bg-white w-[80%] rounded-md h-[50px]"
-              name="name"
-              size="large"
-              onChange={useDebounce(onSetFilter)}
-            />
-          </div>
+
           <div className="w-full flex flex-col md:flex-row gap-2">
             {/* Filtering */}
             <div className="flex h-max flex-col gap-4">
@@ -363,6 +376,22 @@ export default function Productpage({ params }: { params: { brand: string } }) {
 
             {/* List */}
             <div className="w-full">
+            <div className="w-full justify-end items-end flex flex-col relative  mb-2 h-max">
+              <p className="w-full text-left text-[20px] mb-2 md:pl-8">
+                Search products:
+              </p>
+              <AutoComplete
+                placeholder="Enter product here..."
+                className="bg-white w-full md:pl-8 mb-4 rounded-md h-[50px]"
+                options={generateOptions()}
+                onSelect={handleSelectProduct}
+                size='middle'
+                onChange={useDebounce(onSetFilter)}
+              />
+              <div>
+
+              </div>
+            </div>
               <div className="w-full flex gap-4 md:gap-12 items-start flex-wrap px-2 md:pr-12 md:pl-8 mb-4">
                 <div className="flex-1 flex-col md:flex-row flex md:items-center gap-4">
                   <label
