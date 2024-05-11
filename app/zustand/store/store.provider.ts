@@ -10,7 +10,8 @@ export const {
     loadProducts,
     reviewProducts,
     loadBrandCategory,
-    Abouts
+    Abouts,
+    LinkUs
 } = storeProvider;
 
 export { selector, storeProvider }

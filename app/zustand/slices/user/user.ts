@@ -5,7 +5,8 @@ import { LoginAccount } from '@/service/request';
 interface UserState {
   loading: boolean;
   info?: object | null;
-  aboutsUs?:any[]
+  aboutsUs?:any[];
+  links?:any[];
   responseMsg?: string | undefined;
 }
 
@@ -15,6 +16,7 @@ export interface UserSlice {
   saveUserInfo: (payload: any) => void;
   logout: () => void;
   Abouts:(payload:any) => void;
+  LinkUs:(payload:any) => void;
 }
 
 const initialState: UserState = {
@@ -109,6 +111,17 @@ const createUserSlice: StateCreator<UserSlice> = (set) => ({
       user: {
         ...state.user,
         aboutsUs: payload,
+        loading: false,
+        responseMsg: '',
+      },
+    }));
+  },
+  LinkUs:async(payload) =>{
+    set((state) => ({
+      ...state,
+      user: {
+        ...state.user,
+        links: payload,
         loading: false,
         responseMsg: '',
       },

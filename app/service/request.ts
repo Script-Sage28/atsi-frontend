@@ -7,6 +7,9 @@ export const AboutUsList ={
 export const AllBlogs ={
     FETCH: async(params:any) => await axiosInstance.get(Endpoints.BLOGS, { params })
 }
+export const AllSocialLinks ={
+    FETCH: async() => await axiosInstance.get(Endpoints.SOCIALLINKS)
+}
 export const BrandsRequest ={
     GET_ALL: async (params:any) => await axiosInstance.get(Endpoints.BRANDS, { params })
 }

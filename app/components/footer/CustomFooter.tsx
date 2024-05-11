@@ -5,11 +5,11 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { BiLogoGmail } from 'react-icons/bi';
 import { BsWhatsapp } from 'react-icons/bs';
-import { FaMapMarkerAlt, FaFacebookSquare, FaInstagram } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaFacebookSquare, FaViber } from 'react-icons/fa';
 import { CustomLabel } from '@/components';
-import { AboutUsList } from '@/service/request';
+import { AboutUsList, AllSocialLinks } from '@/service/request';
 import useStore from '@/zustand/store/store';
-import { Abouts, selector } from '@/zustand/store/store.provider';
+import { Abouts, LinkUs, selector } from '@/zustand/store/store.provider';
 
 export default function CustomFooter() {
   // eslint-disable-next-line no-undef
@@ -43,26 +43,12 @@ export default function CustomFooter() {
     },
   ];
 
-  const socialAccounts = [
-    {
-      id: 0,
-      name: '1157 Concepcion Aguila St. Quiapo Manila ',
-      icon: <FaMapMarkerAlt size={20} color="brown" />,
-    },
-    {
-      id: 1,
-      name: 'auxytechph@gmail.com',
-      icon: <BiLogoGmail size={20} color="red" />,
-    },
-    {
-      id: 2,
-      name: '+63 917 963 9906',
-      icon: <BsWhatsapp size={20} color="green" />,
-    },
-  ];
+
   async function Fetch() {
     const res = await AboutUsList.GET_ALL()
+    const res1 = await AllSocialLinks.FETCH()
     Abouts(res.data.data)
+    LinkUs(res1.data.data[0])
   }
   useEffect(() =>{
     void Fetch();
@@ -75,6 +61,7 @@ export default function CustomFooter() {
       }
     };
   },[])
+
   return (
     <div id='about' className="bg-[#ECECEC] relative p-8 md:p-24">
       <div className="absolute p-1 bg-[#FFDD55] top-0 right-0 left-0 w-full"></div>
@@ -123,36 +110,48 @@ export default function CustomFooter() {
             variant="text"
             addedClass="text-[#0038FF] font-semibold text-3xl"
           />
-
-          {socialAccounts.map((account, idx) => (
-            <div key={idx} className="flex items-center space-x-3">
-              {account.icon}
+            {about.links?.address && <div className="flex items-center space-x-3">
+              <FaMapMarkerAlt />
               <CustomLabel
-                children={account.name}
+                children={about.links?.address}
                 variant="text"
                 addedClass="text-base"
               />
-            </div>
-          ))}
-
-          <div className="flex item-center justify-between">
+            </div>}
+            {about.links?.email && <div className="flex items-center space-x-3">
+              <BiLogoGmail />
+              <CustomLabel
+                children={about.links?.email}
+                variant="text"
+                addedClass="text-base"
+              />
+            </div>}
+          <div className="flex flex-col gap-2 item-center justify-between">
             <CustomLabel
               children="Like and Follow Us on: "
               variant="text"
               addedClass="text-base font-semibold"
             />
 
-            <div className="flex items-center gap-2">
-              <FaFacebookSquare
+            <div className="flex items-center gap-4">
+              {about.links?.facebook && <FaFacebookSquare
                 size={20}
                 title="Facebook"
                 className="hover:text-blue-600 cursor-pointer"
-              />
-              <FaInstagram
+                onClick={() => { window.open(`${about.links?.facebook}`, '_blank')}}
+              />}
+              {about.links?.viber && <FaViber
                 size={20}
-                title="Instagram"
+                title="Viber"
                 className="hover:text-pink-600 cursor-pointer"
-              />
+                onClick={() => { window.open(`${about.links?.viber}`, '_blank')}}
+              />}
+              {about.links?.whatsapp && <BsWhatsapp
+                size={20}
+                title="WhatsApp"
+                className="hover:text-pink-600 cursor-pointer"
+                onClick={() => { window.open(`${about.links?.whatsapp}`, '_blank')}}
+              />}
             </div>
           </div>
         </div>

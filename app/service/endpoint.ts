@@ -11,6 +11,7 @@ const Endpoints ={
     UPDATE_FEEDBACK:'/feedbacks/update/',
     DELETE_FEEDBACK:'/feedbacks/delete',
     ABOUTSUS:'/about-us/active',
+    SOCIALLINKS:'/social-media-links/all?status=Active',
     LANDINGPAGE:'/landing-page/active'
 }
 
