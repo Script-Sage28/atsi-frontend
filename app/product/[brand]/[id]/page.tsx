@@ -31,7 +31,7 @@ export async function generateMetadata(
     description: product.results?.description,
     keywords: ['auxytech', 'product'],
     alternates: {
-      canonical: `https://auxytech.com/${product.results?.name}`,
+      canonical: `https://auxytech.com/${product.results?.name?.trim()}`,
     },
     appLinks: {
       web: {
