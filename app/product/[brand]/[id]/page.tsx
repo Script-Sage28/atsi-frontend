@@ -30,17 +30,14 @@ export async function generateMetadata(
     title: product.results?.name?.trim(),
     description: product.results?.description,
     keywords: ['auxytech', 'product'],
-    alternates: {
-      canonical: `https://auxytech.com/product/${product.results?.brandId?.trim()}/${product.results?.name?.trim()}`,
-    },
-    appLinks: {
-      web: {
-        url: `https://auxytech.com/product/${product.results?.brandId?.trim()}/${id}`,
-        should_fallback: true,
-      },
-    },
     openGraph: {
-      images: product.img[0],
+      type: 'website',
+      images: {
+        url: product.img[0],
+        width: 800,
+        height: 600,
+        alt: product.results?.name?.trim(),
+      },
     },
     viewport: { width: '100%', height: '100%' },
   };
