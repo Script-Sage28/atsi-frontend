@@ -24,13 +24,18 @@ export async function generateMetadata(
   const previousImages = (await parent).openGraph?.images || [];
   console.log('product info: ', product);
   console.log('previousImages: ', previousImages);
+  console.log('image: ', product.img);
 
   return {
     title: product.results?.name,
     description: product.results?.description,
     keywords: product.results?.name,
     openGraph: {
-      images: [product.img[0], ...previousImages],
+      type: 'website',
+      url: 'https://auxytech.com',
+      images: product.img[0],
+      title: product.results?.name,
+      description: product.results?.description,
     },
     viewport: { width: '100%', height: '100%' },
   };
