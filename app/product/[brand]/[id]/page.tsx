@@ -41,14 +41,12 @@ export async function generateMetadata(
     },
     openGraph: {
       type: 'website',
-      images: [
-        {
-          url: product.img[0],
-          width: 800,
-          height: 600,
-          alt: product.results?.name,
-        },
-      ],
+      images: {
+        url: product.img[0],
+        width: 800,
+        height: 600,
+        alt: product.results?.name,
+      },
     },
     viewport: { width: '100%', height: '100%' },
   };
