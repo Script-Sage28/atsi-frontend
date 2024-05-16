@@ -7,12 +7,7 @@
 /* eslint-disable import/order */
 /* eslint-disable camelcase */
 'use client';
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-} from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Button,
   InputNumber,
@@ -99,29 +94,36 @@ export default function Productpage({ params }: { params: { brand: string } }) {
       </div>
     ) : null;
 
-    const generateOptions = () => {
-      if (!productName || productName.trim() === '') {
-        return [];
-      }
-    
-      const filteredProducts = product.list.filter((item:any) =>
-        item.name.toLowerCase().includes(productName.toLowerCase())
-      );
-       console.log(filteredProducts)
-      return filteredProducts.map((item: any) => ({
-        value: item.name,
-        label: (
-          <Link href={`/product/${item.brand.id}/${item.id}`} as={`/product/${item.brand.id}/${item.id}`} style={{ display: 'flex', alignItems: 'center',gap:'4px' }}>
-            <Image width={50} height={50} src={`${imgUrl}${item.media[0].url}`} alt={item.name} />
-            <span>{item.name}</span>
-          </Link>
-        ),
-      }));
-    };
+  const generateOptions = () => {
+    if (!productName || productName.trim() === '') {
+      return [];
+    }
 
-    
-  const onSetFilter = useCallback((value:any) => {
+    const filteredProducts = product.list.filter((item: any) =>
+      item.name.toLowerCase().includes(productName.toLowerCase()),
+    );
+    console.log(filteredProducts);
+    return filteredProducts.map((item: any) => ({
+      value: item.name,
+      label: (
+        <Link
+          href={`/product/${item.brand.id}/${item.id}`}
+          as={`/product/${item.brand.id}/${item.id}`}
+          style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+        >
+          <Image
+            width={50}
+            height={50}
+            src={`${imgUrl}${item.media[0].url}`}
+            alt={item.name}
+          />
+          <span>{item.name}</span>
+        </Link>
+      ),
+    }));
+  };
 
+  const onSetFilter = useCallback((value: any) => {
     setProductName(value);
   }, []);
 
@@ -210,9 +212,9 @@ export default function Productpage({ params }: { params: { brand: string } }) {
   const handleBrandChange = (brandName: string) => {
     setSelectedBrands(brandName);
   };
-  const handleSelectProduct = (value:any) => {
+  const handleSelectProduct = (value: any) => {
     const productInfo = product.list?.fint((val: any) => val.id === value);
-    console.log(productInfo)
+    console.log(productInfo);
     // router.push(`/product/${productInfo.brand.id}/${productInfo.id}`);
     setProductName(value);
   };
@@ -248,7 +250,7 @@ export default function Productpage({ params }: { params: { brand: string } }) {
           return a.price - b.price;
         }
       },
-    )
+    );
 
   return (
     <>
@@ -304,7 +306,6 @@ export default function Productpage({ params }: { params: { brand: string } }) {
             })}
         </Swiper>
         <div className="my-4 px-8 mt-16">
-
           <div className="w-full flex flex-col md:flex-row gap-2">
             {/* Filtering */}
             <div className="flex h-max flex-col gap-4">
@@ -376,22 +377,20 @@ export default function Productpage({ params }: { params: { brand: string } }) {
 
             {/* List */}
             <div className="w-full">
-            <div className="w-full justify-end items-end flex flex-col relative  mb-2 h-max">
-              <p className="w-full text-left text-[20px] mb-2 md:pl-8">
-                Search products:
-              </p>
-              <AutoComplete
-                placeholder="Enter product here..."
-                className="bg-white w-full md:pl-8 mb-4 rounded-md h-[50px]"
-                options={generateOptions()}
-                onSelect={handleSelectProduct}
-                size='middle'
-                onChange={useDebounce(onSetFilter)}
-              />
-              <div>
-
+              <div className="w-full justify-end items-end flex flex-col relative  mb-2 h-max">
+                <p className="w-full text-left text-[20px] mb-2 md:pl-8">
+                  Search products:
+                </p>
+                <AutoComplete
+                  placeholder="Enter product here..."
+                  className="bg-white w-full md:pl-8 mb-4 rounded-md h-[50px]"
+                  options={generateOptions()}
+                  onSelect={handleSelectProduct}
+                  size="middle"
+                  onChange={useDebounce(onSetFilter)}
+                />
+                <div></div>
               </div>
-            </div>
               <div className="w-full flex gap-4 md:gap-12 items-start flex-wrap px-2 md:pr-12 md:pl-8 mb-4">
                 <div className="flex-1 flex-col md:flex-row flex md:items-center gap-4">
                   <label
@@ -531,8 +530,8 @@ export default function Productpage({ params }: { params: { brand: string } }) {
                                 )}
                               </div>
                               <Link
-                                href={`/product/${selectedBrands}/${data.id}`}
-                                as={`/product/${selectedBrands}/${data.id}`}
+                                href={`/product/${selectedBrands}/${data.name}`}
+                                as={`/product/${selectedBrands}/${data.name}`}
                                 className="h-3/5 p-4 hover:bg-white flex flex-col gap-2"
                               >
                                 <CustomLabel
