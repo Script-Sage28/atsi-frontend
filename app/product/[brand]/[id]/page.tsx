@@ -33,7 +33,7 @@ export async function generateMetadata(
     openGraph: {
       type: 'website',
       images: {
-        url: product.img[1],
+        url: product.img[0],
         width: '100%',
         height: '100%',
         alt: product.results?.name?.trim(),
