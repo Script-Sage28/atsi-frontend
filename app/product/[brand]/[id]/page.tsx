@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
@@ -20,12 +21,18 @@ export async function generateMetadata(
   // fetch data
   const product = await FetchingDetails(id);
 
+  const previousImages = (await parent).openGraph?.images || [];
   console.log('product info: ', product);
+  console.log('previousImages: ', previousImages);
+
   return {
     title: product.results?.name,
+    description: product.results?.description,
+    keywords: product.results?.name,
     openGraph: {
-      images: [product.img],
+      images: [product.img[0], ...previousImages],
     },
+    viewport: { width: '100%', height: '100%' },
   };
 }
 
