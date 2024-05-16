@@ -33,7 +33,7 @@ export async function generateMetadata(
     openGraph: {
       type: 'website',
       images: {
-        url: product.img[0],
+        url: 'https://down-ph.img.susercontent.com/file/promo-dim-010091e39c6fd67e28dec098956bd6decd55',
         width: '100%',
         height: '100%',
         alt: product.results?.name?.trim(),
