@@ -336,7 +336,7 @@ export default function Home() {
                                 <Link
                                   className="relative w-full overflow-hidden"
                                   key={idx}
-                                  href={`/product/${brandId}/${product.id}`}
+                                  href={`/product/${brandId}/${product.name}`}
                                   passHref
                                 >
                                   {product.isSaleProduct ? (
