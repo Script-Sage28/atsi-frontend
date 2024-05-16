@@ -20,6 +20,7 @@ export async function generateMetadata(
   // fetch data
   const product = await FetchingDetails(id);
 
+  console.log('product info: ', product);
   return {
     title: product.results?.name,
     openGraph: {
