@@ -29,13 +29,26 @@ export async function generateMetadata(
   return {
     title: product.results?.name,
     description: product.results?.description,
-    keywords: product.results?.name,
+    keywords: ['auxytech', 'product'],
+    alternates: {
+      canonical: 'https://auxytech.com/' + product.results?.name,
+    },
+    appLinks: {
+      web: {
+        url: 'https://auxytech.com/product/' + id,
+        should_fallback: true,
+      },
+    },
     openGraph: {
       type: 'website',
-      url: 'https://auxytech.com',
-      images: product.img[0],
-      title: product.results?.name,
-      description: product.results?.description,
+      images: [
+        {
+          url: product.img[0],
+          width: 800,
+          height: 600,
+          alt: product.results?.name,
+        },
+      ],
     },
     viewport: { width: '100%', height: '100%' },
   };
