@@ -34,12 +34,17 @@ export async function generateMetadata(
       type: 'website',
       images: {
         url: product.img[0],
-        width: 800,
-        height: 600,
+        width: '100%',
+        height: '100%',
         alt: product.results?.name?.trim(),
       },
     },
-    viewport: { width: '100%', height: '100%' },
+    viewport: {
+      width: 'device-width',
+      initialScale: 1,
+      maximumScale: 1,
+      userScalable: false,
+    },
   };
 }
 
