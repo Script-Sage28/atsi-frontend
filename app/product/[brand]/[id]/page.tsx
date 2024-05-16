@@ -27,7 +27,7 @@ export async function generateMetadata(
   console.log('image: ', product.img);
 
   return {
-    title: product.results?.name,
+    title: product.results?.name?.trim(),
     description: product.results?.description,
     keywords: ['auxytech', 'product'],
     alternates: {
@@ -40,13 +40,7 @@ export async function generateMetadata(
       },
     },
     openGraph: {
-      type: 'website',
-      images: {
-        url: product.img[0],
-        width: 800,
-        height: 600,
-        alt: product.results?.name,
-      },
+      images: product.img[0],
     },
     viewport: { width: '100%', height: '100%' },
   };
