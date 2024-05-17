@@ -33,9 +33,9 @@ export async function generateMetadata(
     openGraph: {
       type: 'website',
       images: {
-        url: 'https://pub-5b8c8880a977485aa114f08d809019fb.r2.dev/products/2024/2/AW-CFL2166.png',
-        width: '50%',
-        height: '50%',
+        url: product.img[0],
+        width: '100%',
+        height: '100%',
         alt: product.results?.name?.trim(),
       },
     },
