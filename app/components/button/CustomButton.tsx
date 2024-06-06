@@ -9,7 +9,9 @@ interface BtnProps {
   addedClass?: any;
   buttonType?: 'primary' | 'dashed' | 'default' | 'link' | 'text';
   size?: 'large' | 'middle' | 'small';
+  htmlType?: any | 'button';
   icon?: React.ReactNode;
+  loading?:boolean;
 }
 
 function CustomButton({
@@ -19,14 +21,18 @@ function CustomButton({
   buttonType = 'primary',
   size,
   icon,
+  htmlType,
+  loading
 }: BtnProps) {
   return (
     <Button
       icon={icon}
       type={buttonType}
       size={size}
+      htmlType={htmlType}
       onClick={onClick}
       className={clsx(addedClass)}
+      loading={loading}
     >
       {children}
     </Button>
