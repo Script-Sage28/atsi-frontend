@@ -262,7 +262,7 @@ export default function ProductDetails({
                   addedClass={'h-full text-white'}
                 />
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-1">
                 <CustomLabel
                   children={details.name}
                   variant="text"
@@ -277,7 +277,7 @@ export default function ProductDetails({
                   <CustomLabel
                     children={`DISCOUNTED PRICE`}
                     variant="text"
-                    addedClass="text-[36px] text-gray-500 font-semibold"
+                    addedClass="text-[18px] text-gray-500 font-semibold"
                   />
                 )}
                 <CustomLabel
