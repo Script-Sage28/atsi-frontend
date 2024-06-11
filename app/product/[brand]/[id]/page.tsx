@@ -20,7 +20,6 @@ export async function generateMetadata(
 
   // fetch data
   const product = await FetchingDetails(id);
-
   const previousImages = (await parent).openGraph?.images || [];
   console.log('product info: ', product);
   console.log('previousImages: ', previousImages);
@@ -33,7 +32,7 @@ export async function generateMetadata(
     openGraph: {
       type: 'website',
       images: {
-        url: product.img[0],
+        url: product.img?.length > 0 ? product.img[0] : '',
         width: '100%',
         height: '100%',
         alt: product.results?.name?.trim(),

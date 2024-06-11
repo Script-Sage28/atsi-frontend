@@ -1,5 +1,5 @@
 'use client';
-import { Input, InputNumber, Modal, Skeleton, Slider } from 'antd';
+import {  InputNumber, Modal, Skeleton, Slider } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,9 +16,8 @@ import {
 } from './service/request';
 // eslint-disable-next-line camelcase
 import { T_Blogs, T_Categories, T_LandingPage } from './types/productList';
-import { loadProducts, selector } from './zustand/store/store.provider';
+import { loadProducts } from './zustand/store/store.provider';
 import Noimg from '../public/assets/noimg.png';
-import useStore from '@/zustand/store/store';
 import { Swiper, SwiperSlide, type SwiperRef } from 'swiper/react';
 import { Pagination, Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -27,8 +26,6 @@ import 'swiper/css/navigation';
 import './globals.css';
 import clsx from 'clsx';
 import { findHighestAndLowestPrices } from './helper/minMaxPrice';
-import CustomNextImage from './components/image/CustomNextImage';
-import Facebook from './_document';
 
 export default function Home() {
   const [loaded, setLoaded] = useState<boolean>(true);
@@ -193,9 +190,9 @@ export default function Home() {
             })}
         </Swiper>
       </div>
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col md:flex-row gap-4 px-2 sm:px-8">
         <div className="w-full md:w-[400px] flex flex-col justify-top items-center pt-8 h-maxh-[700px]">
-          <div className="flex gap-8 items-center">
+          <div className="flex gap-8 justify-between sm:justify-normal w-full items-center">
             <p className="font-bold text-[28px]">Categories</p>
             <CustomButton
               children="Reset filter"
@@ -203,7 +200,7 @@ export default function Home() {
               onClick={() => setSelectedCategories('')}
             />
           </div>
-          <ul className="list-none flex flex-col flex-wrap pt-4 justify-start gap-4">
+          <ul className="w-full px-8 sm:px-0 list-none flex flex-col flex-wrap pt-4 justify-start gap-4">
             {categories?.map((item: T_Categories, idx: number) => (
               <>
                 <li
@@ -220,10 +217,10 @@ export default function Home() {
               </>
             ))}
           </ul>
-          <div className="p-4 bg-white w-64">
-            <p className="mb-2">Price Range</p>
+          <div className="w-full py-4 bg-white">
+            <p className="mb-2 font-[700] text-[28px]">Price Range</p>
             <div>
-              <div className="flex gap-2">
+              <div className="flex justify-between sm:justify-normal gap-2">
                 <InputNumber
                   style={{ margin: '0 16px' }}
                   value={minInput}
@@ -243,6 +240,7 @@ export default function Home() {
                 max={maxPrice}
                 step={100}
                 value={priceRange}
+                className="w-[90%]"
                 onChange={handleSliderChange}
               />
             </div>
@@ -251,11 +249,11 @@ export default function Home() {
         {/* Products Section */}
         <div
           id="products"
-          className="w-[65%] bg-white flex flex-col gap-4  md:py-8"
+          className="w-full md:w-[65%] bg-white flex flex-col gap-4  md:py-8"
         >
           {/* Sales Products */}
           {isLoading ? (
-            <div className="flex gap-2 flex-wrap overflow-x-hidden">
+            <div className="w-full flex gap-2 flex-wrap overflow-x-hidden">
               <Swiper
                 ref={swiperRef}
                 slidesPerView={1}

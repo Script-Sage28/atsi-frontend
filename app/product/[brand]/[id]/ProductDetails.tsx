@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable camelcase */
 /* eslint-disable import/order */
 'use client';
@@ -11,8 +12,6 @@ import {
   Form,
   Button,
   Tag,
-  type TabsProps,
-  theme,
 } from 'antd';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
@@ -43,8 +42,8 @@ import 'swiper/css/thumbs';
 import './styles.css';
 import { FreeMode, Navigation, Pagination, Thumbs } from 'swiper/modules';
 import { BiSolidHot } from 'react-icons/bi';
-import StickyBox from 'react-sticky-box';
 import clsx from 'clsx';
+import CustomNextImage from '@/components/image/CustomNextImage';
 
 export default function ProductDetails({
   params,
@@ -56,9 +55,6 @@ export default function ProductDetails({
     ellipsis: false,
     form: false,
   });
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
   const imgUrl = process.env.NEXT_PUBLIC_PUBLIC_STORAGE_ENDPOINT;
   const { TextArea } = Input;
   const swiperRef = useRef<SwiperRef>(null);
@@ -98,10 +94,10 @@ export default function ProductDetails({
     setLoading(false);
   };
   useEffect(() => {
-    fetch();
+    void fetch();
   }, []);
   const handleEdit = (data?: any) => {
-    if (data) {
+    if (data != null) {
       setIsEdit(data.id);
       form.setFieldsValue({
         content: data.content,
@@ -115,20 +111,20 @@ export default function ProductDetails({
     await fetch();
   };
   const onFinish = async (values: any) => {
-    if (!user.info?.id) {
+    if (user.info?.id === '') {
       toast.error('You must login before taking this action!');
       return;
     }
     setIsLoading(true);
-    const details = {
+    const detailed = {
       id: isEdit,
       content: values.content,
       rating: values.rate,
       updatedBy: user.info?.id,
     };
 
-    const res = await FeedbackUpdate.UPDATE_FEED(details);
-    if (res.data) {
+    const res = await FeedbackUpdate.UPDATE_FEED(detailed);
+    if (res.data != null) {
       setIsLoading(false);
       form.resetFields();
       setIsEdit('');
@@ -136,7 +132,7 @@ export default function ProductDetails({
     }
   };
   const handleDelete = async (value: any) => {
-    if (!user.info?.id) {
+    if (user.info?.id == null) {
       toast.error('You must login before taking this action!');
       return;
     }
@@ -145,19 +141,20 @@ export default function ProductDetails({
     formData.append('ids[]', value.id);
     formData.append('updatedBy', user.info?.id);
     const res = await FeedbackDelete.DELETE_FEED(formData);
-    if (res.data) {
+    if (res.data != null) {
       await fetch();
       setIsLoading(false);
     }
   };
-  const renderTabBar: TabsProps['renderTabBar'] = (props, DefaultTabBar) => (
-    <StickyBox offsetTop={64} offsetBottom={20} style={{ zIndex: 1 }}>
-      <DefaultTabBar {...props} style={{ background: colorBgContainer }} />
-    </StickyBox>
-  );
+  console.log(details)
+  // const renderTabBar: TabsProps['renderTabBar'] = (props, DefaultTabBar) => (
+  //   <StickyBox offsetTop={64} offsetBottom={20} style={{ zIndex: 1 }}>
+  //     <DefaultTabBar {...props} style={{ background: colorBgContainer }} />
+  //   </StickyBox>
+  // );
   return (
     <>
-      {details ? (
+      {(details != null) ? (
         <div className="px-4 md:px-24 py-8 bg-white text-black pb-32">
           <Link
             href={`/product/${brandId}`}
@@ -180,10 +177,11 @@ export default function ProductDetails({
                 {details?.media?.map((item: any, idx: number) => (
                   <SwiperSlide key={idx}>
                     <div className="flex justify-center items-center">
-                      <img
-                        src={imgUrl + item.url}
+                      <CustomNextImage
+                        url={imgUrl + item.url}
                         className="h-[300px]"
-                        alt={''}
+                        width={300}
+                        height={300}
                       />
                     </div>
                   </SwiperSlide>
@@ -214,30 +212,34 @@ export default function ProductDetails({
             </div>
 
             <div className="flex flex-col w-[500px] p-2 h-full rounded-md">
-              <div className="flex flex gap-4 w-full">
-                {details.lazadaLink && (
+              <div className="flex gap-4 w-full">
+                {(details.lazadaLink != null) && (
                   <div
                     className="w-[58px] h-[58px] cursor-pointer text-shadow bg-gray-100 drop-shadow-md rounded-sm overflow-hidden"
                     onClick={() => {
                       window.open(`${details.lazadaLink}`, '_blank');
                     }}
                   >
-                    <img
+                    <CustomNextImage
                       className="text-white  aspect-square object-contain"
-                      src="../../assets/lazada.png"
+                      url="/assets/lazada.png"
+                      width={58}
+                      height={58}
                     />
                   </div>
                 )}
-                {details.shoppeeLink && (
+                {(details?.shoppeeLink != null) && (
                   <div
                     className="w-[58px] h-[58px] cursor-pointer text-shadow bg-gray-100 drop-shadow-md rounded-full p-1 overflow-hidden"
                     onClick={() => {
                       window.open(`${details.shoppeeLink}`, '_blank');
                     }}
                   >
-                    <img
+                    <CustomNextImage
                       className="text-white  aspect-square object-contain"
-                      src="../../assets/shopee-logo-0.png"
+                      url='/assets/shopee-logo-0.png'
+                      width={58}
+                      height={58}
                     />
                   </div>
                 )}
@@ -271,7 +273,7 @@ export default function ProductDetails({
                   variant="text"
                   addedClass="font-semibold text-[20px]"
                 />
-                {details?.discount && details?.discount !== 0 && (
+                {details?.discount !== 0 && details?.discount !== 0 && (
                   <CustomLabel
                     children={`DISCOUNTED PRICE`}
                     variant="text"
@@ -280,7 +282,7 @@ export default function ProductDetails({
                 )}
                 <CustomLabel
                   children={
-                    details?.discountedPrice &&
+                    details?.discountedPrice != null &&
                     details?.discountedPrice !== 0 ? (
                       <div className="flex gap-4">
                         <p className="m-0">{Peso(details?.discountedPrice)}</p>
@@ -551,16 +553,17 @@ export default function ProductDetails({
                         href={`/product/${brandId}/${product.id}`}
                         passHref
                       >
-                        {product.isSaleProduct ? (
+                        {product.isSaleProduct !== false ? (
                           <div className="absolute w-[200px] z-40 left-4 top-4">
                             <BiSolidHot size={28} className="text-red-600" />
                           </div>
-                        ) : product.isNewRelease ? (
+                        ) : product.isNewRelease !== false ? (
                           <div className="absolute w-[200px] z-40 left-4 top-4">
-                            <img
+                            <CustomNextImage
                               className="w-[28px] text-green-600"
-                              src={'/assets/icons8-new-100.png'}
-                              alt=""
+                              width={28}
+                              height={28}
+                              url={'/assets/icons8-new-100.png'}
                             />
                           </div>
                         ) : null}
@@ -638,7 +641,7 @@ export default function ProductDetails({
         </div>
       ) : (
         <Skeleton
-          style={{ padding: 32, height: '500px' }}
+          className='p-[32px] h-[500px]'
           paragraph={{ rows: 8 }}
           loading={loading}
           active
