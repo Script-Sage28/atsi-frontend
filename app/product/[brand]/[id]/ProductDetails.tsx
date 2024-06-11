@@ -213,7 +213,7 @@ export default function ProductDetails({
 
             <div className="flex flex-col w-[500px] p-2 h-full rounded-md">
               <div className="flex gap-4 w-full">
-                {(details.lazadaLink != null) && (
+                {(details.lazadaLink != null && details.lazadaLink !== '') && (
                   <div
                     className="w-[58px] h-[58px] cursor-pointer text-shadow bg-gray-100 drop-shadow-md rounded-sm overflow-hidden"
                     onClick={() => {
@@ -228,7 +228,7 @@ export default function ProductDetails({
                     />
                   </div>
                 )}
-                {(details?.shoppeeLink != null) && (
+                {(details?.shoppeeLink != null && details?.shoppeeLink !== '') && (
                   <div
                     className="w-[58px] h-[58px] cursor-pointer text-shadow bg-gray-100 drop-shadow-md rounded-full p-1 overflow-hidden"
                     onClick={() => {
