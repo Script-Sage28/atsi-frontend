@@ -176,6 +176,7 @@ export default function CustomHeader() {
       </Form>
     );
   };
+  console.log(product)
   return (
     <>
       <Header className="header sticky h-20 text-[14px] lg:text-[18px] lg:h-24 z-50 top-0 p-2 md:p-8 bg-white w-full flex justify-between items-center">
@@ -246,10 +247,11 @@ export default function CustomHeader() {
           />
           <ul className="px-1 py-4 h-max flex flex-col gap-2">
             {product.map((data, idx) => {
+              console.log(data)
               return (
                 <Link
-                  href={`/product/${data.id}`}
-                  as={`/product/${data.id}`}
+                  href={`/product/${data.brandId}/${data.name}`}
+                  as={`/product/${data.brandId}/${data.name}`}
                   className="px-4 py-2 bg-white rounded-md text-base"
                   key={idx}
                 >

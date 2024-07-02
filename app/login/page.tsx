@@ -77,7 +77,7 @@ export default function Login() {
       />
       </Form.Item>
       <Form.Item className='flex justify-end items-end mr-2 mb-0'>
-        <a className="text-sky-500 m-0" href="">
+        <a className="text-sky-500 m-0" href="/forgotPassword">
           Forgot password?
         </a>
       </Form.Item>

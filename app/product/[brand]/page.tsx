@@ -314,7 +314,7 @@ export default function Productpage({ params }: { params: { brand: string } }) {
                 <p className="m-0">METRO MANILA ONLY FOR ORDER</p>
                 <p className="m-0"> 1000 PESO ABOVE. 2-3 working days</p>
               </div>
-              <div className="w-full md:w-80 h-full p-4 rounded-lg md:shadow-border">
+              <div className="w-full md:w-80 h-full rounded-lg md:shadow-border">
                 <CustomLabel
                   children={
                     selectedBrand.length > 0
@@ -322,7 +322,7 @@ export default function Productpage({ params }: { params: { brand: string } }) {
                       : 'All Categories'
                   }
                   variant="text"
-                  addedClass="font-semibold text-xl uppercase tracking-widest"
+                  addedClass="font-semibold text-[28px] uppercase"
                 />
                 <div className="w-full h-max">
                   <ul className="list-none flex flex-wrap pt-4 justify-start gap-4">
@@ -345,8 +345,8 @@ export default function Productpage({ params }: { params: { brand: string } }) {
                     ))}
                   </ul>
                 </div>
-                <div className="p-4 bg-white w-64">
-                  <p className="mb-2">Price Range</p>
+                <div className="bg-white w-full sm:w-64">
+                  <p className="mb-2 font-[700] text-[28px]">Price Range</p>
                   <div>
                     <div className="flex gap-2">
                       <InputNumber

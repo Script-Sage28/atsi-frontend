@@ -22,6 +22,11 @@ export const FeedbackDelete = {
 export const FeedbackUpdate = {
     UPDATE_FEED: async (data:any) => await axiosInstance.put(Endpoints.UPDATE_FEEDBACK+data.id,data)
 }
+export const ForgotPasswordApi = {
+    FETCH: async (data:any) => {
+        return await axiosInstance.post(Endpoints.FORGOTPASS,data)
+    }
+}
 export const GetProductDetails ={
     INFO: async (params:any) => await axiosInstance.get(Endpoints.PRODUCT_DETAILS+params)
 }
@@ -40,6 +45,10 @@ export const ProductsRequest ={
 export const RegisterAccount = {
     REGISTER: async (data: any) => await axiosInstance.post(Endpoints.REGISTRATION,data)
 }
+export const ResetPassword = {
+    UPDATE: async (data:any) => await axiosInstance.put(Endpoints.RESETPASS,data)
+}
+
 export const UserUpdate = {
     UPDATE_USER: async (data:any) => await axiosInstance.put(Endpoints.UPDATE_USER+data.id,data)
 }

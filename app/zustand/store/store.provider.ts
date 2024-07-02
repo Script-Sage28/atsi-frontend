@@ -11,7 +11,8 @@ export const {
     reviewProducts,
     loadBrandCategory,
     Abouts,
-    LinkUs
+    LinkUs,
+    saveCodes
 } = storeProvider;
 
 export { selector, storeProvider }

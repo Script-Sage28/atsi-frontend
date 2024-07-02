@@ -12,7 +12,9 @@ const Endpoints ={
     DELETE_FEEDBACK:'/feedbacks/delete',
     ABOUTSUS:'/about-us/active',
     SOCIALLINKS:'/social-media-links/all?status=Active',
-    LANDINGPAGE:'/landing-page/active'
+    LANDINGPAGE:'/landing-page/active',
+    FORGOTPASS:'/email-content/reset-password',
+    RESETPASS:'/user/update-password'
 }
 
 export default Endpoints

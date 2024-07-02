@@ -4,8 +4,9 @@ import Image from 'next/image';
 
 interface ICustomNextImage {
   url: string;
-  width: number | 100;
+  width?: number | 100;
   height: number | 100;
+  className: string;
 }
 
 export default function CustomNextImage(props: ICustomNextImage) {
@@ -17,7 +18,8 @@ export default function CustomNextImage(props: ICustomNextImage) {
       alt="Image"
       width={props.width}
       height={props.height}
-      className='object-fill'
+      className={props.className}
+
     />
   );
 }

@@ -3,10 +3,12 @@ import { type StateCreator } from 'zustand/vanilla';
 import { LoginAccount } from '@/service/request';
 
 interface UserState {
-  loading: boolean;
+  loading?: boolean;
   info?: object | null;
   aboutsUs?:any[];
   links?:any[];
+  code?:any;
+  otp?:any
   responseMsg?: string | undefined;
 }
 
@@ -17,6 +19,7 @@ export interface UserSlice {
   logout: () => void;
   Abouts:(payload:any) => void;
   LinkUs:(payload:any) => void;
+  saveCodes:(payload:any) => void;
 }
 
 const initialState: UserState = {
@@ -123,6 +126,17 @@ const createUserSlice: StateCreator<UserSlice> = (set) => ({
         ...state.user,
         links: payload,
         loading: false,
+        responseMsg: '',
+      },
+    }));
+  },
+  saveCodes:(payload:any) =>{
+    set((state) => ({
+      ...state,
+      user: {
+        ...state.user,
+        otp: payload.otp,
+        code:payload.code,
         responseMsg: '',
       },
     }));
