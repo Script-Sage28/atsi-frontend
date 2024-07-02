@@ -30,6 +30,7 @@ export async function generateMetadata(
     title: product.results?.name?.trim(),
     description: product.results?.description,
     keywords: ['auxytech', 'product'],
+    metadataBase: new URL('https://auxytech.com/'),
     openGraph: {
       type: 'website',
       images: {
